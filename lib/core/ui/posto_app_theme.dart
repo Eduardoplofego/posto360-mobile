@@ -6,7 +6,7 @@ class PostoAppTheme {
   static final ThemeData theme = ThemeData(
     scaffoldBackgroundColor: Color(0xFFFFFFFF),
     primaryColor: const Color(0xFF2051E5),
-    // fontFamily: 'mplus1',
+    fontFamily: 'poppins',
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF2051E5),

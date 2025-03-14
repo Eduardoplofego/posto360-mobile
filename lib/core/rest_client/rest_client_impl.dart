@@ -8,7 +8,7 @@ class RestClientImpl extends RestClient {
   RestClientImpl() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'http://posto360.app',
+        baseUrl: 'https://posto360.app',
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 5),
         headers: {'Accept': 'application/json'},
