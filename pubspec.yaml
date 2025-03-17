@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.7.2
   dio: ^5.8.0+1
+  flutter_emoji: ^2.5.1
+  get_storage: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +79,8 @@ flutter:
   fonts:
     - family: poppins
       fonts:
+        - asset: assets/fonts/poppins/Poppins-Thin.ttf
+          weight: 300
         - asset: assets/fonts/poppins/Poppins-Regular.ttf
           style: normal
         - asset: assets/fonts/poppins/Poppins-Medium.ttf

@@ -3,17 +3,17 @@ import 'dart:convert';
 class UserModel {
   final String id;
   final DateTime createdAt;
-  final String photoUrl;
+  final String? photoUrl;
   final String name;
-  final String lastName;
-  final String idEmpresa;
+  final String? lastName;
+  final int idEmpresa;
   final String tipoUsuario;
-  final String? idFilial;
-  final String? codigoPDV;
+  final int? idFilial;
+  final int? codigoPDV;
   final String? userName;
   final DateTime? dismissedDate;
   final DateTime? admissionDate;
-  final String? ponto;
+  final bool? ponto;
 
   UserModel({
     required this.id,
@@ -52,24 +52,18 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      photoUrl: map['photoUrl'] ?? '',
-      name: map['name'] ?? '',
-      lastName: map['lastName'] ?? '',
-      idEmpresa: map['idEmpresa'] ?? '',
-      tipoUsuario: map['tipoUsuario'] ?? '',
-      idFilial: map['idFilial'],
-      codigoPDV: map['codigoPDV'],
-      userName: map['userName'],
-      dismissedDate:
-          map['dismissedDate'] != null
-              ? DateTime.fromMillisecondsSinceEpoch(map['dismissedDate'])
-              : null,
-      admissionDate:
-          map['admissionDate'] != null
-              ? DateTime.fromMillisecondsSinceEpoch(map['admissionDate'])
-              : null,
-      ponto: map['ponto'],
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at']),
+      photoUrl: map['FotoPerfil'] ?? '',
+      name: map['Nome'] ?? '',
+      lastName: map['Sobrenome'] ?? '',
+      idEmpresa: map['EmpresaId'] ?? '',
+      tipoUsuario: map['TipoUsuario'] ?? '',
+      idFilial: map['FilialId'],
+      codigoPDV: map['CodigoPdv'],
+      userName: map['Username'],
+      dismissedDate: map['Demissao'],
+      admissionDate: map['Admissao'],
+      ponto: map['Ponto'],
     );
   }
 
