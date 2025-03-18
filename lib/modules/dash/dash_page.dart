@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dash_controller.dart';
 
 class DashPage extends GetView<DashController> {
-  const DashPage({Key? key}) : super(key: key);
+  const DashPage({super.key});
 
   @override
   Widget build(BuildContext context) {

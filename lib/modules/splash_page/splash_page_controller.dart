@@ -1,11 +1,10 @@
 import 'package:get/get.dart';
+import 'package:posto360/core/services/auth_service.dart';
 
 class SplashPageController extends GetxController {
   @override
-  Future<void> onReady() async {
+  void onReady() {
+    Get.putAsync(() => AuthService().init());
     super.onReady();
-    await Future.delayed(const Duration(seconds: 2), () {
-      Get.offAllNamed('/login');
-    });
   }
 }

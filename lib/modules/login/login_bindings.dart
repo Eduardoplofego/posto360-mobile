@@ -14,6 +14,6 @@ class LoginBindings implements Bindings {
     Get.lazyPut<LoginService>(
       () => LoginServiceImpl(loginRepository: Get.find()),
     );
-    Get.put(LoginController());
+    Get.put(LoginController(loginService: Get.find()));
   }
 }

@@ -17,7 +17,7 @@ class AuthService extends GetxService {
       if (isLogged == null || !isLogged) {
         Get.offAllNamed('/login');
       } else {
-        Get.offAllNamed('/dash');
+        Get.offAllNamed('/dashboard');
       }
     });
 
@@ -33,6 +33,8 @@ class AuthService extends GetxService {
   UserModel? getUserId() {
     if (_getStorage.read(Constants.USER_KEY) == null) return null;
 
-    return UserModel.fromMap(_getStorage.read(Constants.USER_KEY));
+    final jsonUser = _getStorage.read(Constants.USER_KEY);
+
+    return jsonUser['id'];
   }
 }

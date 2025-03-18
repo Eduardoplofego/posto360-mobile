@@ -6,10 +6,6 @@ class LoginRouters {
   LoginRouters._();
 
   static final routes = <GetPage>[
-    GetPage(
-      name: '/login',
-      page: () => const LoginPage(),
-      binding: LoginBindings(),
-    ),
+    GetPage(name: '/login', page: () => LoginPage(), binding: LoginBindings()),
   ];
 }

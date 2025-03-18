@@ -1,6 +1,7 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/core/dto/result_action_dto.dart';
+import 'package:posto360/core/exceptions/login_excpetion.dart';
 import 'package:posto360/core/exceptions/user_not_found_exception.dart';
 import 'package:posto360/core/exceptions/wrong_credentials_exception.dart';
 import 'package:posto360/repositories/auth/login/login_repository.dart';
@@ -34,7 +35,7 @@ class LoginServiceImpl extends LoginService {
       return ResultActionDTO.failure('Credenciais inválidas');
     } on UserNotFoundException catch (_) {
       return ResultActionDTO.failure('Usuário não encontrado');
-    } catch (_) {
+    } on LoginExcpetion catch (_) {
       return ResultActionDTO.failure('Problema ao realizar login');
     }
   }

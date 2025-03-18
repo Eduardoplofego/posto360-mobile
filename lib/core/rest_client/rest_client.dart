@@ -1,9 +1,45 @@
-import 'package:dio/dio.dart';
+import 'package:posto360/core/rest_client/rest_client_response.dart';
 
 abstract class RestClient {
-  Future<Response> get(String path, {Map<String, dynamic>? queryParameters});
+  Future<RestClientResponse<T>> post<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
 
-  Future<Response> post(String path, {Map<String, dynamic>? data});
+  Future<RestClientResponse<T>> get<T>(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
 
-  Future<Response> patch(String path, {Map<String, dynamic>? data});
+  Future<RestClientResponse<T>> put<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
+
+  Future<RestClientResponse<T>> delete<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
+
+  Future<RestClientResponse<T>> patch<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
+
+  Future<RestClientResponse<T>> request<T>(
+    String path, {
+    required String method,
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
 }

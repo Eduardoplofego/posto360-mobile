@@ -11,8 +11,8 @@ class UserModel {
   final int? idFilial;
   final int? codigoPDV;
   final String? userName;
-  final DateTime? dismissedDate;
-  final DateTime? admissionDate;
+  final String? dismissedDate;
+  final String? admissionDate;
   final bool? ponto;
 
   UserModel({
@@ -34,29 +34,29 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'photoUrl': photoUrl,
-      'name': name,
-      'lastName': lastName,
-      'idEmpresa': idEmpresa,
-      'tipoUsuario': tipoUsuario,
-      'idFilial': idFilial,
-      'codigoPDV': codigoPDV,
-      'userName': userName,
-      'dismissedDate': dismissedDate?.millisecondsSinceEpoch,
-      'admissionDate': admissionDate?.millisecondsSinceEpoch,
-      'ponto': ponto,
+      'created_at': createdAt.toIso8601String(),
+      'FotoPerfil': photoUrl,
+      'Nome': name,
+      'Sobrenome': lastName,
+      'EmpresaId': idEmpresa,
+      'TipoUsuario': tipoUsuario,
+      'FilialId': idFilial,
+      'CodigoPdv': codigoPDV,
+      'Username': userName,
+      'Demissao': dismissedDate,
+      'Admissao': admissionDate,
+      'Ponto': ponto,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at']),
+      createdAt: DateTime.tryParse(map['created_at']) ?? DateTime(2000),
       photoUrl: map['FotoPerfil'] ?? '',
       name: map['Nome'] ?? '',
       lastName: map['Sobrenome'] ?? '',
-      idEmpresa: map['EmpresaId'] ?? '',
+      idEmpresa: map['EmpresaId'] ?? 0,
       tipoUsuario: map['TipoUsuario'] ?? '',
       idFilial: map['FilialId'],
       codigoPDV: map['CodigoPdv'],

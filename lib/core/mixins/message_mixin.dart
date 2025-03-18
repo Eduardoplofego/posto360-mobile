@@ -10,6 +10,7 @@ mixin MessageMixin on GetxController {
           model.message,
           backgroundColor: model.type.color(),
           colorText: model.type.textColor(),
+          snackStyle: SnackStyle.FLOATING,
         );
       }
     });
@@ -34,18 +35,18 @@ extension MessageTypeColorExt on MessageType {
   Color color() {
     switch (this) {
       case MessageType.error:
-        return Colors.red[400]!;
+        return Colors.red.shade300;
       case MessageType.info:
-        return Colors.blue[200]!;
+        return Colors.blue[400]!;
     }
   }
 
   Color textColor() {
     switch (this) {
       case MessageType.error:
-        return Colors.white;
-      case MessageType.info:
         return Colors.black;
+      case MessageType.info:
+        return Colors.white;
     }
   }
 }
