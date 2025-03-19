@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';

@@ -30,7 +30,7 @@ class AuthService extends GetxService {
     _getStorage.write(Constants.USER_KEY, null);
   }
 
-  UserModel? getUserId() {
+  String? getUserId() {
     if (_getStorage.read(Constants.USER_KEY) == null) return null;
 
     final jsonUser = _getStorage.read(Constants.USER_KEY);

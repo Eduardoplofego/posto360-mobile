@@ -39,6 +39,7 @@ dependencies:
   flutter_emoji: ^2.5.1
   get_storage: ^2.1.1
   validatorless: ^1.2.4
+  percent_indicator: ^4.2.4
 
 dev_dependencies:
   flutter_test:
