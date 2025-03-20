@@ -38,7 +38,15 @@ class LoginPage extends GetView<LoginController> {
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [Image.asset('assets/images/executives.png')],
+                      children: [
+                        SizedBox(
+                          width: Get.width,
+                          child: Image.asset(
+                            'assets/images/executives.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,

@@ -125,6 +125,7 @@ class CardDetailedWidget extends StatelessWidget {
                       radius: 50,
                       lineWidth: 10,
                       percent: percentTaked,
+                      animation: true,
                       center: Text(
                         '${(percentTaked * 100).toStringAsFixed(0)}%',
                         style: TextStyle(

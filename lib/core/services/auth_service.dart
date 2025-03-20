@@ -2,8 +2,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
 
-import 'package:posto360/models/user_model.dart';
-
 class AuthService extends GetxService {
   final _isLogged = RxnBool();
   final _getStorage = GetStorage();

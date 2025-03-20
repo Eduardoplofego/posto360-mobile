@@ -31,6 +31,18 @@ class UserModel {
     this.ponto,
   });
 
+  factory UserModel.empty() {
+    return UserModel(
+      id: '',
+      createdAt: DateTime(2000),
+      photoUrl: '',
+      name: '',
+      lastName: '',
+      idEmpresa: 0,
+      tipoUsuario: '',
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,

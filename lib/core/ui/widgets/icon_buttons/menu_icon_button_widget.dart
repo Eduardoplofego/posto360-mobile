@@ -14,7 +14,7 @@ class MenuIconButtonWidget extends StatelessWidget {
       style: IconButton.styleFrom(
         backgroundColor: PostoAppUiConfigurations.blueMediumColor,
       ),
-      icon: Icon(Icons.menu),
+      icon: Icon(Icons.menu, size: 30),
     );
   }
 }

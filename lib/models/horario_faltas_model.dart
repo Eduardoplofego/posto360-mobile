@@ -11,6 +11,23 @@ class HorarioFaltasModel {
     required this.atrasos,
   });
 
+  factory HorarioFaltasModel.empty() {
+    return HorarioFaltasModel(
+      horarioPrevisto: '00:00-00:00  00:00-00:00',
+      faltas: 0,
+      atrasos: 0,
+    );
+  }
+
+  String getJornadaTrabalho() {
+    List<String> times = horarioPrevisto.split(' ');
+
+    String startTime = times[0].split('-')[0];
+    String endTime = times[2].split('-')[1];
+
+    return '$startTime - $endTime';
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'horarioPrevisto': horarioPrevisto,
