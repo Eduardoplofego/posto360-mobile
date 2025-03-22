@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
@@ -40,7 +38,15 @@ class LoginPage extends GetView<LoginController> {
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [Image.asset('assets/images/executives.png')],
+                      children: [
+                        SizedBox(
+                          width: Get.width,
+                          child: Image.asset(
+                            'assets/images/executives.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,

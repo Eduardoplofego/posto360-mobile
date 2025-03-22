@@ -20,9 +20,9 @@ class ProdutoModel {
 
   factory ProdutoModel.fromMap(Map<String, dynamic> map) {
     return ProdutoModel(
-      idProduto: map['idProduto']?.toInt() ?? 0,
-      nomeProduto: map['nomeProduto'] ?? '',
-      codigoProduto: map['codigoProduto']?.toInt() ?? 0,
+      idProduto: map['id']?.toInt() ?? 0,
+      nomeProduto: map['produtoNome'] ?? '',
+      codigoProduto: map['produtoCodigo']?.toInt() ?? 0,
     );
   }
 

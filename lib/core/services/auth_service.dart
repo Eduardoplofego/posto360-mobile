@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
-
 import 'package:posto360/models/user_model.dart';
 
 class AuthService extends GetxService {
   final _isLogged = RxnBool();
   final _getStorage = GetStorage();
+  final _authenticatedUser = Rxn<UserModel>();
+
+  UserModel? get authenticatedUser => getUser();
 
   Future<AuthService> init() async {
     _getStorage.listenKey(Constants.JWT_TOKEN, (value) {
@@ -21,7 +23,7 @@ class AuthService extends GetxService {
       }
     });
 
-    _isLogged(getUserId() != null);
+    _isLogged(getUser() != null);
     return this;
   }
 
@@ -30,11 +32,13 @@ class AuthService extends GetxService {
     _getStorage.write(Constants.USER_KEY, null);
   }
 
-  UserModel? getUserId() {
+  UserModel? getUser() {
     if (_getStorage.read(Constants.USER_KEY) == null) return null;
 
-    final jsonUser = _getStorage.read(Constants.USER_KEY);
+    final userJson = _getStorage.read(Constants.USER_KEY);
 
-    return jsonUser['id'];
+    _authenticatedUser.value = UserModel.fromMap(userJson);
+
+    return UserModel.fromMap(userJson);
   }
 }

@@ -32,11 +32,11 @@ class LoginServiceImpl extends LoginService {
 
       return ResultActionDTO.success();
     } on WrongCredentialsException catch (_) {
-      return ResultActionDTO.failure('Credenciais inválidas');
+      return ResultActionDTO.failure('Credenciais inválidas', null);
     } on UserNotFoundException catch (_) {
-      return ResultActionDTO.failure('Usuário não encontrado');
+      return ResultActionDTO.failure('Usuário não encontrado', null);
     } on LoginExcpetion catch (_) {
-      return ResultActionDTO.failure('Problema ao realizar login');
+      return ResultActionDTO.failure('Problema ao realizar login', null);
     }
   }
 }

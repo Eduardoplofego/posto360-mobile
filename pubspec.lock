@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  brasil_fields:
+    dependency: "direct main"
+    description:
+      name: brasil_fields
+      sha256: "1e20e5974b6dd25e1a909171773aeaceb0fe80c3a5f0d1d8d9e6b3dd3d9e55b5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.17.0"
   characters:
     dependency: transitive
     description:
@@ -139,6 +147,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  intl:
+    dependency: "direct main"
+    description:
+      name: intl
+      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.20.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -251,6 +267,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  percent_indicator:
+    dependency: "direct main"
+    description:
+      name: percent_indicator
+      sha256: "0d77d5c6fa9b7f60202cedf748b568ba9ba38d3f30405d6ceae4da76f5185462"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.4"
   platform:
     dependency: transitive
     description:
@@ -267,6 +291,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  skeletonizer:
+    dependency: "direct main"
+    description:
+      name: skeletonizer
+      sha256: "0dcacc51c144af4edaf37672072156f49e47036becbc394d7c51850c5c1e884b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.3"
   sky_engine:
     dependency: transitive
     description: flutter
