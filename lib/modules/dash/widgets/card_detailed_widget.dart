@@ -8,28 +8,27 @@ class CardDetailedWidget extends StatelessWidget {
   final IconData icon;
   final int totalNumber;
   final String title;
-  final bool isGoodPerformance;
   final int totalNumberDetailed;
   final String totalNumberDetailedText;
   final String totalTakeNumberDetailedText;
   final VoidCallback? onPressed;
+  final bool hideNumberDetailed;
 
   const CardDetailedWidget({
     super.key,
     required this.icon,
     required this.totalNumber,
     required this.title,
-    required this.isGoodPerformance,
     required this.totalNumberDetailed,
     required this.totalNumberDetailedText,
     required this.totalTakeNumberDetailedText,
+    this.hideNumberDetailed = false,
     this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     final percentTaked = totalNumber / totalNumberDetailed;
-    // TODO: pesquisar icons exatos
     return Container(
       width: Get.width,
       padding: EdgeInsets.only(
@@ -65,7 +64,7 @@ class CardDetailedWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          totalNumber.toString(),
+                          !hideNumberDetailed ? totalNumber.toString() : '',
                           style: TextStyle(fontSize: 38),
                         ),
                       ],
@@ -74,24 +73,27 @@ class CardDetailedWidget extends StatelessWidget {
                     Row(
                       spacing: 7,
                       children: [
-                        Text(title, style: TextStyle(fontSize: 16)),
+                        SizedBox(
+                          width: 140,
+                          child: Text(title, style: TextStyle(fontSize: 14)),
+                        ),
                         Container(
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             color:
-                                isGoodPerformance
+                                percentTaked < .3
                                     ? Color(0xFF97CE71)
                                     : Color.fromARGB(255, 195, 153, 153),
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.transparent),
                           ),
                           child: Icon(
-                            isGoodPerformance
+                            percentTaked < .3
                                 ? Icons.trending_up_outlined
                                 : Icons.trending_down_outlined,
                             size: 12,
                             color:
-                                isGoodPerformance
+                                percentTaked < .3
                                     ? Color(0xFF43900C)
                                     : Color(0xFF900C0C),
                           ),
@@ -103,7 +105,10 @@ class CardDetailedWidget extends StatelessWidget {
                       spacing: 6,
                       children: [
                         CircleAvatar(radius: 4, backgroundColor: Colors.blue),
-                        Text('$totalNumberDetailed $totalNumberDetailedText'),
+                        Text(
+                          '${!hideNumberDetailed ? totalNumberDetailed : ''} $totalNumberDetailedText',
+                          style: TextStyle(fontSize: 12, color: Colors.black38),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -111,7 +116,10 @@ class CardDetailedWidget extends StatelessWidget {
                       spacing: 6,
                       children: [
                         CircleAvatar(radius: 4, backgroundColor: Colors.orange),
-                        Text('$totalNumber $totalTakeNumberDetailedText'),
+                        Text(
+                          '${!hideNumberDetailed ? totalNumber : ''} $totalTakeNumberDetailedText',
+                          style: TextStyle(fontSize: 12, color: Colors.black38),
+                        ),
                       ],
                     ),
                   ],
@@ -127,7 +135,9 @@ class CardDetailedWidget extends StatelessWidget {
                       percent: percentTaked,
                       animation: true,
                       center: Text(
-                        '${(percentTaked * 100).toStringAsFixed(0)}%',
+                        totalNumberDetailed > 0
+                            ? '${(percentTaked * 100).toStringAsFixed(0)}%'
+                            : '0%',
                         style: TextStyle(
                           fontSize: 20,
                           color: PostoAppUiConfigurations.blueMediumColor,
@@ -142,7 +152,9 @@ class CardDetailedWidget extends StatelessWidget {
               ),
             ],
           ),
-          onPressed != null ? ButtonCardWidget() : const SizedBox.shrink(),
+          onPressed != null
+              ? ButtonCardWidget(onPressed: onPressed!)
+              : const SizedBox.shrink(),
         ],
       ),
     );

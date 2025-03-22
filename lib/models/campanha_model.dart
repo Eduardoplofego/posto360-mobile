@@ -36,13 +36,14 @@ class CampanhaModel {
     return CampanhaModel(
       campanhaId: map['campanhaId']?.toInt() ?? 0,
       nomeCampanha: map['nomeCampanha'] ?? '',
-      produtos: map['produtos'].map<ProdutoModel>((p) => p.toMap()).toList(),
+      produtos:
+          map['produtos']
+              .map<ProdutoModel>((p) => ProdutoModel.fromMap(p))
+              .toList(),
       tipoBonificacao: map['tipoBonificacao'] ?? '',
       volumeBonificacao: map['volumeBonificacao']?.toInt() ?? 0,
       valorBonificacao: map['valorBonificacao']?.toInt() ?? 0,
-      dataDisponibilidade: DateTime.fromMillisecondsSinceEpoch(
-        map['dataDisponibilidade'],
-      ),
+      dataDisponibilidade: DateTime.parse(map['dataDisponibilidade']),
     );
   }
 

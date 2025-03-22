@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String? title;
-  final Widget leading;
+  final Widget? leading;
   final List<Widget>? actions;
-  const CustomAppBar({
-    super.key,
-    this.title,
-    required this.leading,
-    this.actions,
-  });
+  const CustomAppBar({super.key, this.title, this.leading, this.actions});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Color(0xFF2051E5),
+        color: PostoAppUiConfigurations.blueMediumColor,
         image: DecorationImage(
           image: AssetImage('assets/images/waves.png'),
           fit: BoxFit.cover,
@@ -30,8 +26,30 @@ class CustomAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [leading, ...actions!],
+            mainAxisAlignment:
+                title != null
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.spaceBetween,
+
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  leading ?? SizedBox.shrink(),
+                  title != null
+                      ? Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          title!,
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      )
+                      : const SizedBox.shrink(),
+                ],
+              ),
+              Spacer(),
+              ...actions!,
+            ],
           ),
         ],
       ),

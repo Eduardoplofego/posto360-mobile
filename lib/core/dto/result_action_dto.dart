@@ -11,8 +11,8 @@ class ResultActionDTO<T> {
     return ResultActionDTO._(success: true, message: message ?? '', data: data);
   }
 
-  factory ResultActionDTO.failure(String message) {
-    return ResultActionDTO._(success: false, message: message);
+  factory ResultActionDTO.failure(String message, T? data) {
+    return ResultActionDTO._(success: false, message: message, data: data);
   }
 
   @override

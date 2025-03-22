@@ -14,7 +14,7 @@ class ProfileCardWidget extends GetView<DashController> {
         return ConstrainedBox(
           constraints: BoxConstraints(minWidth: constraints.maxWidth),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 10,
             children: [
               Stack(

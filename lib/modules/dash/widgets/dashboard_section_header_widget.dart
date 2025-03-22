@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/modules/dash/widgets/select_date_dashboard_widget.dart';
+import 'package:posto360/modules/dash/dash_controller.dart';
 
-class DashboardSectionHeaderWidget extends StatelessWidget {
+class DashboardSectionHeaderWidget extends GetView<DashController> {
   const DashboardSectionHeaderWidget({super.key});
 
   @override
@@ -18,7 +19,7 @@ class DashboardSectionHeaderWidget extends StatelessWidget {
             color: PostoAppUiConfigurations.textDarkColor,
           ),
         ),
-        SelectDateDashboardWidget(),
+        // SelectDateWidget(),
       ],
     );
   }

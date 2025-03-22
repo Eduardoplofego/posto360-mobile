@@ -20,12 +20,46 @@ class HorarioFaltasModel {
   }
 
   String getJornadaTrabalho() {
-    List<String> times = horarioPrevisto.split(' ');
+    if (horarioPrevisto.isEmpty) {
+      return '00h às 00h';
+    }
 
-    String startTime = times[0].split('-')[0];
-    String endTime = times[2].split('-')[1];
+    final turnos = horarioPrevisto.split(' ');
 
-    return '$startTime - $endTime';
+    final primeiroTurnoSplitted = turnos[0].split('-');
+    final segundoTurnosSplitted = turnos[2].split('-');
+
+    final tempoInicio = primeiroTurnoSplitted[0];
+    final tempoFim = segundoTurnosSplitted[1];
+
+    final horaTempoInicio = int.tryParse(tempoInicio.split(':')[0]) ?? 0;
+    final minutoTempoInicio = int.tryParse(tempoInicio.split(':')[1]) ?? 0;
+    final horaTempoFim = int.tryParse(tempoFim.split(':')[0]) ?? 0;
+    final minutoTempoFim = int.tryParse(tempoFim.split(':')[1]) ?? 0;
+
+    final inicio =
+        '${horaTempoInicio}h${minutoTempoInicio > 0 ? '$minutoTempoInicio' : ''}';
+    final fim =
+        '${horaTempoFim}h${minutoTempoFim > 0 ? '$minutoTempoFim' : ''}';
+    return '$inicio às $fim';
+  }
+
+  String getStartTime() {
+    if (horarioPrevisto.isEmpty) {
+      return '00h00';
+    }
+
+    final turnos = horarioPrevisto.split(' ');
+
+    final primeiroTurnoSplitted = turnos[0].split('-');
+
+    final tempoInicio = primeiroTurnoSplitted[0];
+
+    final horaTempoInicio = tempoInicio.split(':')[0];
+    final minutoTempoInicio = tempoInicio.split(':')[1];
+
+    final inicio = '${horaTempoInicio}h$minutoTempoInicio';
+    return inicio;
   }
 
   Map<String, dynamic> toMap() {

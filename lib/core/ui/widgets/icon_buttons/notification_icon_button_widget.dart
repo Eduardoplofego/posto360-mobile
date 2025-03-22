@@ -14,7 +14,7 @@ class NotificationIconButtonWidget extends StatelessWidget {
       style: IconButton.styleFrom(
         backgroundColor: PostoAppUiConfigurations.blueMediumColor,
       ),
-      icon: Icon(Icons.notifications_none_rounded, size: 30),
+      icon: Icon(Icons.notifications_none_rounded, size: 24),
     );
   }
 }

@@ -42,6 +42,7 @@ dependencies:
   percent_indicator: ^4.2.4
   brasil_fields: ^1.17.0
   intl: ^0.20.2
+  skeletonizer: ^1.4.3
 
 dev_dependencies:
   flutter_test:

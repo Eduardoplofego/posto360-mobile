@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
-import 'package:posto360/core/exceptions/internal_server_exception.dart';
-import 'package:posto360/core/exceptions/invalid_parameters_exception.dart';
+import 'package:posto360/core/dto/result_action_dto.dart';
 import 'package:posto360/core/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/core/rest_client/posto_rest_client.dart';
 import 'package:posto360/models/horario_faltas_model.dart';
@@ -17,7 +15,7 @@ class HorarioFaltasAtrasosRepositoryImpl
     : _restClient = postoRestClient;
 
   @override
-  Future<HorarioFaltasModel> getHorario({
+  Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
     required String data,
     required String codigoFuncionario,
   }) async {
@@ -26,15 +24,15 @@ class HorarioFaltasAtrasosRepositoryImpl
         'data': data,
         'funcionarioCodigo': codigoFuncionario,
       });
-      return HorarioFaltasModel.fromMap(result.body);
-    } on DioException catch (e, s) {
-      log('Erro get HorarioFaltasModel', error: e, stackTrace: s);
-      if (e.response?.statusCode == 400) {
-        throw InvalidParametersException();
-      }
-      throw InternalServerException();
-    } catch (_) {
-      throw InternalServerException();
+      return ResultActionDTO.success(
+        data: HorarioFaltasModel.fromMap(result.body),
+      );
+    } catch (e, s) {
+      log('Erro get horas_faltas_atraso', error: e, stackTrace: s);
+      return ResultActionDTO.failure(
+        'Erro ao carregar jornada de trabalho',
+        HorarioFaltasModel.empty(),
+      );
     }
   }
 }
