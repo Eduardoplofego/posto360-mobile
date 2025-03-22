@@ -10,10 +10,7 @@ class PostoAppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF2051E5),
-        textStyle: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
     // bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -24,6 +21,4 @@ class PostoAppTheme {
     //   unselectedIconTheme: IconThemeData(color: Colors.grey[400]),
     // ),
   );
-
-  static const TextStyle textBold = TextStyle(fontWeight: FontWeight.bold);
 }

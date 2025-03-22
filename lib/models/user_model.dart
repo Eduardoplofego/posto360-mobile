@@ -3,17 +3,17 @@ import 'dart:convert';
 class UserModel {
   final String id;
   final DateTime createdAt;
-  final String photoUrl;
+  final String? photoUrl;
   final String name;
-  final String lastName;
-  final String idEmpresa;
+  final String? lastName;
+  final int idEmpresa;
   final String tipoUsuario;
-  final String? idFilial;
-  final String? codigoPDV;
+  final int? idFilial;
+  final int? codigoPDV;
   final String? userName;
-  final DateTime? dismissedDate;
-  final DateTime? admissionDate;
-  final String? ponto;
+  final String? dismissedDate;
+  final String? admissionDate;
+  final bool? ponto;
 
   UserModel({
     required this.id,
@@ -34,42 +34,36 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'photoUrl': photoUrl,
-      'name': name,
-      'lastName': lastName,
-      'idEmpresa': idEmpresa,
-      'tipoUsuario': tipoUsuario,
-      'idFilial': idFilial,
-      'codigoPDV': codigoPDV,
-      'userName': userName,
-      'dismissedDate': dismissedDate?.millisecondsSinceEpoch,
-      'admissionDate': admissionDate?.millisecondsSinceEpoch,
-      'ponto': ponto,
+      'created_at': createdAt.toIso8601String(),
+      'FotoPerfil': photoUrl,
+      'Nome': name,
+      'Sobrenome': lastName,
+      'EmpresaId': idEmpresa,
+      'TipoUsuario': tipoUsuario,
+      'FilialId': idFilial,
+      'CodigoPdv': codigoPDV,
+      'Username': userName,
+      'Demissao': dismissedDate,
+      'Admissao': admissionDate,
+      'Ponto': ponto,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      photoUrl: map['photoUrl'] ?? '',
-      name: map['name'] ?? '',
-      lastName: map['lastName'] ?? '',
-      idEmpresa: map['idEmpresa'] ?? '',
-      tipoUsuario: map['tipoUsuario'] ?? '',
-      idFilial: map['idFilial'],
-      codigoPDV: map['codigoPDV'],
-      userName: map['userName'],
-      dismissedDate:
-          map['dismissedDate'] != null
-              ? DateTime.fromMillisecondsSinceEpoch(map['dismissedDate'])
-              : null,
-      admissionDate:
-          map['admissionDate'] != null
-              ? DateTime.fromMillisecondsSinceEpoch(map['admissionDate'])
-              : null,
-      ponto: map['ponto'],
+      createdAt: DateTime.tryParse(map['created_at']) ?? DateTime(2000),
+      photoUrl: map['FotoPerfil'] ?? '',
+      name: map['Nome'] ?? '',
+      lastName: map['Sobrenome'] ?? '',
+      idEmpresa: map['EmpresaId'] ?? 0,
+      tipoUsuario: map['TipoUsuario'] ?? '',
+      idFilial: map['FilialId'],
+      codigoPDV: map['CodigoPdv'],
+      userName: map['Username'],
+      dismissedDate: map['Demissao'],
+      admissionDate: map['Admissao'],
+      ponto: map['Ponto'],
     );
   }
 
