@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String? title;
@@ -12,7 +11,7 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: PostoAppUiConfigurations.blueMediumColor,
+        color: Color(0xFF2051E5),
         image: DecorationImage(
           image: AssetImage('assets/images/waves.png'),
           fit: BoxFit.cover,

@@ -11,6 +11,14 @@ class PerformanceModel {
     required this.valorBonificacao,
   });
 
+  factory PerformanceModel.empty() {
+    return PerformanceModel(
+      campanhaId: 0,
+      unidadesVendidas: 0,
+      valorBonificacao: 0,
+    );
+  }
+
   Map<int, PerformanceModel> toMap() {
     return {campanhaId: this};
   }

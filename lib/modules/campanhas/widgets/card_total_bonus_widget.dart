@@ -1,4 +1,4 @@
-import 'package:brasil_fields/brasil_fields.dart';
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
@@ -36,14 +36,42 @@ class CardTotalBonusWidget extends GetView<CampanhasController> {
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
                 Obx(() {
-                  return Text(
-                    UtilBrasilFields.obterReal(controller.valueTotalBonus),
-                    style: TextStyle(
+                  if (controller.isLoading) {
+                    return CircularProgressIndicator(
                       color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
+                      strokeWidth: 2,
+                      padding: EdgeInsets.symmetric(vertical: 2),
+                    );
+                  } else {
+                    return Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(
+                            'R\$ ',
+                            style: TextStyle(
+                              fontSize: 26,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        AnimatedDigitWidget(
+                          value: controller.valueTotalBonus,
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          // prefix: 'R\$',
+                          fractionDigits: 2,
+                          enableSeparator: true,
+                          decimalSeparator: ',',
+                          separateSymbol: '.',
+                        ),
+                      ],
+                    );
+                  }
                 }),
                 Obx(() {
                   return Text(

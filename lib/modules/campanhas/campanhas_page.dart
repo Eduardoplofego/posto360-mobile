@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/core/ui/widgets/select_date_widget.dart';
@@ -27,20 +28,24 @@ class CampanhasPage extends GetView<CampanhasController> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Obx(() {
-          return controller.isLoading
-              ? const SizedBox.shrink()
-              : ListView(
-                children: [
-                  const SizedBox(height: 16),
-                  CardTotalBonusWidget(),
-                  const SizedBox(height: 16),
-                  SelectDateWidget(
-                    withBackground: true,
-                    extendBody: true,
-                    period: controller.periodSelectedString,
-                  ),
-                  const SizedBox(height: 16),
-                  Column(
+          return ListView(
+            children: [
+              const SizedBox(height: 16),
+              CardTotalBonusWidget(),
+              const SizedBox(height: 16),
+              SelectDateWidget(
+                withBackground: true,
+                extendBody: true,
+                period: controller.periodSelectedString,
+              ),
+              const SizedBox(height: 16),
+              controller.isLoading
+                  ? Center(
+                    child: CircularProgressIndicator(
+                      color: PostoAppUiConfigurations.blueMediumColor,
+                    ),
+                  )
+                  : Column(
                     spacing: 16,
                     children:
                         controller.campanhas.isNotEmpty
@@ -57,9 +62,9 @@ class CampanhasPage extends GetView<CampanhasController> {
                               ),
                             ],
                   ),
-                  const SizedBox(height: 32),
-                ],
-              );
+              const SizedBox(height: 32),
+            ],
+          );
         }),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -28,11 +29,14 @@ class CardDetailedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentTaked = totalNumber / totalNumberDetailed;
+    final percentTaked =
+        (totalNumber / totalNumberDetailed) <= 1.0
+            ? (totalNumber / totalNumberDetailed)
+            : 1.0;
     return Container(
       width: Get.width,
       padding: EdgeInsets.only(
-        top: 20,
+        top: 10,
         right: onPressed != null ? 0 : 16,
         left: 16,
         bottom: onPressed != null ? 0 : 20,
@@ -63,10 +67,21 @@ class CardDetailedWidget extends StatelessWidget {
                             color: PostoAppUiConfigurations.blueMediumColor,
                           ),
                         ),
-                        Text(
-                          !hideNumberDetailed ? totalNumber.toString() : '',
-                          style: TextStyle(fontSize: 38),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: AnimatedDigitWidget(
+                            value:
+                                !hideNumberDetailed
+                                    ? totalNumber.toDouble()
+                                    : 0,
+                            textStyle: TextStyle(fontSize: 48),
+                          ),
                         ),
+                        // Countup(
+                        //   begin: 0,
+                        //   end: !hideNumberDetailed ? totalNumber.toDouble() : 0,
+                        //   style: TextStyle(fontSize: 38),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 7),
@@ -134,14 +149,27 @@ class CardDetailedWidget extends StatelessWidget {
                       lineWidth: 10,
                       percent: percentTaked,
                       animation: true,
-                      center: Text(
-                        totalNumberDetailed > 0
-                            ? '${(percentTaked * 100).toStringAsFixed(0)}%'
-                            : '0%',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: PostoAppUiConfigurations.blueMediumColor,
-                        ),
+                      center: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedDigitWidget(
+                            value: (percentTaked * 100),
+                            textStyle: TextStyle(
+                              fontSize: 20,
+                              color: PostoAppUiConfigurations.blueMediumColor,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Text(
+                              '%',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: PostoAppUiConfigurations.blueMediumColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       progressColor: PostoAppUiConfigurations.orangeColor,
                       backgroundColor: PostoAppUiConfigurations.blueMediumColor,

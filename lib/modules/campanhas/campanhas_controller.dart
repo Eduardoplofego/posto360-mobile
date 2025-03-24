@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/utils/data_formatters.dart';
@@ -9,8 +8,7 @@ import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
 import 'package:posto360/services/campanhas/campanhas_service.dart';
 import 'package:posto360/services/performance/performance_service.dart';
 
-class CampanhasController extends GetxController
-    with MessageMixin, LoaderMixin {
+class CampanhasController extends GetxController with MessageMixin {
   final CampanhasService _campanhasService;
   final PerformanceService _performanceService;
   final AuthService _authService;
@@ -46,7 +44,6 @@ class CampanhasController extends GetxController
   @override
   void onInit() {
     messageListener(_message);
-    loaderListener(_loader);
     super.onInit();
   }
 
@@ -73,8 +70,9 @@ class CampanhasController extends GetxController
           type: MessageType.error,
         ),
       );
+    } else {
+      _campanhasList.assignAll(campanhas.data!);
     }
-    _campanhasList.assignAll(campanhas.data!);
   }
 
   Future<void> _loadPerformances() async {
@@ -92,32 +90,40 @@ class CampanhasController extends GetxController
           type: MessageType.error,
         ),
       );
-    }
-    for (var performance in performances.data!) {
-      _performancesList.add(performance);
-      final mapEntrie = performance.toMap();
-      _performancesListMap.addEntries(mapEntrie.entries);
-
-      final campanhaPerformance =
-          _campanhasList
-              .where(
-                (campanha) => campanha.campanhaId == performance.campanhaId,
-              )
-              .first;
-      final targetToWin =
-          campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade
-              ? campanhaPerformance.volumeBonificacao.toDouble()
-              : campanhaPerformance.valorBonificacao *
-                  campanhaPerformance.valorBonificacao;
-      final currentTaken =
-          campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade
-              ? performance.unidadesVendidas.toDouble()
-              : (performance.unidadesVendidas *
-                  campanhaPerformance.valorBonificacao);
-
-      if (targetToWin <= currentTaken) {
-        _loadTotalBonus(currentTaken);
+    } else {
+      for (var performance in performances.data!) {
+        _performancesList.add(performance);
+        _addEntrieCampanhasListMap(performance);
       }
+    }
+  }
+
+  void _addEntrieCampanhasListMap(PerformanceModel performance) {
+    final mapEntrie = performance.toMap();
+    _performancesListMap.addEntries(mapEntrie.entries);
+    _checkIfToAddValueInTotalBonus(performance);
+  }
+
+  void _checkIfToAddValueInTotalBonus(PerformanceModel performance) {
+    final campanhaPerformance =
+        _campanhasList
+            .where((campanha) => campanha.campanhaId == performance.campanhaId)
+            .first;
+    final targetToWin =
+        campanhaPerformance.tipoBonificacao ==
+                TypeBonificacao.unidade.description()
+            ? campanhaPerformance.volumeBonificacao.toDouble()
+            : campanhaPerformance.valorBonificacao *
+                campanhaPerformance.valorBonificacao;
+    final currentTaken =
+        campanhaPerformance.tipoBonificacao ==
+                TypeBonificacao.unidade.description()
+            ? performance.unidadesVendidas.toDouble()
+            : (performance.unidadesVendidas *
+                campanhaPerformance.valorBonificacao);
+
+    if (targetToWin <= currentTaken) {
+      _loadTotalBonus(currentTaken);
     }
   }
 
@@ -126,7 +132,9 @@ class CampanhasController extends GetxController
     return _campanhasList.map((campanha) {
       return CampanhaCardWidget(
         campanha: campanha,
-        performace: performancesListMap[campanha.campanhaId],
+        performace:
+            performancesListMap[campanha.campanhaId] ??
+            PerformanceModel.empty(),
       );
     }).toList();
   }

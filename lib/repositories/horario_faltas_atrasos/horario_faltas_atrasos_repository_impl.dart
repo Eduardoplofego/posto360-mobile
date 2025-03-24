@@ -26,6 +26,8 @@ class HorarioFaltasAtrasosRepositoryImpl
       });
       return ResultActionDTO.success(
         data: HorarioFaltasModel.fromMap(result.body),
+        message:
+            result.body.containsKey('message') ? result.body['message'] : null,
       );
     } catch (e, s) {
       log('Erro get horas_faltas_atraso', error: e, stackTrace: s);

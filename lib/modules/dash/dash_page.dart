@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
+import 'package:posto360/core/ui/widgets/icon_buttons/notification_icon_button_widget.dart';
 import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_detailed_widget.dart';
 import 'package:posto360/modules/dash/widgets/dashboard_section_header_widget.dart';
@@ -17,10 +18,17 @@ class DashPage extends GetView<DashController> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70),
-        child: CustomAppBar(
-          leading: MenuIconButtonWidget(onPressed: () {}),
-          actions: [],
-        ),
+        child: Obx(() {
+          return CustomAppBar(
+            leading: MenuIconButtonWidget(onPressed: () {}),
+            actions: [
+              NotificationIconButtonWidget(
+                onPressed: () {},
+                hasNotification: controller.hasNotification,
+              ),
+            ],
+          );
+        }),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -36,6 +44,7 @@ class DashPage extends GetView<DashController> {
               WorkingDayWidget(),
               const SizedBox(height: 28),
               DashboardSectionHeaderWidget(),
+              const SizedBox(height: 16),
               const SizedBox(height: 16),
               Obx(() {
                 return CardDetailedWidget(
