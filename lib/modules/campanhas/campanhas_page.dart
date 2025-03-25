@@ -34,6 +34,7 @@ class CampanhasPage extends GetView<CampanhasController> {
               CardTotalBonusWidget(),
               const SizedBox(height: 16),
               SelectDateWidget(
+                onChangePeriod: controller.changePeriod,
                 withBackground: true,
                 extendBody: true,
                 period: controller.periodSelectedString,

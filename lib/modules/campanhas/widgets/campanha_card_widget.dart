@@ -37,9 +37,7 @@ class CampanhaCardWidget extends StatelessWidget {
           const SizedBox(height: 6),
           Divider(color: Color(0xFFECECEC)),
           const SizedBox(height: 11),
-          Text(
-            'Descritivo curto sobre a campanha. Exemplo campanha de incentivo aos colaboradores.',
-          ),
+          Text('Campanha de incentivo aos colaboradores.'),
           const SizedBox(height: 16),
           ItemCampanhaDetail(
             titleItem: 'Tipo de Bonificação',

@@ -24,13 +24,13 @@ class PerformanceRepositoryImpl extends PerformanceRepository {
         "campanhas": campanhasId,
       });
 
-      final performancesMap = response.body['performances'];
-      if (performancesMap == null) {
+      if (response.body == null || response.body['performances'] == null) {
         return ResultActionDTO.failure(
-          'Não possuem campanhas para o calculo de performance',
+          'Não possuem campanhas para o cálculo da performance',
           [],
         );
       }
+      final performancesMap = response.body['performances'];
       final performancesList =
           performancesMap
               .map<PerformanceModel>(

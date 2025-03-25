@@ -23,6 +23,7 @@ class DashPage extends GetView<DashController> {
         preferredSize: Size.fromHeight(70),
         child: Obx(() {
           return CustomAppBar(
+            title: 'Dashboard',
             leading: MenuIconButtonWidget(
               onPressed: () {
                 controller.scaffoldKey.currentState?.openDrawer();
@@ -87,6 +88,7 @@ class DashPage extends GetView<DashController> {
                   totalNumberDetailedText: 'Meta',
                   totalTakeNumberDetailedText: 'Realizado',
                   hideNumberDetailed: true,
+                  hideTrendingDetail: true,
                   onPressed: () {
                     Get.toNamed('/campanhas');
                   },

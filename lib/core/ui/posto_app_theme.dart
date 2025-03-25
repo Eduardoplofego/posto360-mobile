@@ -6,6 +6,7 @@ class PostoAppTheme {
   static final ThemeData theme = ThemeData(
     scaffoldBackgroundColor: Color(0xFFFFFFFF),
     primaryColor: const Color(0xFF2051E5),
+    hintColor: Colors.white,
     fontFamily: 'poppins',
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -13,12 +14,5 @@ class PostoAppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
-    // bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    //   selectedItemColor: Colors.black,
-    //   selectedIconTheme: const IconThemeData(color: Colors.black),
-    //   selectedLabelStyle: textBold,
-    //   unselectedItemColor: Colors.grey[400],
-    //   unselectedIconTheme: IconThemeData(color: Colors.grey[400]),
-    // ),
   );
 }

@@ -16,6 +16,7 @@ class DashController extends GetxController with MessageMixin, LoaderMixin {
   final _loader = false.obs;
   final _message = Rxn<MessagesModel>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _selectPeriodScrollController = ScrollController();
 
   DashController() {
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
@@ -52,6 +53,8 @@ class DashController extends GetxController with MessageMixin, LoaderMixin {
   bool get hasData => _hasData.value;
   bool get isLoading => _loader.value;
   int get daysRegistered => _daysRegistered.value;
+  ScrollController get selectPeriodScrollController =>
+      _selectPeriodScrollController;
 
   Future<void> onRefresh() async {
     await _initVariables();

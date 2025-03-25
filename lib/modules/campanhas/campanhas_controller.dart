@@ -27,7 +27,11 @@ class CampanhasController extends GetxController with MessageMixin {
   final _loader = false.obs;
   final _campanhasList = <CampanhaModel>[].obs;
   final _valueTotalBonus = 0.0.obs;
-  final _periodSelected = <DateTime>[DateTime.now(), DateTime(2025, 3, 1)].obs;
+  final _periodSelected =
+      <DateTime>[
+        DateTime(DateTime.now().year, DateTime.now().month, 1),
+        DateTime.now(),
+      ].obs;
   final _periodSelectedString = ''.obs;
   final _performancesList = <PerformanceModel>[].obs;
   final _performancesListMap = <int, dynamic>{}.obs;
@@ -77,8 +81,13 @@ class CampanhasController extends GetxController with MessageMixin {
   }
 
   Future<void> _loadPerformances() async {
-    final campanhasIds =
-        _campanhasList.map<int>((campanha) => campanha.campanhaId).toList();
+    var campanhasIds = <int>[];
+
+    if (_campanhasList.isNotEmpty) {
+      campanhasIds =
+          _campanhasList.map<int>((campanha) => campanha.campanhaId).toList();
+    }
+
     final performances = await _performanceService.getPerformances(
       codigoFuncionario: _authService.authenticatedUser!.codigoPDV.toString(),
       campanhasId: campanhasIds,
@@ -110,7 +119,7 @@ class CampanhasController extends GetxController with MessageMixin {
         _campanhasList
             .where((campanha) => campanha.campanhaId == performance.campanhaId)
             .first;
-    // todo: reformular valor bonificacao
+
     final targetToWin =
         campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade
             ? campanhaPerformance.volumeBonificacao.toDouble()
@@ -149,5 +158,32 @@ class CampanhasController extends GetxController with MessageMixin {
 
   void _loadTotalBonus(double value) {
     _valueTotalBonus.value += value;
+  }
+
+  Future<void> changePeriod(DateTime monthSelected) async {
+    final firstDatePeriod = DateTime(
+      monthSelected.year,
+      monthSelected.month,
+      1,
+    );
+    DateTime lastDatePeriod;
+    if (monthSelected.month == DateTime.now().month &&
+        monthSelected.year == DateTime.now().year) {
+      lastDatePeriod = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      );
+    } else {
+      lastDatePeriod = DateTime(
+        monthSelected.year,
+        monthSelected.month + 1,
+        1,
+      ).subtract(Duration(days: 1));
+    }
+    _periodSelected.value = [firstDatePeriod, lastDatePeriod];
+    _periodSelectedString.value = DataFormatters.formatarPeriodo(
+      _periodSelected,
+    );
   }
 }
