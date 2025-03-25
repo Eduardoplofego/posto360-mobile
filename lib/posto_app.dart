@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:posto360/core/bindings/application_bindings.dart';
 import 'package:posto360/core/ui/posto_app_theme.dart';
 import 'package:posto360/routers/campanhas_routers.dart';
@@ -17,6 +19,13 @@ class PostoApp extends StatelessWidget {
       title: 'Posto 360',
       debugShowCheckedModeBanner: false,
       theme: PostoAppTheme.theme,
+      supportedLocales: const [Locale('pt', 'BR')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        MonthYearPickerLocalizations.delegate,
+      ],
       initialBinding: ApplicationBindings(),
       getPages: [
         ...SplashRouters.routes,

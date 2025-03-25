@@ -14,6 +14,7 @@ class CardDetailedWidget extends StatelessWidget {
   final String totalTakeNumberDetailedText;
   final VoidCallback? onPressed;
   final bool hideNumberDetailed;
+  final bool hideTrendingDetail;
 
   const CardDetailedWidget({
     super.key,
@@ -25,6 +26,7 @@ class CardDetailedWidget extends StatelessWidget {
     required this.totalTakeNumberDetailedText,
     this.hideNumberDetailed = false,
     this.onPressed,
+    this.hideTrendingDetail = false,
   });
 
   @override
@@ -77,11 +79,6 @@ class CardDetailedWidget extends StatelessWidget {
                             textStyle: TextStyle(fontSize: 48),
                           ),
                         ),
-                        // Countup(
-                        //   begin: 0,
-                        //   end: !hideNumberDetailed ? totalNumber.toDouble() : 0,
-                        //   style: TextStyle(fontSize: 38),
-                        // ),
                       ],
                     ),
                     const SizedBox(height: 7),
@@ -92,27 +89,29 @@ class CardDetailedWidget extends StatelessWidget {
                           width: 140,
                           child: Text(title, style: TextStyle(fontSize: 14)),
                         ),
-                        Container(
-                          padding: EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color:
-                                percentTaked < .3
-                                    ? Color(0xFF97CE71)
-                                    : Color.fromARGB(255, 195, 153, 153),
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.transparent),
-                          ),
-                          child: Icon(
-                            percentTaked < .3
-                                ? Icons.trending_up_outlined
-                                : Icons.trending_down_outlined,
-                            size: 12,
-                            color:
-                                percentTaked < .3
-                                    ? Color(0xFF43900C)
-                                    : Color(0xFF900C0C),
-                          ),
-                        ),
+                        !hideTrendingDetail
+                            ? Container(
+                              padding: EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                color:
+                                    percentTaked > 0
+                                        ? Color.fromARGB(255, 195, 153, 153)
+                                        : Color(0xFF97CE71),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.transparent),
+                              ),
+                              child: Icon(
+                                percentTaked > 0
+                                    ? Icons.trending_down_outlined
+                                    : Icons.trending_up_outlined,
+                                size: 12,
+                                color:
+                                    percentTaked > 0
+                                        ? Color(0xFF900C0C)
+                                        : Color(0xFF43900C),
+                              ),
+                            )
+                            : const SizedBox.shrink(),
                       ],
                     ),
                     const SizedBox(height: 17),

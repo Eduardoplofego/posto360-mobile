@@ -13,10 +13,15 @@ class HorarioFaltasAtrasosServiceImpl extends HorarioFaltasAtrasosService {
 
   @override
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
-    required String data,
+    required DateTime data,
     required String codigoFuncionario,
-  }) async => await _horarioFaltasAtrasosRepository.getHorario(
-    data: data,
-    codigoFuncionario: codigoFuncionario,
-  );
+  }) async {
+    final monthString = data.month < 10 ? '0${data.month}' : '${data.month}';
+    final dayString = data.day < 10 ? '0${data.day}' : '${data.day}';
+    final result = await _horarioFaltasAtrasosRepository.getHorario(
+      data: '${data.year}-$monthString-$dayString',
+      codigoFuncionario: codigoFuncionario,
+    );
+    return result;
+  }
 }

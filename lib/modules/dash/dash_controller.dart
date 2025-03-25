@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
@@ -14,6 +15,8 @@ class DashController extends GetxController with MessageMixin, LoaderMixin {
 
   final _loader = false.obs;
   final _message = Rxn<MessagesModel>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _selectPeriodScrollController = ScrollController();
 
   DashController() {
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
@@ -50,6 +53,8 @@ class DashController extends GetxController with MessageMixin, LoaderMixin {
   bool get hasData => _hasData.value;
   bool get isLoading => _loader.value;
   int get daysRegistered => _daysRegistered.value;
+  ScrollController get selectPeriodScrollController =>
+      _selectPeriodScrollController;
 
   Future<void> onRefresh() async {
     await _initVariables();
@@ -68,7 +73,7 @@ class DashController extends GetxController with MessageMixin, LoaderMixin {
   Future<void> _loadHorarioFaltaAtraso() async {
     final today = DateTime.now();
     final result = await _horarioFaltasAtrasosService.getHorario(
-      data: '${today.year}-${today.month}-${today.day}',
+      data: today,
       codigoFuncionario: autheticatedUser.codigoPDV.toString(),
     );
 

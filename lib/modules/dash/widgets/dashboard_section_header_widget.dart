@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/ui/widgets/select_date_widget.dart';
 import 'package:posto360/modules/dash/dash_controller.dart';
 
 class DashboardSectionHeaderWidget extends GetView<DashController> {
@@ -20,7 +19,7 @@ class DashboardSectionHeaderWidget extends GetView<DashController> {
             color: PostoAppUiConfigurations.textDarkColor,
           ),
         ),
-        SelectDateWidget(period: '1/3/2025 - 24/3/2025'),
+        // SelectDateWidget(period: '1/3/2025 - 24/3/2025'),
       ],
     );
   }

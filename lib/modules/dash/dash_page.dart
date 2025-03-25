@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
+import 'package:posto360/core/ui/widgets/drawer/posto_app_drawer.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/notification_icon_button_widget.dart';
 import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
@@ -16,11 +18,17 @@ class DashPage extends GetView<DashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: controller.scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70),
         child: Obx(() {
           return CustomAppBar(
-            leading: MenuIconButtonWidget(onPressed: () {}),
+            title: 'Dashboard',
+            leading: MenuIconButtonWidget(
+              onPressed: () {
+                controller.scaffoldKey.currentState?.openDrawer();
+              },
+            ),
             actions: [
               NotificationIconButtonWidget(
                 onPressed: () {},
@@ -29,6 +37,9 @@ class DashPage extends GetView<DashController> {
             ],
           );
         }),
+      ),
+      drawer: PostoAppDrawer(
+        autheticatedUser: Get.find<AuthService>().getUser()!,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -77,6 +88,7 @@ class DashPage extends GetView<DashController> {
                   totalNumberDetailedText: 'Meta',
                   totalTakeNumberDetailedText: 'Realizado',
                   hideNumberDetailed: true,
+                  hideTrendingDetail: true,
                   onPressed: () {
                     Get.toNamed('/campanhas');
                   },

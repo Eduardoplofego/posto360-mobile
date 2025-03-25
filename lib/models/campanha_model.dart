@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:posto360/core/utils/enums/type_bonificacao.dart';
 import 'package:posto360/models/produto_model.dart';
 
 class CampanhaModel {
   final int campanhaId;
   final String nomeCampanha;
   final List<ProdutoModel> produtos;
-  final String tipoBonificacao;
+  final TypeBonificacao tipoBonificacao;
   final int volumeBonificacao;
   final int valorBonificacao;
   final DateTime dataDisponibilidade;
@@ -40,7 +41,10 @@ class CampanhaModel {
           map['produtos']
               .map<ProdutoModel>((p) => ProdutoModel.fromMap(p))
               .toList(),
-      tipoBonificacao: map['tipoBonificacao'] ?? '',
+      tipoBonificacao:
+          map['tipoBonificacao'] == 'UNIDADE'
+              ? TypeBonificacao.unidade
+              : TypeBonificacao.valor,
       volumeBonificacao: map['volumeBonificacao']?.toInt() ?? 0,
       valorBonificacao: map['valorBonificacao']?.toInt() ?? 0,
       dataDisponibilidade: DateTime.parse(map['dataDisponibilidade']),

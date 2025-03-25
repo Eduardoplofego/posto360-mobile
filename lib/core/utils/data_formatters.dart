@@ -10,7 +10,7 @@ class DataFormatters {
     DateTime menor = datas.first;
     DateTime maior = datas.last;
 
-    DateFormat formato = DateFormat('d/M/yyyy');
+    DateFormat formato = DateFormat('dd/MM/yyyy');
     return "${formato.format(menor)} - ${formato.format(maior)}";
   }
 }
