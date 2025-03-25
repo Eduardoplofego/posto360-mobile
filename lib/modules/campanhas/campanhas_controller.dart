@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/utils/data_formatters.dart';
+import 'package:posto360/core/utils/enums/type_bonificacao.dart';
 import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/models/performance_model.dart';
 import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
@@ -109,21 +110,22 @@ class CampanhasController extends GetxController with MessageMixin {
         _campanhasList
             .where((campanha) => campanha.campanhaId == performance.campanhaId)
             .first;
+    // todo: reformular valor bonificacao
     final targetToWin =
-        campanhaPerformance.tipoBonificacao ==
-                TypeBonificacao.unidade.description()
+        campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade
             ? campanhaPerformance.volumeBonificacao.toDouble()
             : campanhaPerformance.valorBonificacao *
                 campanhaPerformance.valorBonificacao;
     final currentTaken =
-        campanhaPerformance.tipoBonificacao ==
-                TypeBonificacao.unidade.description()
+        campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade
             ? performance.unidadesVendidas.toDouble()
             : (performance.unidadesVendidas *
                 campanhaPerformance.valorBonificacao);
 
     if (targetToWin <= currentTaken) {
-      _loadTotalBonus(currentTaken);
+      final totalToAdd =
+          (currentTaken ~/ targetToWin) * campanhaPerformance.valorBonificacao;
+      _loadTotalBonus(totalToAdd.toDouble());
     }
   }
 

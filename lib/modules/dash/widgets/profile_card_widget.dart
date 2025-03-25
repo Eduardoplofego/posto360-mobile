@@ -31,11 +31,14 @@ class ProfileCardWidget extends GetView<DashController> {
                                 controller.autheticatedUser.photoUrl!,
                               )
                               : null,
-                      child: Icon(
-                        Icons.person,
-                        size: 40,
-                        color: Colors.grey.shade400,
-                      ),
+                      child:
+                          !controller.hasPhotoUrl
+                              ? Icon(
+                                Icons.person,
+                                size: 40,
+                                color: Colors.grey.shade400,
+                              )
+                              : const SizedBox.shrink(),
                     ),
                   ),
                 ],

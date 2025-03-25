@@ -3,21 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/core/utils/enums/type_bonificacao.dart';
 import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/models/performance_model.dart';
-
-enum TypeBonificacao { valor, unidade }
-
-extension TypeBonificacaoDescription on TypeBonificacao {
-  String description() {
-    switch (this) {
-      case TypeBonificacao.valor:
-        return 'Valor';
-      case TypeBonificacao.unidade:
-        return 'Unidade';
-    }
-  }
-}
 
 class CampanhaCardWidget extends StatelessWidget {
   final CampanhaModel campanha;
@@ -30,10 +18,9 @@ class CampanhaCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final type =
-        campanha.tipoBonificacao == 'UNIDADE'
-            ? TypeBonificacao.unidade
-            : TypeBonificacao.valor;
+    final percent = (performace.unidadesVendidas / campanha.volumeBonificacao);
+    final totalHundredCompleted = percent ~/ 1;
+    final percentRemaining = percent - totalHundredCompleted;
     return Container(
       width: Get.width,
       padding: EdgeInsets.symmetric(horizontal: 23, vertical: 26),
@@ -56,44 +43,54 @@ class CampanhaCardWidget extends StatelessWidget {
           const SizedBox(height: 16),
           ItemCampanhaDetail(
             titleItem: 'Tipo de Bonificação',
-            value: type.description(),
+            typeBonificacao: campanha.tipoBonificacao,
+            value: Text(campanha.tipoBonificacao.description()),
           ),
           const SizedBox(height: 6),
           ItemCampanhaDetail(
             titleItem: 'Meta Bonificação',
-            value:
-                type == TypeBonificacao.unidade
-                    ? '${campanha.volumeBonificacao.toStringAsFixed(0)} unid.'
-                    : UtilBrasilFields.obterReal(
-                      (campanha.volumeBonificacao * campanha.valorBonificacao)
-                          .toDouble(),
-                    ),
+            typeBonificacao: campanha.tipoBonificacao,
+            value: Text(
+              campanha.tipoBonificacao == TypeBonificacao.unidade
+                  ? '${campanha.volumeBonificacao.toStringAsFixed(0)} unid.'
+                  : UtilBrasilFields.obterReal(
+                    (campanha.volumeBonificacao * campanha.valorBonificacao)
+                        .toDouble(),
+                  ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Valor bonificação',
+            typeBonificacao: campanha.tipoBonificacao,
+            value: Text(
+              UtilBrasilFields.obterReal(campanha.valorBonificacao.toDouble()),
+            ),
           ),
           const SizedBox(height: 6),
           ItemCampanhaDetail(
             titleItem:
-                '${type == TypeBonificacao.valor ? 'Valor' : 'Qtd.'} Realizad${type == TypeBonificacao.valor ? 'o' : 'a'}',
-            value:
-                type == TypeBonificacao.unidade
-                    ? '${performace.unidadesVendidas.toStringAsFixed(0)} unid.'
-                    : UtilBrasilFields.obterReal(performace.unidadesVendidas),
+                '${campanha.tipoBonificacao == TypeBonificacao.valor ? 'Valor' : 'Qtd.'} Realizad${campanha.tipoBonificacao == TypeBonificacao.valor ? 'o' : 'a'}',
+            typeBonificacao: campanha.tipoBonificacao,
+            value: Text(
+              campanha.tipoBonificacao == TypeBonificacao.unidade
+                  ? '${performace.unidadesVendidas.toStringAsFixed(0)} unid.'
+                  : UtilBrasilFields.obterReal(performace.unidadesVendidas),
+            ),
           ),
           const SizedBox(height: 6),
+
           Divider(color: Color(0xFFECECEC)),
           const SizedBox(height: 11),
-          ItemCampanhaDetail(
+          ItemCamapanhaPercentCompletedWidget(
             titleItem: 'Realizado',
-            value:
-                '${((performace.unidadesVendidas / campanha.volumeBonificacao) * 100).toStringAsFixed(0)}%',
+            totalPercentCompleted: totalHundredCompleted,
+            value: '${(percentRemaining * 100).toStringAsFixed(0)}%',
             dotColor: PostoAppUiConfigurations.blueMediumColor,
           ),
           const SizedBox(height: 11),
           LinearPercentIndicator(
-            percent:
-                (performace.unidadesVendidas / campanha.volumeBonificacao) > 1.0
-                    ? 1.0
-                    : (performace.unidadesVendidas /
-                        campanha.volumeBonificacao),
+            percent: percentRemaining,
             lineHeight: 12,
             progressColor: PostoAppUiConfigurations.blueMediumColor,
             backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
@@ -101,21 +98,75 @@ class CampanhaCardWidget extends StatelessWidget {
             padding: EdgeInsets.zero,
             animation: true,
           ),
+          const SizedBox(height: 11),
+          ItemCampanhaDetail(
+            titleItem: 'Valor realizado',
+            dotColor: PostoAppUiConfigurations.blueMediumColor,
+            typeBonificacao: campanha.tipoBonificacao,
+            value: Text(
+              UtilBrasilFields.obterReal(
+                totalHundredCompleted * campanha.valorBonificacao.toDouble(),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class ItemCampanhaDetail extends StatelessWidget {
+class ItemCamapanhaPercentCompletedWidget extends StatelessWidget {
   final String titleItem;
   final String value;
+  final Color? dotColor;
+  final int totalPercentCompleted;
+  const ItemCamapanhaPercentCompletedWidget({
+    super.key,
+    required this.titleItem,
+    required this.value,
+    this.dotColor,
+    this.totalPercentCompleted = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(backgroundColor: dotColor ?? Color(0xFF7BA9F2), radius: 6),
+        const SizedBox(width: 10),
+        Text(titleItem),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: List.generate(
+              totalPercentCompleted,
+              (index) => Icon(
+                Icons.workspace_premium_outlined,
+                size: 18,
+                color: Colors.yellow.shade900,
+              ),
+            ),
+          ),
+        ),
+        Text(value, style: TextStyle(fontWeight: FontWeight.w500)),
+      ],
+    );
+  }
+}
+
+class ItemCampanhaDetail extends StatelessWidget {
+  final String titleItem;
+  final Widget value;
+  final TypeBonificacao typeBonificacao;
   final Color? dotColor;
   const ItemCampanhaDetail({
     super.key,
     required this.titleItem,
     required this.value,
     this.dotColor,
+    required this.typeBonificacao,
   });
 
   @override
@@ -126,7 +177,7 @@ class ItemCampanhaDetail extends StatelessWidget {
         const SizedBox(width: 10),
         Text(titleItem),
         Spacer(),
-        Text(value, style: TextStyle(fontWeight: FontWeight.w500)),
+        value,
       ],
     );
   }

@@ -32,7 +32,7 @@ class CardTotalBonusWidget extends GetView<CampanhasController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Valor da bonificação\napós meta batida',
+                  'Valor da bonificação\napós metas batidas',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
                 Obx(() {
@@ -63,7 +63,6 @@ class CardTotalBonusWidget extends GetView<CampanhasController> {
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
                           ),
-                          // prefix: 'R\$',
                           fractionDigits: 2,
                           enableSeparator: true,
                           decimalSeparator: ',',
