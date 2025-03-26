@@ -33,6 +33,18 @@ class CampanhaModel {
     };
   }
 
+  factory CampanhaModel.empty() {
+    return CampanhaModel(
+      campanhaId: 0,
+      nomeCampanha: '',
+      produtos: [],
+      tipoBonificacao: TypeBonificacao.unidade,
+      volumeBonificacao: 0,
+      valorBonificacao: 0,
+      dataDisponibilidade: DateTime(2025),
+    );
+  }
+
   factory CampanhaModel.fromMap(Map<String, dynamic> map) {
     return CampanhaModel(
       campanhaId: map['campanhaId']?.toInt() ?? 0,

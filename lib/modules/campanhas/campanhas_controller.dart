@@ -55,11 +55,24 @@ class CampanhasController extends GetxController with MessageMixin {
   @override
   Future<void> onReady() async {
     super.onReady();
+    _loadVariables();
+  }
+
+  Future<void> _loadVariables() async {
+    _initVariables();
     _loader(true);
     await _loadCampanhas();
     await _loadPerformances();
     transformPeriodToString();
     _loader(false);
+  }
+
+  Future<void> onRefresh() async {
+    _loadVariables();
+  }
+
+  Future<void> _initVariables() async {
+    _valueTotalBonus.value = 0.00;
   }
 
   Future<void> _loadCampanhas() async {
@@ -101,9 +114,10 @@ class CampanhasController extends GetxController with MessageMixin {
         ),
       );
     } else {
+      _performancesList.assignAll(performances.data!);
       for (var performance in performances.data!) {
-        _performancesList.add(performance);
         _addEntrieCampanhasListMap(performance);
+        _checkIfToAddValueInTotalBonus(performance);
       }
     }
   }
@@ -111,22 +125,26 @@ class CampanhasController extends GetxController with MessageMixin {
   void _addEntrieCampanhasListMap(PerformanceModel performance) {
     final mapEntrie = performance.toMap();
     _performancesListMap.addEntries(mapEntrie.entries);
-    _checkIfToAddValueInTotalBonus(performance);
   }
 
   void _checkIfToAddValueInTotalBonus(PerformanceModel performance) {
-    final campanhaPerformance =
-        _campanhasList
-            .where((campanha) => campanha.campanhaId == performance.campanhaId)
-            .first;
+    final campanhaPerformance = _campanhasList.firstWhere(
+      (campanha) => campanha.campanhaId == performance.campanhaId,
+      orElse: () => CampanhaModel.empty(),
+    );
+
+    if (campanhaPerformance.campanhaId == 0) return;
+
+    bool isBonificacaoUnidade =
+        campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade;
 
     final targetToWin =
-        campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade
+        isBonificacaoUnidade
             ? campanhaPerformance.volumeBonificacao.toDouble()
             : campanhaPerformance.valorBonificacao *
                 campanhaPerformance.valorBonificacao;
     final currentTaken =
-        campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade
+        isBonificacaoUnidade
             ? performance.unidadesVendidas.toDouble()
             : (performance.unidadesVendidas *
                 campanhaPerformance.valorBonificacao);
@@ -161,27 +179,20 @@ class CampanhasController extends GetxController with MessageMixin {
   }
 
   Future<void> changePeriod(DateTime monthSelected) async {
+    final now = DateTime.now();
+
     final firstDatePeriod = DateTime(
       monthSelected.year,
       monthSelected.month,
       1,
     );
-    DateTime lastDatePeriod;
-    if (monthSelected.month == DateTime.now().month &&
-        monthSelected.year == DateTime.now().year) {
-      lastDatePeriod = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-      );
-    } else {
-      lastDatePeriod = DateTime(
-        monthSelected.year,
-        monthSelected.month + 1,
-        1,
-      ).subtract(Duration(days: 1));
-    }
+    final lastDatePeriod =
+        (monthSelected.year == now.year && monthSelected.month == now.month)
+            ? now
+            : DateTime(monthSelected.year, monthSelected.month + 1, 0);
+
     _periodSelected.value = [firstDatePeriod, lastDatePeriod];
+
     _periodSelectedString.value = DataFormatters.formatarPeriodo(
       _periodSelected,
     );

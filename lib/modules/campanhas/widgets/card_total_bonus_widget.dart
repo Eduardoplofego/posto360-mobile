@@ -36,41 +36,33 @@ class CardTotalBonusWidget extends GetView<CampanhasController> {
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
                 Obx(() {
-                  if (controller.isLoading) {
-                    return CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                      padding: EdgeInsets.symmetric(vertical: 2),
-                    );
-                  } else {
-                    return Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Text(
-                            'R\$ ',
-                            style: TextStyle(
-                              fontSize: 26,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        AnimatedDigitWidget(
-                          value: controller.valueTotalBonus,
-                          textStyle: TextStyle(
-                            color: Colors.white,
+                  return Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text(
+                          'R\$ ',
+                          style: TextStyle(
                             fontSize: 26,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
-                          fractionDigits: 2,
-                          enableSeparator: true,
-                          decimalSeparator: ',',
-                          separateSymbol: '.',
                         ),
-                      ],
-                    );
-                  }
+                      ),
+                      AnimatedDigitWidget(
+                        value: controller.valueTotalBonus,
+                        textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        fractionDigits: 2,
+                        enableSeparator: true,
+                        decimalSeparator: ',',
+                        separateSymbol: '.',
+                      ),
+                    ],
+                  );
                 }),
                 Obx(() {
                   return Text(

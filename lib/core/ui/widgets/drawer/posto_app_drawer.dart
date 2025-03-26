@@ -10,22 +10,28 @@ class PostoAppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return ConstrainedBox(
-          constraints: constraints,
-          child: Drawer(
-            width: Get.width * .7,
-            backgroundColor: Colors.white,
-            child: SizedBox(
-              height: constraints.maxHeight,
-              child: Column(
-                children: [_profileCard(autheticatedUser), Spacer(), _logout()],
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return ConstrainedBox(
+            constraints: constraints,
+            child: Drawer(
+              width: Get.width * .7,
+              backgroundColor: Colors.white,
+              child: SizedBox(
+                height: constraints.maxHeight,
+                child: Column(
+                  children: [
+                    _profileCard(autheticatedUser),
+                    Spacer(),
+                    _logout(),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -59,7 +65,16 @@ class PostoAppDrawer extends StatelessWidget {
       width: Get.width,
       padding: EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
       decoration: BoxDecoration(
-        color: PostoAppUiConfigurations.blueMediumColor,
+        gradient: LinearGradient(
+          colors: [
+            PostoAppUiConfigurations.blueLightColor,
+            PostoAppUiConfigurations.blueMediumColor,
+          ],
+          stops: [0.0, 1.0],
+          begin: FractionalOffset.topCenter,
+          end: FractionalOffset.bottomCenter,
+          tileMode: TileMode.repeated,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
