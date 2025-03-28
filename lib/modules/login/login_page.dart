@@ -9,10 +9,8 @@ class LoginPage extends GetView<LoginController> {
   LoginPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
-  final _loginEC = TextEditingController(
-    text: 'augustopereiradesouza@gmail.com',
-  );
-  final _passwordEC = TextEditingController(text: '123456');
+  final _loginEC = TextEditingController();
+  final _passwordEC = TextEditingController();
 
   Future<void> _onLogin() async {
     final formValid = _formKey.currentState?.validate() ?? false;

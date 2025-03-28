@@ -19,7 +19,8 @@ class CampanhasPage extends GetView<CampanhasController> {
         child: CustomAppBar(
           title: 'Produtos Incentivados',
           leading: BackIconButtonWidget(
-            onPressed: () {
+            onPressed: () async {
+              await controller.saveControllerOnBackground();
               Get.back();
             },
           ),
@@ -43,17 +44,23 @@ class CampanhasPage extends GetView<CampanhasController> {
                   child: CardTotalBonusWidget(),
                 ),
                 const SizedBox(height: 8),
-                CardLoadingWidget(
-                  isLoading: controller.isLoading,
-                  height: 50,
-                  initDelay: 100,
-                  child: SelectDateWidget(
-                    onChangePeriod: controller.changePeriod,
-                    withBackground: true,
-                    extendBody: true,
-                    period: controller.periodSelectedString,
-                  ),
+                SelectDateWidget(
+                  nextMonthPressed: controller.nextMonth,
+                  period: controller.monthSelected,
+                  hasNextMonth: controller.hasNextMonth,
+                  prevMonthPressed: controller.prevMonth,
                 ),
+                // CardLoadingWidget(
+                //   isLoading: controller.isLoading,
+                //   height: 50,
+                //   initDelay: 100,
+                //   child: SelectDateWidget(
+                //     nextMonthPressed: controller.nextMonth,
+                //     period: controller.monthSelected,
+                //     hasNextMonth: controller.hasNextMonth,
+                //     prevMonthPressed: controller.prevMonth,
+                //   ),
+                // ),
                 const SizedBox(height: 8),
                 controller.isLoading
                     ? Column(

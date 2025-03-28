@@ -1,15 +1,18 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/utils/data_formatters.dart';
 import 'package:posto360/core/utils/enums/type_bonificacao.dart';
 import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/models/performance_model.dart';
+import 'package:posto360/modules/campanhas/models/campanha_controller_model.dart';
 import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
 import 'package:posto360/services/campanhas/campanhas_service.dart';
 import 'package:posto360/services/performance/performance_service.dart';
 
-class CampanhasController extends GetxController with MessageMixin {
+class CampanhasController extends FullLifeCycleController
+    with MessageMixin, FullLifeCycleMixin {
   final CampanhasService _campanhasService;
   final PerformanceService _performanceService;
   final AuthService _authService;
@@ -25,25 +28,46 @@ class CampanhasController extends GetxController with MessageMixin {
   // Observables
   final _message = Rxn<MessagesModel>();
   final _loader = false.obs;
-  final _campanhasList = <CampanhaModel>[].obs;
-  final _valueTotalBonus = 0.0.obs;
-  final _periodSelected =
-      <DateTime>[
-        DateTime(DateTime.now().year, DateTime.now().month, 1),
-        DateTime.now(),
-      ].obs;
-  final _periodSelectedString = ''.obs;
-  final _performancesList = <PerformanceModel>[].obs;
-  final _performancesListMap = <int, dynamic>{}.obs;
+  final _campanhaController = Rx<CampanhaControllerModel>(
+    CampanhaControllerModel(
+      firstDateSelected: DateTime(2025, 3, 1),
+      lastDateSelected: DateTime.now(),
+      campanhas: [
+        CampanhaModel(
+          campanhaId: 23,
+          nomeCampanha: 'Combustíveis',
+          produtos: [],
+          tipoBonificacao: TypeBonificacao.valor,
+          volumeBonificacao: 5000,
+          valorBonificacao: 25,
+          dataDisponibilidade: DateTime(2026),
+        ),
+      ],
+      performances: [
+        PerformanceModel(
+          campanhaId: 23,
+          unidadesVendidas: 20140,
+          valorBonificacao: 50,
+        ),
+      ],
+    ),
+  );
+  final _monthSelected = DateTime.now().obs;
+  final _currentMonth = DateTime.now().obs;
+  final _hasNextMonth = false.obs;
 
   // Getters
-  List<CampanhaModel> get campanhas => _campanhasList;
-  List<PerformanceModel> get performances => _performancesList;
+  CampanhaControllerModel get campanhaController => _campanhaController.value;
+  List<CampanhaModel> get campanhas => campanhaController.campanhas;
+  List<PerformanceModel> get performances => campanhaController.performances;
   bool get isLoading => _loader.value;
-  double get valueTotalBonus => _valueTotalBonus.value;
-  List<DateTime> get periodSelected => _periodSelected;
-  String get periodSelectedString => _periodSelectedString.value;
-  Map<int, dynamic> get performancesListMap => _performancesListMap;
+  double get valueTotalBonus => campanhaController.totalValueBonus;
+  DateTime get monthSelected => _monthSelected.value;
+  DateTime get currentMonth => _currentMonth.value;
+  bool get hasNextMonth => _hasNextMonth.value;
+  List<DateTime> get periodSelected => campanhaController.getPeriodSelected();
+  Map<int, dynamic> get performancesListMap =>
+      campanhaController.getPerformanceMap();
 
   // Actions
   @override
@@ -59,20 +83,38 @@ class CampanhasController extends GetxController with MessageMixin {
   }
 
   Future<void> _loadVariables() async {
-    _initVariables();
     _loader(true);
-    await _loadCampanhas();
-    await _loadPerformances();
-    transformPeriodToString();
+    final isLoadInStorage = _checkIfHadToTakeOnStorage();
+    if (isLoadInStorage) {
+      _loadController();
+    } else {
+      // await _loadCampanhas();
+      // await _loadPerformances();
+    }
+    campanhaController.calculateValueTotalBonus();
     _loader(false);
   }
 
-  Future<void> onRefresh() async {
-    _loadVariables();
+  void _loadController() {
+    final controllerMap = GetStorage().read(Constants.CAMPANHAS_CONTROLLER);
+    _campanhaController.value = CampanhaControllerModel.fromMap(controllerMap);
+    _monthSelected.value = campanhaController.firstDateSelected;
+    _hasNextMonth.value =
+        campanhaController.firstDateSelected.month != currentMonth.month &&
+        (campanhaController.firstDateSelected.year == currentMonth.year ||
+            campanhaController.firstDateSelected.year != currentMonth.year);
   }
 
-  Future<void> _initVariables() async {
-    _valueTotalBonus.value = 0.00;
+  bool _checkIfHadToTakeOnStorage() {
+    if (GetStorage().read(Constants.CAMPANHAS_CONTROLLER) != null) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> onRefresh() async {
+    await GetStorage().write(Constants.CAMPANHAS_CONTROLLER, null);
+    _loadVariables();
   }
 
   Future<void> _loadCampanhas() async {
@@ -89,16 +131,16 @@ class CampanhasController extends GetxController with MessageMixin {
         ),
       );
     } else {
-      _campanhasList.assignAll(campanhas.data!);
+      campanhaController.campanhas = campanhas.data!;
     }
   }
 
   Future<void> _loadPerformances() async {
     var campanhasIds = <int>[];
 
-    if (_campanhasList.isNotEmpty) {
+    if (campanhas.isNotEmpty) {
       campanhasIds =
-          _campanhasList.map<int>((campanha) => campanha.campanhaId).toList();
+          campanhas.map<int>((campanha) => campanha.campanhaId).toList();
     }
 
     final performances = await _performanceService.getPerformances(
@@ -114,51 +156,13 @@ class CampanhasController extends GetxController with MessageMixin {
         ),
       );
     } else {
-      _performancesList.assignAll(performances.data!);
-      for (var performance in performances.data!) {
-        _addEntrieCampanhasListMap(performance);
-        _checkIfToAddValueInTotalBonus(performance);
-      }
-    }
-  }
-
-  void _addEntrieCampanhasListMap(PerformanceModel performance) {
-    final mapEntrie = performance.toMap();
-    _performancesListMap.addEntries(mapEntrie.entries);
-  }
-
-  void _checkIfToAddValueInTotalBonus(PerformanceModel performance) {
-    final campanhaPerformance = _campanhasList.firstWhere(
-      (campanha) => campanha.campanhaId == performance.campanhaId,
-      orElse: () => CampanhaModel.empty(),
-    );
-
-    if (campanhaPerformance.campanhaId == 0) return;
-
-    bool isBonificacaoUnidade =
-        campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade;
-
-    final targetToWin =
-        isBonificacaoUnidade
-            ? campanhaPerformance.volumeBonificacao.toDouble()
-            : campanhaPerformance.valorBonificacao *
-                campanhaPerformance.valorBonificacao;
-    final currentTaken =
-        isBonificacaoUnidade
-            ? performance.unidadesVendidas.toDouble()
-            : (performance.unidadesVendidas *
-                campanhaPerformance.valorBonificacao);
-
-    if (targetToWin <= currentTaken) {
-      final totalToAdd =
-          (currentTaken ~/ targetToWin) * campanhaPerformance.valorBonificacao;
-      _loadTotalBonus(totalToAdd.toDouble());
+      campanhaController.performances = performances.data!;
     }
   }
 
   List<CampanhaCardWidget> loadCampanhaCards() {
-    if (_campanhasList.isEmpty) return [];
-    return _campanhasList.map((campanha) {
+    if (campanhas.isEmpty) return [];
+    return campanhas.map((campanha) {
       return CampanhaCardWidget(
         campanha: campanha,
         performace:
@@ -168,33 +172,67 @@ class CampanhasController extends GetxController with MessageMixin {
     }).toList();
   }
 
-  void transformPeriodToString() {
-    _periodSelectedString.value = DataFormatters.formatarPeriodo(
-      _periodSelected,
-    );
+  void _defineNewPeriodSelected(DateTime dateSelected) {
+    final today = DateTime.now();
+    if (dateSelected.year == today.year && dateSelected.month == today.month) {
+      _campanhaController.value.firstDateSelected = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        1,
+      );
+      _campanhaController.value.lastDateSelected = DateTime.now();
+    } else {
+      final firstDay = DateTime(
+        dateSelected.year,
+        dateSelected.month,
+        dateSelected.day,
+      );
+      final lastDay = DateTime(
+        dateSelected.year,
+        dateSelected.month + 1,
+        dateSelected.day,
+      ).subtract(const Duration(days: 1));
+      _campanhaController.value.firstDateSelected = firstDay;
+      _campanhaController.value.lastDateSelected = lastDay;
+    }
   }
 
-  void _loadTotalBonus(double value) {
-    _valueTotalBonus.value += value;
+  void prevMonth(DateTime monthSelected) {
+    _monthSelected.value = monthSelected;
+    _hasNextMonth.value = true;
+    _defineNewPeriodSelected(monthSelected);
   }
 
-  Future<void> changePeriod(DateTime monthSelected) async {
+  void nextMonth(DateTime monthSelected) async {
     final now = DateTime.now();
 
-    final firstDatePeriod = DateTime(
-      monthSelected.year,
-      monthSelected.month,
-      1,
-    );
-    final lastDatePeriod =
-        (monthSelected.year == now.year && monthSelected.month == now.month)
-            ? now
-            : DateTime(monthSelected.year, monthSelected.month + 1, 0);
+    _hasNextMonth.value =
+        !(monthSelected.year == now.year && monthSelected.month == now.month);
 
-    _periodSelected.value = [firstDatePeriod, lastDatePeriod];
-
-    _periodSelectedString.value = DataFormatters.formatarPeriodo(
-      _periodSelected,
-    );
+    _monthSelected.value = monthSelected;
+    _defineNewPeriodSelected(monthSelected);
   }
+
+  Future<void> saveControllerOnBackground() async {
+    final getStorage = GetStorage();
+    final mapToSave = campanhaController.toMap();
+    getStorage.write(Constants.CAMPANHAS_CONTROLLER, mapToSave);
+  }
+
+  @override
+  void onDetached() {
+    GetStorage().write(Constants.CAMPANHAS_CONTROLLER, null);
+  }
+
+  @override
+  void onHidden() {}
+
+  @override
+  void onInactive() {}
+
+  @override
+  void onPaused() {}
+
+  @override
+  void onResumed() {}
 }

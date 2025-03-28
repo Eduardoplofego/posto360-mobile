@@ -8,7 +8,8 @@ import 'package:posto360/models/horario_faltas_model.dart';
 import 'package:posto360/models/user_model.dart';
 import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service.dart';
 
-class DashController extends GetxController with MessageMixin {
+class DashController extends FullLifeCycleController
+    with MessageMixin, FullLifeCycleMixin {
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
   late NotificationService _notificationService;
 
@@ -30,6 +31,7 @@ class DashController extends GetxController with MessageMixin {
 
   @override
   void onReady() async {
+    GetStorage().write(Constants.CAMPANHAS_CONTROLLER, null);
     await _initVariables();
     super.onReady();
   }
@@ -103,4 +105,21 @@ class DashController extends GetxController with MessageMixin {
     }
     _horarioFaltasAtrasos.value = result.data!;
   }
+
+  @override
+  void onDetached() {
+    GetStorage().write(Constants.CAMPANHAS_CONTROLLER, null);
+  }
+
+  @override
+  void onHidden() {}
+
+  @override
+  void onInactive() {}
+
+  @override
+  void onPaused() {}
+
+  @override
+  void onResumed() {}
 }

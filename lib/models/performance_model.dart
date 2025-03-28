@@ -23,13 +23,27 @@ class PerformanceModel {
     return {campanhaId: this};
   }
 
+  Map<String, dynamic> toMapToSave() {
+    return {
+      'campanhaId': campanhaId,
+      'unidadesVendidas': unidadesVendidas,
+      'valorBonificacao': valorBonificacao,
+    };
+  }
+
   factory PerformanceModel.fromMap(Map<String, dynamic> map) {
     return PerformanceModel(
-      campanhaId: map['campanhaId']?.toInt() ?? 0,
-      unidadesVendidas:
-          map['performance']['unidadesVendidas']?.toDouble() ?? 0.0,
-      valorBonificacao:
-          map['performance']['valorBonificacao']?.toDouble() ?? 0.0,
+      campanhaId: map['campanhaId'] ?? 0,
+      unidadesVendidas: map['performance']['unidadesVendidas'] ?? 0.0,
+      valorBonificacao: map['performance']['valorBonificacao'] ?? 0.0,
+    );
+  }
+
+  factory PerformanceModel.fromStorageMap(Map<String, dynamic> map) {
+    return PerformanceModel(
+      campanhaId: map['campanhaId'] ?? 0,
+      unidadesVendidas: map['unidadesVendidas'] ?? 0.0,
+      valorBonificacao: map['valorBonificacao'] ?? 0.0,
     );
   }
 

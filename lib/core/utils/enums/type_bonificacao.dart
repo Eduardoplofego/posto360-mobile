@@ -4,9 +4,9 @@ extension TypeBonificacaoDescription on TypeBonificacao {
   String description() {
     switch (this) {
       case TypeBonificacao.valor:
-        return 'Valor';
+        return 'VALOR';
       case TypeBonificacao.unidade:
-        return 'Unidade';
+        return 'UNIDADE';
     }
   }
 }
