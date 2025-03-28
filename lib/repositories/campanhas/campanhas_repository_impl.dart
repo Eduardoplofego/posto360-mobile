@@ -17,10 +17,12 @@ class CampanhasRepositoryImpl extends CampanhasRepository {
   Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhas({
     required int filialId,
     required String tipoUsuario,
+    required String data,
   }) async {
     try {
       final result = await _restClient.post(ApiRoutes.campanhas(), {
         'filialId': filialId,
+        'data': data,
         'tipoUsuario': tipoUsuario,
       });
       final campanhas =

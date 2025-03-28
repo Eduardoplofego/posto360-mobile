@@ -1,4 +1,5 @@
 import 'package:posto360/core/dto/result_action_dto.dart';
+import 'package:posto360/core/utils/data_formatters.dart';
 import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/repositories/campanhas/campanhas_repository.dart';
 
@@ -14,8 +15,14 @@ class CampanhasServiceImpl extends CampanhasService {
   Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhas({
     required int filialId,
     required String tipoUsuario,
-  }) async => await _repository.getAllCampanhas(
-    filialId: filialId,
-    tipoUsuario: tipoUsuario,
-  );
+    required DateTime data,
+  }) async {
+    final dataFormatada = DataFormatters.formatarData(data);
+    final result = await _repository.getAllCampanhas(
+      filialId: filialId,
+      tipoUsuario: tipoUsuario,
+      data: dataFormatada,
+    );
+    return result;
+  }
 }

@@ -5,5 +5,6 @@ abstract class CampanhasRepository {
   Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhas({
     required int filialId,
     required String tipoUsuario,
+    required String data,
   });
 }

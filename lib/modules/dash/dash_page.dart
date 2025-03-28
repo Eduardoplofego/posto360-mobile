@@ -5,7 +5,6 @@ import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/drawer/posto_app_drawer.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
-import 'package:posto360/core/ui/widgets/icon_buttons/notification_icon_button_widget.dart';
 import 'package:posto360/core/ui/widgets/loading/card_loading_widget.dart';
 import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_detailed_widget.dart';
@@ -30,12 +29,7 @@ class DashPage extends GetView<DashController> {
                 controller.scaffoldKey.currentState?.openDrawer();
               },
             ),
-            actions: [
-              NotificationIconButtonWidget(
-                onPressed: () {},
-                hasNotification: controller.hasNotification,
-              ),
-            ],
+            actions: [],
           );
         }),
       ),

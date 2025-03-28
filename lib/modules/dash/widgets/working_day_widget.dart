@@ -89,7 +89,7 @@ class WorkingDayWidget extends GetView<DashController> {
                             ),
                             Obx(() {
                               return Text(
-                                '${formatDate(today)}, ${controller.horarioFaltasAtrasos.getStartTime() != '' ? controller.horarioFaltasAtrasos.getStartTime() : '00h00'}',
+                                '${formatDate(today)}, ${controller.horarioFaltasAtrasos.getStartTime() != '' ? controller.horarioFaltasAtrasos.getStartTime() : '${DateTime.now().year}'}',
                                 maxLines: 3,
                                 textAlign: TextAlign.start,
                                 style: TextStyle(fontSize: 16),

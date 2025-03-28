@@ -5,5 +5,6 @@ abstract class HorarioFaltasAtrasosService {
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
     required DateTime data,
     required String codigoFuncionario,
+    required DateTime dataMes,
   });
 }

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:posto360/core/dto/result_action_dto.dart';
 import 'package:posto360/core/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/core/rest_client/posto_rest_client.dart';
-import 'package:posto360/models/performance_model.dart';
 
 import './performance_repository.dart';
 
@@ -14,37 +13,33 @@ class PerformanceRepositoryImpl extends PerformanceRepository {
     : _restClient = restClient;
 
   @override
-  Future<ResultActionDTO<List<PerformanceModel>>> getPerformances({
+  Future<ResultActionDTO<Map<String, dynamic>>> getPerformances({
     required String codigoFuncionario,
     required List<int> campanhasId,
+    required String data,
   }) async {
     try {
       final response = await _restClient.post(ApiRoutes.performance(), {
         "funcionarioCodigo": codigoFuncionario,
-        "campanhas": campanhasId,
+        "idsCampanhas": campanhasId,
+        "data": data,
       });
 
       if (response.body == null) {
         return ResultActionDTO.failure(
           'Não foi possível obter sua performance nas campanhas\nRecarregue a página novamente',
-          [],
+          {},
         );
       }
-      if (response.body['performances'] == null) {
-        return ResultActionDTO.success(data: []);
+      if (response.body == null) {
+        return ResultActionDTO.success(data: {});
       }
-      final performancesMap = response.body['performances'];
-      final performancesList =
-          performancesMap
-              .map<PerformanceModel>(
-                (performance) => PerformanceModel.fromMap(performance),
-              )
-              .toList();
+      final performancesMap = response.body;
 
-      return ResultActionDTO.success(data: performancesList);
+      return ResultActionDTO.success(data: performancesMap);
     } catch (e, s) {
       log('Erro get performances', error: e, stackTrace: s);
-      return ResultActionDTO.failure('Erro ao buscar performance', []);
+      return ResultActionDTO.failure('Erro ao buscar performance', {});
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/ui/widgets/loading/text_loading_widget.dart';
+import 'package:posto360/core/ui/widgets/select_date_widget.dart';
 import 'package:posto360/modules/dash/dash_controller.dart';
 
 class DashboardSectionHeaderWidget extends GetView<DashController> {
@@ -10,7 +11,7 @@ class DashboardSectionHeaderWidget extends GetView<DashController> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Obx(() {
           return TextLoadingWidget(
@@ -25,6 +26,15 @@ class DashboardSectionHeaderWidget extends GetView<DashController> {
                 color: PostoAppUiConfigurations.textDarkColor,
               ),
             ),
+          );
+        }),
+        Obx(() {
+          return SelectDateWidget(
+            hideBackground: true,
+            nextMonthPressed: controller.nextMonth,
+            period: controller.monthSelected,
+            hasNextMonth: controller.hasNextMonth,
+            prevMonthPressed: controller.prevMonth,
           );
         }),
       ],

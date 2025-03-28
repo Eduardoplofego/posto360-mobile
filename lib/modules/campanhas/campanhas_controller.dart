@@ -3,7 +3,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/utils/enums/type_bonificacao.dart';
 import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/models/performance_model.dart';
 import 'package:posto360/modules/campanhas/models/campanha_controller_model.dart';
@@ -29,28 +28,7 @@ class CampanhasController extends FullLifeCycleController
   final _message = Rxn<MessagesModel>();
   final _loader = false.obs;
   final _campanhaController = Rx<CampanhaControllerModel>(
-    CampanhaControllerModel(
-      firstDateSelected: DateTime(2025, 3, 1),
-      lastDateSelected: DateTime.now(),
-      campanhas: [
-        CampanhaModel(
-          campanhaId: 23,
-          nomeCampanha: 'Combustíveis',
-          produtos: [],
-          tipoBonificacao: TypeBonificacao.valor,
-          volumeBonificacao: 5000,
-          valorBonificacao: 25,
-          dataDisponibilidade: DateTime(2026),
-        ),
-      ],
-      performances: [
-        PerformanceModel(
-          campanhaId: 23,
-          unidadesVendidas: 20140,
-          valorBonificacao: 50,
-        ),
-      ],
-    ),
+    CampanhaControllerModel.empty(),
   );
   final _monthSelected = DateTime.now().obs;
   final _currentMonth = DateTime.now().obs;
@@ -88,8 +66,8 @@ class CampanhasController extends FullLifeCycleController
     if (isLoadInStorage) {
       _loadController();
     } else {
-      // await _loadCampanhas();
-      // await _loadPerformances();
+      await _loadCampanhas();
+      await _loadPerformances();
     }
     campanhaController.calculateValueTotalBonus();
     _loader(false);
@@ -118,9 +96,11 @@ class CampanhasController extends FullLifeCycleController
   }
 
   Future<void> _loadCampanhas() async {
+    _loader(true);
     final campanhas = await _campanhasService.getAllCampanhas(
       filialId: _authService.authenticatedUser!.idFilial!,
       tipoUsuario: _authService.authenticatedUser!.tipoUsuario,
+      data: _monthSelected.value,
     );
     if (campanhas.isError) {
       _message(
@@ -133,6 +113,7 @@ class CampanhasController extends FullLifeCycleController
     } else {
       campanhaController.campanhas = campanhas.data!;
     }
+    _loader(false);
   }
 
   Future<void> _loadPerformances() async {
@@ -146,6 +127,7 @@ class CampanhasController extends FullLifeCycleController
     final performances = await _performanceService.getPerformances(
       codigoFuncionario: _authService.authenticatedUser!.codigoPDV.toString(),
       campanhasId: campanhasIds,
+      dataMes: monthSelected,
     );
     if (performances.isError) {
       _message(
@@ -201,6 +183,8 @@ class CampanhasController extends FullLifeCycleController
     _monthSelected.value = monthSelected;
     _hasNextMonth.value = true;
     _defineNewPeriodSelected(monthSelected);
+    _loadCampanhas();
+    _loadPerformances();
   }
 
   void nextMonth(DateTime monthSelected) async {
@@ -211,6 +195,8 @@ class CampanhasController extends FullLifeCycleController
 
     _monthSelected.value = monthSelected;
     _defineNewPeriodSelected(monthSelected);
+    _loadCampanhas();
+    _loadPerformances();
   }
 
   Future<void> saveControllerOnBackground() async {

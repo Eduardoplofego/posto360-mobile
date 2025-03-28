@@ -42,6 +42,8 @@ class DashController extends FullLifeCycleController
   );
   final _hasData = false.obs;
   final _daysRegistered = 0.obs;
+  final _monthSelected = DateTime.now().obs;
+  final _hasNextMonth = false.obs;
 
   UserModel get autheticatedUser => _authenticatedUser.value;
   String get nameUser =>
@@ -51,6 +53,8 @@ class DashController extends FullLifeCycleController
   bool get hasNotification => _notificationService.hasNotification;
   HorarioFaltasModel get horarioFaltasAtrasos => _horarioFaltasAtrasos.value;
   bool get hasData => _hasData.value;
+  DateTime get monthSelected => _monthSelected.value;
+  bool get hasNextMonth => _hasNextMonth.value;
   bool get isLoading => _loader.value;
   int get daysRegistered => _daysRegistered.value;
   ScrollController get selectPeriodScrollController =>
@@ -66,8 +70,19 @@ class DashController extends FullLifeCycleController
       GetStorage().read(Constants.USER_KEY),
     );
     await _loadHorarioFaltaAtraso();
-    _daysRegistered.value = 18;
+    _loadQuantityDaysInMonth();
     _loader(false);
+  }
+
+  void _loadQuantityDaysInMonth() {
+    final today = DateTime.now();
+    if (monthSelected.year == today.year &&
+        monthSelected.month == today.month) {
+      _daysRegistered.value = today.day;
+    } else {
+      _daysRegistered.value =
+          DateTime(monthSelected.year, monthSelected.month + 1, 0).day;
+    }
   }
 
   Future<void> _loadHorarioFaltaAtraso() async {
@@ -75,6 +90,7 @@ class DashController extends FullLifeCycleController
     final result = await _horarioFaltasAtrasosService.getHorario(
       data: today,
       codigoFuncionario: autheticatedUser.codigoPDV.toString(),
+      dataMes: monthSelected,
     );
 
     if (result.isError) {
@@ -104,6 +120,24 @@ class DashController extends FullLifeCycleController
       _hasData(false);
     }
     _horarioFaltasAtrasos.value = result.data!;
+  }
+
+  Future<void> prevMonth(DateTime monthSelected) async {
+    _monthSelected.value = monthSelected;
+    _hasNextMonth.value = true;
+    await _loadHorarioFaltaAtraso();
+    _loadQuantityDaysInMonth();
+  }
+
+  Future<void> nextMonth(DateTime monthSelected) async {
+    final now = DateTime.now();
+
+    _hasNextMonth.value =
+        !(monthSelected.year == now.year && monthSelected.month == now.month);
+
+    _monthSelected.value = monthSelected;
+    await _loadHorarioFaltaAtraso();
+    _loadQuantityDaysInMonth();
   }
 
   @override

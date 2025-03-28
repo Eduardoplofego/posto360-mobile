@@ -7,12 +7,14 @@ class SelectDateWidget extends StatelessWidget {
   final Function(DateTime) prevMonthPressed;
   final DateTime period;
   final bool hasNextMonth;
+  final bool hideBackground;
   const SelectDateWidget({
     super.key,
     required this.nextMonthPressed,
     required this.period,
     required this.hasNextMonth,
     required this.prevMonthPressed,
+    this.hideBackground = false,
   });
 
   void previouslyMonth() {
@@ -32,17 +34,24 @@ class SelectDateWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Row(
+        spacing: 10,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           InkWell(
             onTap: previouslyMonth,
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              decoration: BoxDecoration(
-                color: PostoAppUiConfigurations.lightPurpleColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
+              padding:
+                  !hideBackground
+                      ? EdgeInsets.symmetric(horizontal: 6, vertical: 4)
+                      : null,
+              decoration:
+                  !hideBackground
+                      ? BoxDecoration(
+                        color: PostoAppUiConfigurations.lightPurpleColor,
+                        borderRadius: BorderRadius.circular(8),
+                      )
+                      : null,
               child: Icon(Icons.chevron_left_rounded),
             ),
           ),
@@ -51,14 +60,20 @@ class SelectDateWidget extends StatelessWidget {
             onTap: nextMonth,
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              decoration: BoxDecoration(
-                color: PostoAppUiConfigurations.lightPurpleColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
+              padding:
+                  !hideBackground
+                      ? EdgeInsets.symmetric(horizontal: 6, vertical: 4)
+                      : null,
+              decoration:
+                  !hideBackground
+                      ? BoxDecoration(
+                        color: PostoAppUiConfigurations.lightPurpleColor,
+                        borderRadius: BorderRadius.circular(8),
+                      )
+                      : null,
               child: Icon(
                 Icons.chevron_right_rounded,
-                color: !hasNextMonth ? Colors.grey.shade400 : null,
+                color: !hasNextMonth ? Colors.grey.shade300 : null,
               ),
             ),
           ),

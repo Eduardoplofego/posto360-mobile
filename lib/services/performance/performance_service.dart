@@ -5,5 +5,6 @@ abstract class PerformanceService {
   Future<ResultActionDTO<List<PerformanceModel>>> getPerformances({
     required String codigoFuncionario,
     required List<int> campanhasId,
+    required DateTime dataMes,
   });
 }

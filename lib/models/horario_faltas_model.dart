@@ -21,7 +21,7 @@ class HorarioFaltasModel {
 
   String getJornadaTrabalho() {
     if (horarioPrevisto.isEmpty) {
-      return '00h às 00h';
+      return '--';
     }
 
     final turnos = horarioPrevisto.split(' ');
@@ -46,7 +46,7 @@ class HorarioFaltasModel {
 
   String getStartTime() {
     if (horarioPrevisto.isEmpty) {
-      return '00h00';
+      return '';
     }
 
     final turnos = horarioPrevisto.split(' ');

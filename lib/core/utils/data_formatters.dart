@@ -15,6 +15,12 @@ class DataFormatters {
     return "${formato.format(menor)} - ${formato.format(maior)}";
   }
 
+  static String formatarData(DateTime data) {
+    DateFormat formato = DateFormat('yyyy-MM-dd', 'pt_BR');
+    String dataFormatada = formato.format(data);
+    return dataFormatada;
+  }
+
   static String formatarDataExtensoComAno(DateTime data) {
     DateFormat formato = DateFormat('MMMM yyyy', 'pt_BR');
     String dataFormatada = formato.format(data);
