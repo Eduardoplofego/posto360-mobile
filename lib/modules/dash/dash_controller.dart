@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
-import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/notification_service.dart';
 import 'package:posto360/models/horario_faltas_model.dart';
 import 'package:posto360/models/user_model.dart';
 import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service.dart';
 
-class DashController extends GetxController with MessageMixin, LoaderMixin {
+class DashController extends FullLifeCycleController
+    with MessageMixin, FullLifeCycleMixin {
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
   late NotificationService _notificationService;
 
@@ -26,12 +26,12 @@ class DashController extends GetxController with MessageMixin, LoaderMixin {
   @override
   void onInit() {
     messageListener(_message);
-    loaderListener(_loader);
     super.onInit();
   }
 
   @override
   void onReady() async {
+    GetStorage().write(Constants.CAMPANHAS_CONTROLLER, null);
     await _initVariables();
     super.onReady();
   }
@@ -105,4 +105,21 @@ class DashController extends GetxController with MessageMixin, LoaderMixin {
     }
     _horarioFaltasAtrasos.value = result.data!;
   }
+
+  @override
+  void onDetached() {
+    GetStorage().write(Constants.CAMPANHAS_CONTROLLER, null);
+  }
+
+  @override
+  void onHidden() {}
+
+  @override
+  void onInactive() {}
+
+  @override
+  void onPaused() {}
+
+  @override
+  void onResumed() {}
 }

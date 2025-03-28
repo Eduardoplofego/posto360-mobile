@@ -8,8 +8,8 @@ class CampanhaModel {
   final String nomeCampanha;
   final List<ProdutoModel> produtos;
   final TypeBonificacao tipoBonificacao;
-  final int volumeBonificacao;
-  final int valorBonificacao;
+  final double volumeBonificacao;
+  final double valorBonificacao;
   final DateTime dataDisponibilidade;
   CampanhaModel({
     required this.campanhaId,
@@ -26,11 +26,23 @@ class CampanhaModel {
       'campanhaId': campanhaId,
       'nomeCampanha': nomeCampanha,
       'produtos': produtos.map((e) => e.toJson()).toList(),
-      'tipoBonificacao': tipoBonificacao,
+      'tipoBonificacao': tipoBonificacao.description(),
       'volumeBonificacao': volumeBonificacao,
       'valorBonificacao': valorBonificacao,
-      'dataDisponibilidade': dataDisponibilidade.millisecondsSinceEpoch,
+      'dataDisponibilidade': dataDisponibilidade.toIso8601String(),
     };
+  }
+
+  factory CampanhaModel.empty() {
+    return CampanhaModel(
+      campanhaId: 0,
+      nomeCampanha: '',
+      produtos: [],
+      tipoBonificacao: TypeBonificacao.unidade,
+      volumeBonificacao: 0,
+      valorBonificacao: 0,
+      dataDisponibilidade: DateTime(2025),
+    );
   }
 
   factory CampanhaModel.fromMap(Map<String, dynamic> map) {
@@ -45,8 +57,8 @@ class CampanhaModel {
           map['tipoBonificacao'] == 'UNIDADE'
               ? TypeBonificacao.unidade
               : TypeBonificacao.valor,
-      volumeBonificacao: map['volumeBonificacao']?.toInt() ?? 0,
-      valorBonificacao: map['valorBonificacao']?.toInt() ?? 0,
+      volumeBonificacao: map['volumeBonificacao'] ?? 0,
+      valorBonificacao: map['valorBonificacao'] ?? 0,
       dataDisponibilidade: DateTime.parse(map['dataDisponibilidade']),
     );
   }

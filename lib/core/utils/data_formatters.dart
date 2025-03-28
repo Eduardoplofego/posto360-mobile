@@ -1,3 +1,4 @@
+import 'package:get/utils.dart';
 import 'package:intl/intl.dart';
 
 class DataFormatters {
@@ -12,5 +13,11 @@ class DataFormatters {
 
     DateFormat formato = DateFormat('dd/MM/yyyy');
     return "${formato.format(menor)} - ${formato.format(maior)}";
+  }
+
+  static String formatarDataExtensoComAno(DateTime data) {
+    DateFormat formato = DateFormat('MMMM yyyy', 'pt_BR');
+    String dataFormatada = formato.format(data);
+    return dataFormatada.capitalize ?? dataFormatada;
   }
 }

@@ -24,11 +24,14 @@ class PerformanceRepositoryImpl extends PerformanceRepository {
         "campanhas": campanhasId,
       });
 
-      if (response.body == null || response.body['performances'] == null) {
+      if (response.body == null) {
         return ResultActionDTO.failure(
-          'Não possuem campanhas para o cálculo da performance',
+          'Não foi possível obter sua performance nas campanhas\nRecarregue a página novamente',
           [],
         );
+      }
+      if (response.body['performances'] == null) {
+        return ResultActionDTO.success(data: []);
       }
       final performancesMap = response.body['performances'];
       final performancesList =

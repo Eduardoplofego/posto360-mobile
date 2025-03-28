@@ -1,85 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:month_year_picker/month_year_picker.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/core/utils/data_formatters.dart';
 
 class SelectDateWidget extends StatelessWidget {
-  final Function(DateTime) onChangePeriod;
-  final bool withBackground;
-  final bool extendBody;
-  final String period;
+  final Function(DateTime) nextMonthPressed;
+  final Function(DateTime) prevMonthPressed;
+  final DateTime period;
+  final bool hasNextMonth;
   const SelectDateWidget({
     super.key,
-    required this.onChangePeriod,
-    this.withBackground = false,
-    this.extendBody = false,
+    required this.nextMonthPressed,
     required this.period,
+    required this.hasNextMonth,
+    required this.prevMonthPressed,
   });
+
+  void previouslyMonth() {
+    final prev = period.month - 1;
+    prevMonthPressed(DateTime(period.year, prev, 1));
+  }
+
+  void nextMonth() {
+    if (hasNextMonth) {
+      final nextMonth = period.month + 1;
+      nextMonthPressed(DateTime(period.year, nextMonth, 1));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: withBackground ? EdgeInsets.all(14) : null,
-      decoration:
-          withBackground
-              ? BoxDecoration(
-                color: PostoAppUiConfigurations.lightPurpleColor,
-                borderRadius: BorderRadius.circular(10),
-              )
-              : null,
-      child: Column(
+      padding: EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.calendar_month_outlined,
-                color: PostoAppUiConfigurations.blueMediumColor,
-                size: 22,
+          InkWell(
+            onTap: previouslyMonth,
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              decoration: BoxDecoration(
+                color: PostoAppUiConfigurations.lightPurpleColor,
+                borderRadius: BorderRadius.circular(8),
               ),
-              const SizedBox(width: 5),
-              Text(
-                'Período: ',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+              child: Icon(Icons.chevron_left_rounded),
+            ),
+          ),
+          Text(DataFormatters.formatarDataExtensoComAno(period)),
+          InkWell(
+            onTap: nextMonth,
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              decoration: BoxDecoration(
+                color: PostoAppUiConfigurations.lightPurpleColor,
+                borderRadius: BorderRadius.circular(8),
               ),
-              Text(
-                period,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              child: Icon(
+                Icons.chevron_right_rounded,
+                color: !hasNextMonth ? Colors.grey.shade400 : null,
               ),
-              extendBody ? Spacer() : const SizedBox.shrink(),
-              InkWell(
-                onTap: () async {
-                  final selected = await showMonthYearPicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2024),
-                    lastDate: DateTime.now(),
-                    locale: Locale('pt', 'BR'),
-                    builder: (context, child) {
-                      return Theme(
-                        data: ThemeData.light().copyWith(
-                          primaryColor:
-                              PostoAppUiConfigurations.blueMediumColor,
-                          hintColor: PostoAppUiConfigurations.blueMediumColor,
-                          colorScheme: ColorScheme.light(
-                            primary: PostoAppUiConfigurations.blueMediumColor,
-                          ),
-                          textButtonTheme: TextButtonThemeData(
-                            style: TextButton.styleFrom(
-                              foregroundColor:
-                                  PostoAppUiConfigurations.blueMediumColor,
-                            ),
-                          ),
-                        ),
-                        child: child!,
-                      );
-                    },
-                  );
-                  if (selected != null) {
-                    onChangePeriod(selected);
-                  }
-                },
-                child: Icon(Icons.keyboard_arrow_right_outlined),
-              ),
-            ],
+            ),
           ),
         ],
       ),
