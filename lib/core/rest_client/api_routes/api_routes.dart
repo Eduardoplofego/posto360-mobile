@@ -7,9 +7,11 @@ class ApiRoutes {
   static const _honorary = '$_backendBaseUrl/api/horario-faltas-atrasos';
   static const _campanhas = '$_backendBaseUrl/api/produtos-incentivados';
   static const _performance = '$_backendBaseUrl/api/calcular-performance';
+  static const _cursos = '$_backendBaseUrl/api/ead/vendedor/cursos';
 
   static String login() => _login;
   static String honorario() => _honorary;
   static String campanhas() => _campanhas;
   static String performance() => _performance;
+  static String cursos() => _cursos;
 }
