@@ -15,36 +15,34 @@ class CursoDashboardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = 35.0;
-    return Expanded(
-      child: Row(
-        spacing: 6,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Image.asset(image, width: size, height: size),
-          Flexible(
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: '$text ',
-                    style: TextStyle(
-                      color: PostoAppUiConfigurations.textDarkColor,
-                    ),
+    return Row(
+      spacing: 6,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Image.asset(image, width: size, height: size),
+        Flexible(
+          child: RichText(
+            textAlign: TextAlign.justify,
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '$text ',
+                  style: TextStyle(
+                    color: PostoAppUiConfigurations.textDarkColor,
                   ),
-                  TextSpan(
-                    text: value,
-                    style: TextStyle(
-                      color: PostoAppUiConfigurations.textDarkColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                TextSpan(
+                  text: value,
+                  style: TextStyle(
+                    color: PostoAppUiConfigurations.textDarkColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

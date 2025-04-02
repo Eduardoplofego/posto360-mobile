@@ -11,50 +11,57 @@ class CursosGeneralDetails extends GetView<CursosController> {
   Widget build(BuildContext context) {
     return Container(
       width: Get.width,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: PostoAppUiConfigurations.lightPurpleColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Obx(() {
-        return Wrap(
-          runAlignment: WrapAlignment.spaceBetween,
-          spacing: 12,
-          runSpacing: 12,
+        return Row(
           children: [
-            SizedBox(
-              width: (Get.width - 32) * .44,
-              child: CursoDashboardItem(
-                image: 'assets/images/icones/graduacao.png',
-                text: 'Cursos',
-                value: controller.totalCursos.toString(),
-              ),
+            Column(
+              spacing: 8,
+              children: [
+                SizedBox(
+                  width: (Get.width - 32) * .44,
+                  child: CursoDashboardItem(
+                    image: 'assets/images/icones/graduacao.png',
+                    text: 'Cursos',
+                    value: controller.totalCursos.toString(),
+                  ),
+                ),
+                SizedBox(
+                  width: (Get.width - 32) * .44,
+                  child: CursoDashboardItem(
+                    image: 'assets/images/icones/flag.png',
+                    text: 'Aulas',
+                    value:
+                        '${controller.aulasFinalizadas}/${controller.totalAulas}',
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              width: (Get.width - 32) * .44,
-              child: CursoDashboardItem(
-                image: 'assets/images/icones/trofeu.png',
-                text: 'Finalizados',
-                value: controller.cursosFinalizados.toString(),
-              ),
-            ),
-            SizedBox(
-              width: (Get.width - 32) * .44,
-              child: CursoDashboardItem(
-                image: 'assets/images/icones/flag.png',
-                text: 'Aulas',
-                value:
-                    '${controller.aulasFinalizadas}/${controller.totalAulas}',
-              ),
-            ),
-            SizedBox(
-              width: (Get.width - 32) * .44,
-              child: CursoDashboardItem(
-                image: 'assets/images/icones/certificado.png',
-                text: 'Certificados',
-                value:
-                    '${controller.certificadosEmitidos}/${controller.totalCertificados}',
-              ),
+            Column(
+              spacing: 8,
+              children: [
+                SizedBox(
+                  width: (Get.width - 32) * .44,
+                  child: CursoDashboardItem(
+                    image: 'assets/images/icones/trofeu.png',
+                    text: 'Finalizados',
+                    value: controller.cursosFinalizados.toString(),
+                  ),
+                ),
+                SizedBox(
+                  width: (Get.width - 32) * .44,
+                  child: CursoDashboardItem(
+                    image: 'assets/images/icones/certificado.png',
+                    text: 'Certificados',
+                    value:
+                        '${controller.certificadosEmitidos}/${controller.totalCertificados}',
+                  ),
+                ),
+              ],
             ),
           ],
         );

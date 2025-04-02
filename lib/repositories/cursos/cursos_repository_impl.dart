@@ -71,14 +71,14 @@ class CursosRepositoryImpl extends CursosRepository {
     required String usuarioId,
   }) async {
     try {
-      final response = await _restClient.post(ApiRoutes.cursos(), {
-        'usuarioId': usuarioId,
-      });
-      final cursos =
-          response.body
-              .map<CursoModel>((curso) => CursoModel.fromMap(curso))
-              .toList() ??
-          [];
+      // final response = await _restClient.post(ApiRoutes.cursos(), {
+      //   'usuarioId': usuarioId,
+      // });
+      // final cursos =
+      //     response.body
+      //         .map<CursoModel>((curso) => CursoModel.fromMap(curso))
+      //         .toList() ??
+      //     [];
       return ResultActionDTO.success(data: _cursos);
     } catch (e, s) {
       log('Erro get campanhas', error: e, stackTrace: s);

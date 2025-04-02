@@ -19,7 +19,7 @@ class CursoCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          CursoFolderWidget(folder: curso.capa),
+          CursoFolderWidget(curso: curso),
           const SizedBox(height: 12),
           SizedBox(
             width: Get.width,

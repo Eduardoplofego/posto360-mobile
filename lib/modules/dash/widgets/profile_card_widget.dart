@@ -13,73 +13,76 @@ class ProfileCardWidget extends GetView<DashController> {
       builder: (context, constraints) {
         return ConstrainedBox(
           constraints: BoxConstraints(minWidth: constraints.maxWidth),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 10,
-            children: [
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: PostoAppUiConfigurations.greyColor,
-                    child: CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.grey.shade200,
-                      backgroundImage:
-                          controller.hasPhotoUrl
-                              ? NetworkImage(
-                                controller.autheticatedUser.photoUrl!,
-                              )
-                              : null,
-                      child:
-                          !controller.hasPhotoUrl
-                              ? Icon(
-                                Icons.person,
-                                size: 40,
-                                color: Colors.grey.shade400,
-                              )
-                              : const SizedBox.shrink(),
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      PointWidget(),
-                      const SizedBox(width: 6),
-                      Obx(() {
-                        return SizedBox(
-                          width: constraints.maxWidth - 94,
-                          child: Text(
-                            controller.nameUser,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: PostoAppUiConfigurations.textDarkColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                  Obx(() {
-                    return Text(
-                      controller.autheticatedUser.tipoUsuario,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: PostoAppUiConfigurations.darkGreyColor,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 10,
+              children: [
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: PostoAppUiConfigurations.greyColor,
+                      child: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.grey.shade200,
+                        backgroundImage:
+                            controller.hasPhotoUrl
+                                ? NetworkImage(
+                                  controller.autheticatedUser.photoUrl!,
+                                )
+                                : null,
+                        child:
+                            !controller.hasPhotoUrl
+                                ? Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: Colors.grey.shade400,
+                                )
+                                : const SizedBox.shrink(),
                       ),
-                    );
-                  }),
-                ],
-              ),
-            ],
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        PointWidget(),
+                        const SizedBox(width: 6),
+                        Obx(() {
+                          return SizedBox(
+                            width: constraints.maxWidth - 94,
+                            child: Text(
+                              controller.nameUser,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: PostoAppUiConfigurations.textDarkColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                    Obx(() {
+                      return Text(
+                        controller.autheticatedUser.tipoUsuario,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: PostoAppUiConfigurations.darkGreyColor,
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

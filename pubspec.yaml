@@ -45,8 +45,11 @@ dependencies:
   animated_digit: ^3.2.3
   month_year_picker: ^0.4.0+1
   card_loading: ^0.3.2
+  timeline_tile: ^2.0.0
+  flick_video_player: ^0.9.0
   flutter_localizations:
     sdk: flutter
+  video_player: ^2.9.5
 
 dev_dependencies:
   flutter_test:
