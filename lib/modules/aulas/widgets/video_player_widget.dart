@@ -8,6 +8,30 @@ class VideoPlayerWidget extends GetView<AulasController> {
 
   @override
   Widget build(BuildContext context) {
-    return FlickVideoPlayer(flickManager: controller.flickManager);
+    return Obx(() {
+      if (controller.videoInitialized) {
+        return FlickVideoPlayer(flickManager: controller.flickManager!);
+      } else {
+        return Container(
+          width: Get.width,
+          height: 160,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            image:
+                controller.currentAula != null
+                    ? DecorationImage(
+                      image: NetworkImage(controller.currentAula!.capa),
+                    )
+                    : null,
+          ),
+          child: Center(
+            child: Text(
+              'Video não encontrado!',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        );
+      }
+    });
   }
 }

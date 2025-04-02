@@ -21,7 +21,8 @@ class AulaRepositoryImpl extends AulaRepository {
       templateId: 2,
       titulo: 'Fundamentos da Liderança em Vendas',
       descricao: '',
-      urlVideo: '',
+      urlVideo:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
       urlMaterial: '',
       capa: '',
       ordem: 1,
@@ -32,7 +33,8 @@ class AulaRepositoryImpl extends AulaRepository {
       templateId: 2,
       titulo: 'Estratégias de Vendas e Negociação para Líderes',
       descricao: '',
-      urlVideo: '',
+      urlVideo:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
       urlMaterial: '',
       capa: '',
       ordem: 3,
@@ -43,7 +45,8 @@ class AulaRepositoryImpl extends AulaRepository {
       templateId: 2,
       titulo: 'Técnicas Avançadas de Gestão',
       descricao: '',
-      urlVideo: '',
+      urlVideo:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
       urlMaterial: '',
       capa: '',
       ordem: 2,

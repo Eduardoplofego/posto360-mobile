@@ -29,9 +29,7 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   final _aulas = <AulaModel>[].obs;
   final _currentAulaIndex = 0.obs;
   final _currentAula = Rxn<AulaModel>();
-  late FlickManager flickManager;
-  final _currentVideoUrl =
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
+  final _flickManager = Rxn<FlickManager>();
 
   // Getters
   CursoModel? get curso => _curso.value;
@@ -41,23 +39,20 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   bool get hasNextClass =>
       !(_currentAulaIndex.value != _aulas.length - 1 &&
           _currentAula.value != null);
+  bool get videoInitialized => _flickManager.value != null;
+  FlickManager? get flickManager => _flickManager.value;
 
   @override
   Future<void> onInit() async {
     super.onInit();
     messageListener(_message);
     loaderListener(_loading);
-    flickManager = FlickManager(
-      videoPlayerController: VideoPlayerController.networkUrl(
-        Uri.parse(_currentVideoUrl),
-      ),
-    );
   }
 
   @override
   void onClose() {
     super.onClose();
-    flickManager.dispose();
+    _flickManager.value?.dispose();
   }
 
   @override
@@ -97,6 +92,16 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
       }
     }
     _currentAulaIndex.value = current;
+    _currentAula.value = _aulas.firstWhereOrNull(
+      (aula) => aula.ordem == current,
+    );
+    if (_currentAula.value != null) {
+      _flickManager.value = FlickManager(
+        videoPlayerController: VideoPlayerController.networkUrl(
+          Uri.parse(_currentAula.value!.urlVideo),
+        ),
+      );
+    }
   }
 
   List<Widget> generateTimeLineItems() {
