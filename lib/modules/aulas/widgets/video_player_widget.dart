@@ -1,7 +1,8 @@
-import 'package:flick_video_player/flick_video_player.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/aulas/aulas_controller.dart';
+import 'package:posto360/modules/aulas/widgets/pdf_viewer_widget.dart';
 
 class VideoPlayerWidget extends GetView<AulasController> {
   const VideoPlayerWidget({super.key});
@@ -9,8 +10,15 @@ class VideoPlayerWidget extends GetView<AulasController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.videoInitialized) {
-        return FlickVideoPlayer(flickManager: controller.flickManager!);
+      if (controller.isToShowMaterial) {
+        return PdfViewerWidget();
+      } else if (controller.videoInitialized) {
+        return Container(
+          color: Colors.black,
+          width: Get.width,
+          height: Get.height * .315,
+          child: Chewie(controller: controller.chewieController!),
+        );
       } else {
         return Container(
           width: Get.width,
@@ -18,7 +26,8 @@ class VideoPlayerWidget extends GetView<AulasController> {
           decoration: BoxDecoration(
             color: Colors.black,
             image:
-                controller.currentAula != null
+                controller.currentAula?.capa != null &&
+                        controller.currentAula!.capa != ''
                     ? DecorationImage(
                       image: NetworkImage(controller.currentAula!.capa),
                     )

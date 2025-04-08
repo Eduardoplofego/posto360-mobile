@@ -27,9 +27,9 @@ class CampanhasRepositoryImpl extends CampanhasRepository {
       });
       final campanhas =
           result.body
-                  .map<CampanhaModel>((model) => CampanhaModel.fromMap(model))
-                  .toList()
-              as List<CampanhaModel>;
+              .map<CampanhaModel>((model) => CampanhaModel.fromMap(model))
+              .toList() ??
+          [] as List<CampanhaModel>;
       return ResultActionDTO.success(data: campanhas);
     } catch (e, s) {
       log('Erro get campanhas', error: e, stackTrace: s);

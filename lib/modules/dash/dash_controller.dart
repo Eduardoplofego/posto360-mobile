@@ -90,7 +90,7 @@ class DashController extends FullLifeCycleController
     _authenticatedUser.value = UserModel.fromMap(
       GetStorage().read(Constants.USER_KEY),
     );
-    Future.wait([_loadHorarioFaltaAtraso(), _loadCursos()]);
+    await Future.wait([_loadHorarioFaltaAtraso(), _loadCursos()]);
     _loadQuantityDaysInMonth();
   }
 
@@ -136,7 +136,7 @@ class DashController extends FullLifeCycleController
     );
 
     if (result.isError) {
-      _loader(false);
+      _loadingWork(false);
       _horarioFaltasAtrasos.value = HorarioFaltasModel.empty();
       _message(
         MessagesModel(
@@ -147,21 +147,20 @@ class DashController extends FullLifeCycleController
       );
       _hasData(false);
     } else {
-      _loader(false);
+      if (result.success && result.message.isNotEmpty) {
+        _horarioFaltasAtrasos.value = HorarioFaltasModel.empty();
+        _message(
+          MessagesModel(
+            title: 'Erro',
+            message: 'Não foi possível buscar os horários de hoje',
+            type: MessageType.info,
+          ),
+        );
+        _hasData(false);
+      }
+      _horarioFaltasAtrasos.value = result.data!;
       _hasData(true);
     }
-
-    if (result.success && result.message.isNotEmpty) {
-      _message(
-        MessagesModel(
-          title: 'Erro',
-          message: 'Não foi possível buscar os dados de hoje',
-          type: MessageType.info,
-        ),
-      );
-      _hasData(false);
-    }
-    _horarioFaltasAtrasos.value = result.data!;
     _loadingWork(false);
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 
 class SelectPrevNextClass extends StatelessWidget {
   final VoidCallback? prevClass;
@@ -16,41 +15,47 @@ class SelectPrevNextClass extends StatelessWidget {
     bool hasPrev = prevClass != null;
     bool hasNext = nextClass != null;
     return Container(
-      height: 65,
       width: Get.width,
-      color: PostoAppUiConfigurations.blueLightColor,
+      padding: EdgeInsets.symmetric(vertical: 16),
+      color: Color(0xFF2051E5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: hasPrev ? Colors.white : Colors.white54,
-              ),
-              Text(
-                'Anterior',
-                style: TextStyle(
+          InkWell(
+            onTap: prevClass,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.chevron_left_rounded,
                   color: hasPrev ? Colors.white : Colors.white54,
-                  fontWeight: FontWeight.bold,
                 ),
-              ),
-            ],
+                Text(
+                  'Anterior',
+                  style: TextStyle(
+                    color: hasPrev ? Colors.white : Colors.white54,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
-          Row(
-            children: [
-              Text(
-                'Próximo',
-                style: TextStyle(
-                  color: hasNext ? Colors.white : Colors.white54,
-                  fontWeight: FontWeight.bold,
+          InkWell(
+            onTap: nextClass,
+            child: Row(
+              children: [
+                Text(
+                  'Próximo',
+                  style: TextStyle(
+                    color: hasNext ? Colors.white : Colors.white54,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: hasNext ? Colors.white : Colors.white54,
-              ),
-            ],
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: hasNext ? Colors.white : Colors.white54,
+                ),
+              ],
+            ),
           ),
         ],
       ),

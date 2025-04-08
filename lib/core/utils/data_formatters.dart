@@ -26,4 +26,15 @@ class DataFormatters {
     String dataFormatada = formato.format(data);
     return dataFormatada.capitalize ?? dataFormatada;
   }
+
+  static String getDurationHM(int duration) {
+    final horas = duration ~/ 60;
+    final minutos = (duration - horas * 60);
+
+    if (horas > 0) {
+      return '${horas}h${minutos}min';
+    }
+
+    return '${minutos}min';
+  }
 }

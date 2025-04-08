@@ -8,51 +8,56 @@ class ModuleProgress extends GetView<AulasController> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 79,
-      width: Get.width,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      color: Colors.white,
-      child: Obx(() {
-        return Column(
-          children: [
-            Row(
+    return Obx(() {
+      return controller.hasData && !controller.isLoading
+          ? Container(
+            width: Get.width,
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            color: Colors.white,
+            child: Column(
               children: [
-                Text(
-                  'Módulo 1',
-                  style: TextStyle(
-                    color: PostoAppUiConfigurations.textDarkColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      'Módulo 1',
+                      style: TextStyle(
+                        color: PostoAppUiConfigurations.textDarkColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${((controller.curso!.aulasConcluidas / controller.curso!.totalAulas) * 100).toStringAsFixed(0)}% completo',
+                      style: TextStyle(
+                        color: PostoAppUiConfigurations.greyColor,
+                      ),
+                    ),
+                    Text(
+                      'Aulas: ${controller.curso?.aulasConcluidas}/${controller.curso?.totalAulas}',
+                      style: TextStyle(
+                        color: PostoAppUiConfigurations.greyColor,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                LinearProgressIndicator(
+                  value:
+                      controller.curso!.aulasConcluidas /
+                      controller.curso!.totalAulas,
+                  minHeight: 6,
+                  borderRadius: BorderRadius.circular(10),
+                  backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
+                  color: PostoAppUiConfigurations.blueMediumColor,
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${((controller.curso!.aulasConcluidas / controller.curso!.totalAulas) * 100).toStringAsFixed(0)}% completo',
-                  style: TextStyle(color: PostoAppUiConfigurations.greyColor),
-                ),
-                Text(
-                  'Aulas: ${controller.curso?.aulasConcluidas}/${controller.curso?.totalAulas}',
-                  style: TextStyle(color: PostoAppUiConfigurations.greyColor),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            LinearProgressIndicator(
-              value:
-                  controller.curso!.aulasConcluidas /
-                  controller.curso!.totalAulas,
-              minHeight: 6,
-              borderRadius: BorderRadius.circular(10),
-              backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
-              color: PostoAppUiConfigurations.blueMediumColor,
-            ),
-          ],
-        );
-      }),
-    );
+          )
+          : const SizedBox.shrink();
+    });
   }
 }

@@ -12,6 +12,7 @@ class AulaModel {
   final String capa;
   final int ordem;
   final AulaStatus status;
+  final int duracao;
 
   AulaModel({
     required this.id,
@@ -23,7 +24,10 @@ class AulaModel {
     required this.capa,
     required this.ordem,
     required this.status,
+    required this.duracao,
   });
+
+  bool get hasMaterial => urlMaterial != '';
 
   Map<String, dynamic> toMap() {
     return {
@@ -50,6 +54,7 @@ class AulaModel {
       capa: map['capa'] ?? '',
       ordem: map['ordem']?.toInt() ?? 0,
       status: GetAulaStatus.getStatus(map['status']),
+      duracao: map['duracao'] ?? 0,
     );
   }
 
@@ -57,4 +62,30 @@ class AulaModel {
 
   factory AulaModel.fromJson(String source) =>
       AulaModel.fromMap(json.decode(source));
+
+  AulaModel copyWith({
+    int? id,
+    int? templateId,
+    String? titulo,
+    String? descricao,
+    String? urlVideo,
+    String? urlMaterial,
+    String? capa,
+    int? ordem,
+    AulaStatus? status,
+    int? duracao,
+  }) {
+    return AulaModel(
+      id: id ?? this.id,
+      templateId: templateId ?? this.templateId,
+      titulo: titulo ?? this.titulo,
+      descricao: descricao ?? this.descricao,
+      urlVideo: urlVideo ?? this.urlVideo,
+      urlMaterial: urlMaterial ?? this.urlMaterial,
+      capa: capa ?? this.capa,
+      ordem: ordem ?? this.ordem,
+      status: status ?? this.status,
+      duracao: duracao ?? this.duracao,
+    );
+  }
 }

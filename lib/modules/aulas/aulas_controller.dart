@@ -1,9 +1,11 @@
-import 'package:flick_video_player/flick_video_player.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
+import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/utils/enums/aula_status.dart';
 import 'package:posto360/models/aula_model.dart';
 import 'package:posto360/models/curso_model.dart';
@@ -23,25 +25,43 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   }) : _aulasService = aulasService,
        _authService = authService;
 
+  // Observables
   final _message = Rxn<MessagesModel>();
   final _loading = false.obs;
+  final _hasData = false.obs;
   final _curso = Rxn<CursoModel>();
   final _aulas = <AulaModel>[].obs;
+
   final _currentAulaIndex = 0.obs;
   final _currentAula = Rxn<AulaModel>();
-  final _flickManager = Rxn<FlickManager>();
+  final _isToShowMaterialComplementar = false.obs;
+  final _pdfLoaded = false.obs;
+
+  final _isVisulizeAulaLoading = false.obs;
+
+  final _chewieController = Rxn<ChewieController>();
 
   // Getters
   CursoModel? get curso => _curso.value;
+  bool get isLoading => _loading.value;
+  bool get hasData => _hasData.value;
+
   AulaModel? get currentAula => _currentAula.value;
   int get currentAulaIndex => _currentAulaIndex.value;
-  bool get hasPrevClass => !(_currentAulaIndex.value != 0);
+  bool get isToShowMaterial => _isToShowMaterialComplementar.value;
+  bool get hasPrevClass => hasData && _currentAulaIndex.value >= 1;
   bool get hasNextClass =>
-      !(_currentAulaIndex.value != _aulas.length - 1 &&
-          _currentAula.value != null);
-  bool get videoInitialized => _flickManager.value != null;
-  FlickManager? get flickManager => _flickManager.value;
+      hasData && _aulas[_currentAulaIndex.value].hasMaterial ||
+      (_currentAulaIndex.value <= _aulas.length - 1 &&
+          _aulas[_currentAulaIndex.value + 1].status != AulaStatus.bloqueado);
+  bool get pdfLoaded => _pdfLoaded.value;
 
+  bool get isVisulizeAulaLoading => _isVisulizeAulaLoading.value;
+
+  bool get videoInitialized => _chewieController.value != null;
+  ChewieController? get chewieController => _chewieController.value;
+
+  // Actions
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -52,16 +72,14 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   @override
   void onClose() {
     super.onClose();
-    _flickManager.value?.dispose();
+    chewieController?.dispose();
   }
 
   @override
   Future<void> onReady() async {
     super.onReady();
     _loading(true);
-    if (curso != null) {
-      await _loadAulas();
-    }
+    await _loadAulas();
     _loading(false);
   }
 
@@ -79,32 +97,145 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
         final aulas = aulasDto.data!;
         aulas.sort((a, b) => a.ordem.compareTo(b.ordem));
         _aulas.assignAll(aulasDto.data!);
-        _setCurrentAula();
+        await _loadFirstCurrentAula();
+        if (aulas.isEmpty) {
+          _hasData(false);
+        } else {
+          _hasData(true);
+        }
       }
     }
   }
 
-  void _setCurrentAula() {
+  Future<void> _loadFirstCurrentAula() async {
     int current = 1;
     for (var aula in _aulas) {
       if (aula.status == AulaStatus.finalizado) {
         current++;
       }
     }
-    _currentAulaIndex.value = current;
-    _currentAula.value = _aulas.firstWhereOrNull(
-      (aula) => aula.ordem == current,
-    );
+    _currentAulaIndex.value = current - 1;
+    _currentAula.value = _aulas[_currentAulaIndex.value];
     if (_currentAula.value != null) {
-      _flickManager.value = FlickManager(
-        videoPlayerController: VideoPlayerController.networkUrl(
-          Uri.parse(_currentAula.value!.urlVideo),
-        ),
-      );
+      await initializeVideoPlayer();
     }
   }
 
+  Future<void> setCurrentAula(int index) async {
+    _currentAulaIndex.value = index;
+    _currentAula.value = _aulas[index];
+    if (_currentAula.value != null && _currentAula.value!.urlVideo != '') {
+      await initializeVideoPlayer();
+    }
+  }
+
+  Future<void> showMaterialAulaWidget() async {
+    _pdfLoaded(true);
+  }
+
+  Future<void> hideMaterialAulaWidget() async {
+    _pdfLoaded(false);
+  }
+
+  void setPrevClass() {
+    if (isToShowMaterial) {
+      _isToShowMaterialComplementar(false);
+    } else {
+      debugPrint(
+        'Definindo aula atual para: Aula${_aulas[_currentAulaIndex.value - 1].ordem}',
+      );
+      setCurrentAula(currentAulaIndex - 1);
+    }
+  }
+
+  void setNextClass() {
+    if (currentAula!.hasMaterial && !isToShowMaterial) {
+      _isToShowMaterialComplementar(true);
+    } else {
+      // verificar se a aula foi concluida
+      if (currentAula!.status == AulaStatus.emAndamento) {
+        _showDialogConfirmConcludeClass();
+      } else {
+        // caso nao, mostrar dialog
+        // caso sim, fazer transicao
+        debugPrint(
+          'Definindo aula atual para: Aula${_aulas[_currentAulaIndex.value + 1].ordem}',
+        );
+        _isToShowMaterialComplementar(false);
+        setCurrentAula(currentAulaIndex + 1);
+      }
+    }
+  }
+
+  void _showDialogConfirmConcludeClass() {
+    Get.defaultDialog(
+      title: 'Aula não finalizada!',
+      titleStyle: TextStyle(
+        fontSize: 18,
+        color: PostoAppUiConfigurations.textDarkColor,
+      ),
+      titlePadding: EdgeInsets.all(16),
+      content: Text(
+        'Finalize a aula para avançar',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: PostoAppUiConfigurations.greyColor),
+      ),
+      radius: 10,
+      backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
+      buttonColor: PostoAppUiConfigurations.blueMediumColor,
+      contentPadding: EdgeInsets.all(8),
+      barrierDismissible: false,
+      textConfirm: 'Entendi',
+      onConfirm: () {
+        Get.back();
+      },
+    );
+  }
+
+  Future<void> initializeVideoPlayer() async {
+    VideoPlayerController videoPlayerController;
+    videoPlayerController = VideoPlayerController.networkUrl(
+      Uri.parse(_currentAula.value!.urlVideo),
+    );
+    await videoPlayerController.initialize();
+    final chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      showControlsOnInitialize: false,
+      placeholder: Container(width: 50, height: 50, color: Colors.black),
+      autoPlay: false,
+      looping: false,
+      deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
+    );
+    _chewieController.value = chewieController;
+  }
+
+  Future<void> visualizeAula() async {
+    _isVisulizeAulaLoading(true);
+    await Future.delayed(const Duration(seconds: 2));
+    final result = await _aulasService.concludeAula(aulaId: currentAula!.id);
+    if (result) {
+      await _loadAulas();
+    }
+    _isVisulizeAulaLoading(false);
+  }
+
   List<Widget> generateTimeLineItems() {
+    if (_aulas.isEmpty) {
+      return [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: Text(
+              'Nenhuma aula encontrada!',
+              style: TextStyle(
+                color: PostoAppUiConfigurations.textDarkColor,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ),
+      ];
+    }
     return _aulas.map((aula) {
       return SizedBox(
         height: 300,
@@ -115,7 +246,10 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
           indicatorStyle: IndicatorStyle(
             height: 230,
             width: Get.width,
-            indicator: TimelineClassItemWidget(aula: aula),
+            indicator: TimelineClassItemWidget(
+              aula: aula,
+              isCurrent: currentAula!.ordem == aula.ordem,
+            ),
           ),
         ),
       );

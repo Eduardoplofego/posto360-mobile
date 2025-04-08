@@ -6,4 +6,5 @@ abstract class AulaRepository {
     required int cursoId,
     required String usuarioId,
   });
+  Future<ResultActionDTO<bool>> concludeAula({required int aulaId});
 }

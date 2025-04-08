@@ -40,6 +40,7 @@ class CustomAppBar extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),

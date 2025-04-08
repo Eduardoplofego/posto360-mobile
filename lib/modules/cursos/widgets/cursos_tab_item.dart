@@ -25,7 +25,7 @@ class CursosTabItem extends GetView<CursosController> {
         height: 400 * (controller.cursosToShow.length).toDouble(),
         child: ListView.separated(
           physics: NeverScrollableScrollPhysics(),
-          separatorBuilder: (context, index) => const SizedBox(height: 16),
+          separatorBuilder: (context, index) => const SizedBox(height: 24),
           itemCount: controller.cursosToShow.length,
           itemBuilder: (context, index) {
             final curso = controller.cursosToShow[index];

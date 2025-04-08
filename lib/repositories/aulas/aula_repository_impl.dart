@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/core/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/core/rest_client/posto_rest_client.dart';
 import 'package:posto360/core/utils/enums/aula_status.dart';
 
@@ -23,10 +22,12 @@ class AulaRepositoryImpl extends AulaRepository {
       descricao: '',
       urlVideo:
           'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-      urlMaterial: '',
+      urlMaterial:
+          'https://drive.google.com/drive/folders/1DaWEjnQHdACYaX0Ofq-b5HXaSXASFDNe',
       capa: '',
       ordem: 1,
       status: AulaStatus.finalizado,
+      duracao: 40,
     ),
     AulaModel(
       id: 3,
@@ -39,6 +40,7 @@ class AulaRepositoryImpl extends AulaRepository {
       capa: '',
       ordem: 3,
       status: AulaStatus.bloqueado,
+      duracao: 32,
     ),
     AulaModel(
       id: 2,
@@ -47,10 +49,25 @@ class AulaRepositoryImpl extends AulaRepository {
       descricao: '',
       urlVideo:
           'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-      urlMaterial: '',
+      urlMaterial:
+          'https://drive.google.com/drive/folders/1DaWEjnQHdACYaX0Ofq-b5HXaSXASFDNe',
       capa: '',
       ordem: 2,
       status: AulaStatus.emAndamento,
+      duracao: 72,
+    ),
+    AulaModel(
+      id: 4,
+      templateId: 2,
+      titulo: 'Estratégias de Vendas e Negociação para Líderes pt2',
+      descricao: '',
+      urlVideo:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+      urlMaterial: '',
+      capa: '',
+      ordem: 4,
+      status: AulaStatus.bloqueado,
+      duracao: 36,
     ),
   ];
 
@@ -75,6 +92,20 @@ class AulaRepositoryImpl extends AulaRepository {
     } catch (e, s) {
       log('Erro ao buscar aulas', error: e, stackTrace: s);
       return ResultActionDTO.failure('Algo deu errado', []);
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<bool>> concludeAula({required int aulaId}) async {
+    try {
+      // final result = await _restClient.post(ApiRoutes.aulas(), {
+      //   'aulaId': aulaId,
+      // });
+      // return ResultActionDTO.success(data: true);
+      return ResultActionDTO.success(data: true);
+    } catch (e, s) {
+      log('Erro ao visualizar aula', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao visualizar aula', false);
     }
   }
 }

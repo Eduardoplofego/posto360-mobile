@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/core/utils/data_formatters.dart';
 import 'package:posto360/core/utils/enums/aula_status.dart';
 import 'package:posto360/models/aula_model.dart';
 
 class TimelineClassItemWidget extends StatelessWidget {
+  final bool isCurrent;
   final AulaModel aula;
-  const TimelineClassItemWidget({super.key, required this.aula});
+  const TimelineClassItemWidget({
+    super.key,
+    required this.aula,
+    required this.isCurrent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +28,26 @@ class TimelineClassItemWidget extends StatelessWidget {
               children: [
                 Container(
                   width: Get.width * .85,
-                  height: 200,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
+                    boxShadow:
+                        !isCurrent
+                            ? [
+                              BoxShadow(
+                                color: Colors.grey.shade400,
+                                blurRadius: 7,
+                                spreadRadius: .2,
+                              ),
+                            ]
+                            : null,
+                    border:
+                        isCurrent
+                            ? Border.all(
+                              color: PostoAppUiConfigurations.blueMediumColor,
+                              width: 2,
+                            )
+                            : null,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +93,9 @@ class TimelineClassItemWidget extends StatelessWidget {
                                 color: PostoAppUiConfigurations.textDarkColor,
                               ),
                             ),
-                            Text('Duração: -'),
+                            Text(
+                              'Duração: ${DataFormatters.getDurationHM(aula.duracao)}',
+                            ),
                           ],
                         ),
                       ),
@@ -109,7 +133,7 @@ class TimelineClassItemWidget extends StatelessWidget {
                                     ),
                                   ),
                                   LinearProgressIndicator(
-                                    value: isConcluded ? .8 : 0,
+                                    value: isConcluded ? 1 : 0,
                                     minHeight: 6,
                                     borderRadius: BorderRadius.circular(10),
                                     backgroundColor:
@@ -125,6 +149,7 @@ class TimelineClassItemWidget extends StatelessWidget {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 8),
                     ],
                   ),
                 ),
@@ -138,9 +163,20 @@ class TimelineClassItemWidget extends StatelessWidget {
             width: 70,
             height: 70,
             padding: EdgeInsets.all(5),
+
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(70),
+              boxShadow:
+                  isCurrent
+                      ? [
+                        BoxShadow(
+                          color: Colors.yellow.shade500,
+                          blurRadius: 1.5,
+                          spreadRadius: 1.5,
+                        ),
+                      ]
+                      : null,
             ),
             child: CircleAvatar(
               backgroundColor:

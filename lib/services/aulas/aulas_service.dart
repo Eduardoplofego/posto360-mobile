@@ -6,4 +6,5 @@ abstract class AulasService {
     required int cursoId,
     required String usuarioId,
   });
+  Future<bool> concludeAula({required int aulaId});
 }
