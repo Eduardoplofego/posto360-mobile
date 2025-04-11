@@ -9,6 +9,11 @@ class ApiRoutes {
   static const _performance = '$_backendBaseUrl/api/calcular-performance';
   static const _cursos = '$_backendBaseUrl/api/ead/vendedor/cursos';
   static const _aulas = '$_backendBaseUrl/api/ead/vendedor/aulas';
+  static const _dashboard = '$_backendBaseUrl/api/mobile/dashboard';
+  static const _checklists =
+      '$_backendBaseUrl/api/checklists/vendedor/disponiveis';
+  static const _checklistAnswers =
+      '$_backendBaseUrl/api/checklists/vendedor/respostas';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -16,4 +21,7 @@ class ApiRoutes {
   static String performance() => _performance;
   static String cursos() => _cursos;
   static String aulas() => _aulas;
+  static String dashboard() => _dashboard;
+  static String checklists() => _checklists;
+  static String checklistAnswers() => _checklistAnswers;
 }

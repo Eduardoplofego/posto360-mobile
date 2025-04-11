@@ -103,17 +103,17 @@ class DashPage extends GetView<DashController> {
                 const SizedBox(height: 17),
                 Obx(() {
                   return CardLoadingWidget(
-                    isLoading: controller.loadingPerformance,
+                    isLoading: controller.loadingDashboardModel,
                     height: 200,
                     initDelay: 300,
                     child: CardDetailedWidget(
                       icon: Icons.speed_outlined,
-                      totalNumber: controller.horarioFaltasAtrasos.atrasos,
+                      totalNumber: controller.dashboardModel.realizadoCampanhas,
                       title: 'Performance Produtos Incentivados',
-                      totalNumberDetailed: controller.daysRegistered,
+                      totalNumberDetailed:
+                          controller.dashboardModel.quantidadeCampanhas,
                       totalNumberDetailedText: 'Meta',
                       totalTakeNumberDetailedText: 'Realizado',
-                      hideNumberDetailed: true,
                       hideTrendingDetail: true,
                       onPressed: () {
                         Get.toNamed('/campanhas');
@@ -124,19 +124,42 @@ class DashPage extends GetView<DashController> {
                 const SizedBox(height: 17),
                 Obx(() {
                   return CardLoadingWidget(
-                    isLoading: controller.loadingCursos,
+                    isLoading: controller.loadingDashboardModel,
                     height: 190,
                     initDelay: 200,
                     child: CardDetailedWidget(
                       icon: Icons.school_outlined,
-                      totalNumber: controller.totalCursosConcluidos,
+                      totalNumber: controller.dashboardModel.cursosConcluidos,
                       title: 'Performance Cursos',
-                      totalNumberDetailed: controller.totalCursos,
+                      totalNumberDetailed:
+                          controller.dashboardModel.totalCursos,
                       totalNumberDetailedText: 'cursos',
                       totalTakeNumberDetailedText: 'concluídos',
                       trendingUp: true,
                       onPressed: () {
-                        Get.toNamed('/cursos', arguments: controller.cursos);
+                        Get.toNamed('/cursos');
+                      },
+                    ),
+                  );
+                }),
+                const SizedBox(height: 17),
+                Obx(() {
+                  return CardLoadingWidget(
+                    isLoading: controller.loadingDashboardModel,
+                    height: 190,
+                    initDelay: 200,
+                    child: CardDetailedWidget(
+                      icon: Icons.checklist_sharp,
+                      totalNumber:
+                          controller.dashboardModel.checklistsConcluidas,
+                      title: 'Performance Checklists',
+                      totalNumberDetailed:
+                          controller.dashboardModel.totalChecklist,
+                      totalNumberDetailedText: 'checklists',
+                      totalTakeNumberDetailedText: 'concluídos',
+                      trendingUp: true,
+                      onPressed: () {
+                        Get.toNamed('/checklists');
                       },
                     ),
                   );

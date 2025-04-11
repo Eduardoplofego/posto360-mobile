@@ -22,7 +22,7 @@ class CursosTabItem extends GetView<CursosController> {
         );
       }
       return SizedBox(
-        height: 400 * (controller.cursosToShow.length).toDouble(),
+        height: 380 * (controller.cursosToShow.length).toDouble(),
         child: ListView.separated(
           physics: NeverScrollableScrollPhysics(),
           separatorBuilder: (context, index) => const SizedBox(height: 24),

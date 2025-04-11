@@ -12,9 +12,8 @@ class CursoModel {
   final String tipoUsuario;
   final int totalAulas;
   final int aulasConcluidas;
-  final String inscricao;
-  final String ultimoAcesso;
-  final int duracaoMedia;
+  final DateTime inscricao;
+  final DateTime? ultimoAcesso;
   final bool certificadoEmitido;
 
   CursoModel({
@@ -29,7 +28,6 @@ class CursoModel {
     required this.aulasConcluidas,
     required this.inscricao,
     required this.ultimoAcesso,
-    required this.duracaoMedia,
     required this.certificadoEmitido,
   });
 
@@ -56,9 +54,8 @@ class CursoModel {
       tipoUsuario: map['tipoUsuario'] ?? '',
       aulasConcluidas: map['aulasConcluidas'] ?? 0,
       totalAulas: map['totalAulas'] ?? 0,
-      inscricao: map['inscricao'] ?? '',
-      ultimoAcesso: map['ultimoAcesso'] ?? '',
-      duracaoMedia: map['duracaoMedia'] ?? 0,
+      inscricao: DateTime.parse(map['dataInicio'].toString()),
+      ultimoAcesso: DateTime.parse(map['ultimoAcesso'].toString()),
       certificadoEmitido: map['certificadoEmitido'] ?? false,
     );
   }
@@ -67,11 +64,4 @@ class CursoModel {
 
   factory CursoModel.fromJson(String source) =>
       CursoModel.fromMap(json.decode(source));
-
-  String getDuracaoMedia() {
-    final horas = duracaoMedia ~/ 60;
-    final minutos = duracaoMedia - (horas * 60);
-    final horasString = horas > 0 ? '${horas}h' : '';
-    return '$horasString${minutos}min';
-  }
 }
