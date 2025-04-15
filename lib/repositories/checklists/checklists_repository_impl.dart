@@ -20,11 +20,24 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
     required String usuarioId,
     required int checklistId,
   }) async {
-    final result = await _postoRestClient.post(
-      ApiRoutes.checklistAnswers(),
-      {},
-    );
-    return ResultActionDTO.success(data: []);
+    try {
+      final result = await _postoRestClient.post(ApiRoutes.checklistAnswers(), {
+        "usuarioId": usuarioId,
+        "checklistId": checklistId,
+      });
+      final answersMap = result.body;
+      final answers =
+          answersMap
+              .map<ChecklistAnswerModel>(
+                (answer) => ChecklistAnswerModel.fromMap(answer),
+              )
+              .toList() ??
+          [];
+      return ResultActionDTO.success(data: answers);
+    } catch (e, s) {
+      log('Erro get checklist answers', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao buscar respostas', []);
+    }
   }
 
   @override

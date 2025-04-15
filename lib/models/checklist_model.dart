@@ -27,6 +27,9 @@ class ChecklistModel {
     return {
       'id': id,
       'name': name,
+      'description': description,
+      'totalChecks': totalChecks,
+      'concludedChecks': concludedChecks,
       'status': status.description(),
       'usuarioId': usuarioId,
       'filialId': filialId,
@@ -50,4 +53,9 @@ class ChecklistModel {
 
   factory ChecklistModel.fromJson(String source) =>
       ChecklistModel.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'ChecklistModel(id: $id, name: $name, description: $description, totalChecks: $totalChecks, concludedChecks: $concludedChecks, status: $status, usuarioId: $usuarioId, filialId: $filialId)';
+  }
 }

@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
+import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/utils/enums/checklist_status.dart';
 import 'package:posto360/models/checklist_model.dart';
 import 'package:posto360/modules/checklist/widgets/checklist_card_widget.dart';
@@ -70,5 +72,33 @@ class ChecklistController extends GetxController with LoaderMixin {
     return listSelected
         .map((checklist) => ChecklistCardWidget(checklist: checklist))
         .toList();
+  }
+
+  Future<bool> showDialogToStartChecklist(int checklistId) async {
+    bool isToStartChecklist = false;
+    final response = await Get.defaultDialog<bool>(
+      title: 'Iniciando checklist...',
+      titleStyle: TextStyle(
+        fontSize: 18,
+        color: PostoAppUiConfigurations.textDarkColor,
+      ),
+      titlePadding: EdgeInsets.all(16),
+      radius: 10,
+      middleText: 'Deseja iniciar esta checklist?',
+      content: null,
+      backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
+      buttonColor: PostoAppUiConfigurations.blueMediumColor,
+      contentPadding: EdgeInsets.all(8),
+      barrierDismissible: true,
+      textConfirm: 'Iniciar',
+      onConfirm: () {
+        Get.back<bool>(result: true);
+      },
+      textCancel: 'Não',
+      onCancel: () {
+        return;
+      },
+    );
+    return response ?? isToStartChecklist;
   }
 }

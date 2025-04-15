@@ -51,7 +51,7 @@ class ChecklistAnswerModel {
       observacoes: map['observacoes'],
       usuarioId: map['usuarioId'] ?? '',
       necessitaRevisao: map['necessitaRevisao'] ?? false,
-      opcoes: List<String>.from(map['opcoes']),
+      opcoes: map['opcoes'],
     );
   }
 

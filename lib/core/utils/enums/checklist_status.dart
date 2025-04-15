@@ -17,11 +17,11 @@ extension GetChecklistStatus on ChecklistStatus {
   String description() {
     switch (this) {
       case ChecklistStatus.aFazer:
-        return 'A aazer';
+        return 'A Fazer';
       case ChecklistStatus.emAndamento:
-        return 'Em andamento';
+        return 'Em Andamento';
       case ChecklistStatus.emRevisao:
-        return 'Em revisão';
+        return 'Em Revisão';
       case ChecklistStatus.finalizado:
         return 'Finalizado';
     }
