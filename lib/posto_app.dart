@@ -6,6 +6,7 @@ import 'package:month_year_picker/month_year_picker.dart';
 import 'package:posto360/core/bindings/application_bindings.dart';
 import 'package:posto360/core/ui/posto_app_theme.dart';
 import 'package:posto360/routers/campanhas_routers.dart';
+import 'package:posto360/routers/cursos_routers.dart';
 import 'package:posto360/routers/dashboard_routers.dart';
 import 'package:posto360/routers/login_routers.dart';
 import 'package:posto360/routers/splash_routers.dart';
@@ -32,6 +33,7 @@ class PostoApp extends StatelessWidget {
         ...LoginRouters.routes,
         ...DashboardRouters.routes,
         ...CampanhasRouters.routes,
+        ...CursosRouters.routes,
       ],
     );
   }

@@ -12,6 +12,10 @@ class ButtonCardWidget extends StatelessWidget {
       children: [
         InkWell(
           onTap: onPressed,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            bottomRight: Radius.circular(15),
+          ),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(

@@ -8,13 +8,16 @@ class BackIconButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      color: Colors.white,
-      style: IconButton.styleFrom(
-        backgroundColor: PostoAppUiConfigurations.blueMediumColor,
+    return Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: IconButton(
+        onPressed: onPressed,
+        color: Colors.white,
+        style: IconButton.styleFrom(
+          backgroundColor: PostoAppUiConfigurations.blueMediumColor,
+        ),
+        icon: Icon(Icons.arrow_back_rounded, size: 24),
       ),
-      icon: Icon(Icons.arrow_back_rounded, size: 24),
     );
   }
 }

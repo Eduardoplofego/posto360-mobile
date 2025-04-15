@@ -21,17 +21,15 @@ class DashPage extends GetView<DashController> {
       key: controller.scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70),
-        child: Obx(() {
-          return CustomAppBar(
-            title: 'Dashboard',
-            leading: MenuIconButtonWidget(
-              onPressed: () {
-                controller.scaffoldKey.currentState?.openDrawer();
-              },
-            ),
-            actions: [],
-          );
-        }),
+        child: CustomAppBar(
+          title: 'Dashboard',
+          leading: MenuIconButtonWidget(
+            onPressed: () {
+              controller.scaffoldKey.currentState?.openDrawer();
+            },
+          ),
+          actions: [],
+        ),
       ),
       drawer: PostoAppDrawer(
         autheticatedUser: Get.find<AuthService>().getUser()!,
@@ -51,7 +49,7 @@ class DashPage extends GetView<DashController> {
                 const SizedBox(height: 8),
                 Obx(() {
                   return CardLoadingWidget(
-                    isLoading: controller.isLoading,
+                    isLoading: controller.loadingWork,
                     height: 80,
                     initDelay: 50,
                     child: ProfileCardWidget(),
@@ -60,7 +58,7 @@ class DashPage extends GetView<DashController> {
                 const SizedBox(height: 26),
                 Obx(() {
                   return CardLoadingWidget(
-                    isLoading: controller.isLoading,
+                    isLoading: controller.loadingWork,
                     height: 100,
                     initDelay: 150,
                     child: WorkingDayWidget(),
@@ -71,7 +69,7 @@ class DashPage extends GetView<DashController> {
                 const SizedBox(height: 16),
                 Obx(() {
                   return CardLoadingWidget(
-                    isLoading: controller.isLoading,
+                    isLoading: controller.loadingWork,
                     height: 190,
                     initDelay: 200,
                     child: CardDetailedWidget(
@@ -81,13 +79,14 @@ class DashPage extends GetView<DashController> {
                       totalNumberDetailed: controller.daysRegistered,
                       totalNumberDetailedText: 'dias registrados',
                       totalTakeNumberDetailedText: 'dias com falta',
+                      trendingUp: controller.horarioFaltasAtrasos.faltas == 0,
                     ),
                   );
                 }),
                 const SizedBox(height: 17),
                 Obx(() {
                   return CardLoadingWidget(
-                    isLoading: controller.isLoading,
+                    isLoading: controller.loadingWork,
                     height: 190,
                     initDelay: 250,
                     child: CardDetailedWidget(
@@ -97,13 +96,14 @@ class DashPage extends GetView<DashController> {
                       totalNumberDetailed: controller.daysRegistered,
                       totalNumberDetailedText: 'dias registrados',
                       totalTakeNumberDetailedText: 'dias com atraso',
+                      trendingUp: controller.horarioFaltasAtrasos.atrasos == 0,
                     ),
                   );
                 }),
                 const SizedBox(height: 17),
                 Obx(() {
                   return CardLoadingWidget(
-                    isLoading: controller.isLoading,
+                    isLoading: controller.loadingPerformance,
                     height: 200,
                     initDelay: 300,
                     child: CardDetailedWidget(
@@ -117,6 +117,26 @@ class DashPage extends GetView<DashController> {
                       hideTrendingDetail: true,
                       onPressed: () {
                         Get.toNamed('/campanhas');
+                      },
+                    ),
+                  );
+                }),
+                const SizedBox(height: 17),
+                Obx(() {
+                  return CardLoadingWidget(
+                    isLoading: controller.loadingCursos,
+                    height: 190,
+                    initDelay: 200,
+                    child: CardDetailedWidget(
+                      icon: Icons.school_outlined,
+                      totalNumber: controller.totalCursosConcluidos,
+                      title: 'Performance Cursos',
+                      totalNumberDetailed: controller.totalCursos,
+                      totalNumberDetailedText: 'cursos',
+                      totalTakeNumberDetailedText: 'concluídos',
+                      trendingUp: true,
+                      onPressed: () {
+                        Get.toNamed('/cursos', arguments: controller.cursos);
                       },
                     ),
                   );

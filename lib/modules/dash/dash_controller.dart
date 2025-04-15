@@ -3,15 +3,20 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
+import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/services/notification_service.dart';
+import 'package:posto360/core/utils/enums/curso_status.dart';
+import 'package:posto360/models/curso_model.dart';
 import 'package:posto360/models/horario_faltas_model.dart';
 import 'package:posto360/models/user_model.dart';
+import 'package:posto360/services/cursos/cursos_service.dart';
 import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
   late NotificationService _notificationService;
+  late CursosService _cursosService;
 
   final _loader = false.obs;
   final _message = Rxn<MessagesModel>();
@@ -21,6 +26,7 @@ class DashController extends FullLifeCycleController
   DashController() {
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
     _notificationService = Get.find<NotificationService>();
+    _cursosService = Get.find<CursosService>();
   }
 
   @override
@@ -36,6 +42,19 @@ class DashController extends FullLifeCycleController
     super.onReady();
   }
 
+  // loadings
+  final _loadingWork = false.obs;
+  final _loadingPerformance = false.obs;
+  final _loadingCursos = false.obs;
+  final _loadingCheckList = false.obs;
+  bool get loadingWork => _loadingWork.value;
+  bool get loadingPerformance => _loadingPerformance.value;
+  bool get loadingCursos => _loadingCursos.value;
+  bool get loadingCheckList => _loadingCheckList.value;
+
+  final _cursosList = <CursoModel>[].obs;
+  final _totalCursos = 0.obs;
+  final _totalCursosConcluidos = 0.obs;
   final _authenticatedUser = Rx<UserModel>(UserModel.empty());
   final _horarioFaltasAtrasos = Rx<HorarioFaltasModel>(
     HorarioFaltasModel.empty(),
@@ -45,6 +64,9 @@ class DashController extends FullLifeCycleController
   final _monthSelected = DateTime.now().obs;
   final _hasNextMonth = false.obs;
 
+  List<CursoModel> get cursos => _cursosList;
+  int get totalCursos => _totalCursos.value;
+  int get totalCursosConcluidos => _totalCursosConcluidos.value;
   UserModel get autheticatedUser => _authenticatedUser.value;
   String get nameUser =>
       autheticatedUser.name + (autheticatedUser.lastName ?? '');
@@ -65,13 +87,11 @@ class DashController extends FullLifeCycleController
   }
 
   Future<void> _initVariables() async {
-    _loader(true);
     _authenticatedUser.value = UserModel.fromMap(
       GetStorage().read(Constants.USER_KEY),
     );
-    await _loadHorarioFaltaAtraso();
+    await Future.wait([_loadHorarioFaltaAtraso(), _loadCursos()]);
     _loadQuantityDaysInMonth();
-    _loader(false);
   }
 
   void _loadQuantityDaysInMonth() {
@@ -85,7 +105,29 @@ class DashController extends FullLifeCycleController
     }
   }
 
+  Future<void> _loadCursos() async {
+    _loadingCursos(true);
+    final result = await _cursosService.getAllCursos(
+      usuarioId: Get.find<AuthService>().getUser()!.id,
+    );
+    final cursos = result.data!;
+    var totalCursos = 0;
+    var totalConcluidos = 0;
+    for (var curso in cursos) {
+      if (curso.status == CursoStatus.finalizado) {
+        totalConcluidos += 1;
+      }
+      totalCursos += 1;
+      _cursosList.add(curso);
+    }
+    _totalCursos.value = totalCursos;
+    _totalCursosConcluidos.value = totalConcluidos;
+    _cursosList.assignAll(cursos);
+    _loadingCursos(false);
+  }
+
   Future<void> _loadHorarioFaltaAtraso() async {
+    _loadingWork(true);
     final today = DateTime.now();
     final result = await _horarioFaltasAtrasosService.getHorario(
       data: today,
@@ -94,7 +136,7 @@ class DashController extends FullLifeCycleController
     );
 
     if (result.isError) {
-      _loader(false);
+      _loadingWork(false);
       _horarioFaltasAtrasos.value = HorarioFaltasModel.empty();
       _message(
         MessagesModel(
@@ -105,21 +147,21 @@ class DashController extends FullLifeCycleController
       );
       _hasData(false);
     } else {
-      _loader(false);
+      if (result.success && result.message.isNotEmpty) {
+        _horarioFaltasAtrasos.value = HorarioFaltasModel.empty();
+        _message(
+          MessagesModel(
+            title: 'Erro',
+            message: 'Não foi possível buscar os horários de hoje',
+            type: MessageType.info,
+          ),
+        );
+        _hasData(false);
+      }
+      _horarioFaltasAtrasos.value = result.data!;
       _hasData(true);
     }
-
-    if (result.success && result.message.isNotEmpty) {
-      _message(
-        MessagesModel(
-          title: 'Erro',
-          message: 'Não foi possível buscar os dados de hoje',
-          type: MessageType.info,
-        ),
-      );
-      _hasData(false);
-    }
-    _horarioFaltasAtrasos.value = result.data!;
+    _loadingWork(false);
   }
 
   Future<void> prevMonth(DateTime monthSelected) async {

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {
-  final String? title;
-  final Widget? leading;
+  final String title;
+  final Widget leading;
   final List<Widget>? actions;
-  const CustomAppBar({super.key, this.title, this.leading, this.actions});
+  final bool withRoundedBorders;
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    required this.leading,
+    this.actions,
+    this.withRoundedBorders = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,38 +23,28 @@ class CustomAppBar extends StatelessWidget {
           image: AssetImage('assets/images/waves.png'),
           fit: BoxFit.cover,
         ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
+        borderRadius:
+            withRoundedBorders
+                ? BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                )
+                : null,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Row(
-            mainAxisAlignment:
-                title != null
-                    ? MainAxisAlignment.center
-                    : MainAxisAlignment.spaceBetween,
-
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  leading ?? SizedBox.shrink(),
-                  title != null
-                      ? Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Text(
-                          title!,
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      )
-                      : const SizedBox.shrink(),
-                ],
+              leading,
+              Expanded(
+                child: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
               ),
-              Spacer(),
-              ...actions!,
+              ...?actions,
             ],
           ),
         ],

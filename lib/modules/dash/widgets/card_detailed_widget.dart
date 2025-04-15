@@ -15,6 +15,7 @@ class CardDetailedWidget extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool hideNumberDetailed;
   final bool hideTrendingDetail;
+  final bool trendingUp;
 
   const CardDetailedWidget({
     super.key,
@@ -27,6 +28,7 @@ class CardDetailedWidget extends StatelessWidget {
     this.hideNumberDetailed = false,
     this.onPressed,
     this.hideTrendingDetail = false,
+    this.trendingUp = false,
   });
 
   @override
@@ -94,19 +96,19 @@ class CardDetailedWidget extends StatelessWidget {
                               padding: EdgeInsets.all(3),
                               decoration: BoxDecoration(
                                 color:
-                                    percentTaked > 0
+                                    !trendingUp
                                         ? Color.fromARGB(255, 195, 153, 153)
                                         : Color(0xFF97CE71),
                                 shape: BoxShape.circle,
                                 border: Border.all(color: Colors.transparent),
                               ),
                               child: Icon(
-                                percentTaked > 0
+                                !trendingUp
                                     ? Icons.trending_down_outlined
                                     : Icons.trending_up_outlined,
                                 size: 12,
                                 color:
-                                    percentTaked > 0
+                                    !trendingUp
                                         ? Color(0xFF900C0C)
                                         : Color(0xFF43900C),
                               ),
