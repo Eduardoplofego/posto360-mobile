@@ -18,6 +18,7 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
   final _isToConcludedSelect = true.obs;
 
   // Getters
+  bool get isLoading => _loader.value;
   String get checklistName => _checklistName.value;
   bool get hasAnswers => _answersList.isEmpty;
   int get checklistId => _checklistId.value;

@@ -62,4 +62,36 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
       return ResultActionDTO.failure('Erro ao buscar checklists', []);
     }
   }
+
+  @override
+  Future<ResultActionDTO<bool>> startChecklist({
+    required String usuarioId,
+    required int checklistId,
+  }) async {
+    try {
+      final result = await _postoRestClient.post(ApiRoutes.iniciarChecklist(), {
+        'usuarioId': usuarioId,
+        'checklistId': checklistId,
+      });
+
+      final resultMessage = result.body['message'] as String?;
+
+      if (resultMessage != null &&
+          (resultMessage.contains('Checklist encontra-se Em Andamento') ||
+              resultMessage.contains('Checklist foi iniciado'))) {
+        return ResultActionDTO.success();
+      } else {
+        return ResultActionDTO.failure(
+          'Não foi possível iniciar esta checklist. Tente novamente.',
+          false,
+        );
+      }
+    } catch (e, s) {
+      log('Error start checklist', error: e, stackTrace: s);
+      return ResultActionDTO.failure(
+        'Não foi possível iniciar esta checklist. Tente novamente.',
+        false,
+      );
+    }
+  }
 }

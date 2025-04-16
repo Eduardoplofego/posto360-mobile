@@ -57,28 +57,14 @@ class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
             );
           }),
           Divider(height: 0, color: Colors.grey.shade300),
-          Obx(() {
-            return Visibility(
-              visible: controller.hasAnswers,
-              replacement: const SizedBox.shrink(),
-              child: Column(
-                children: [
-                  const SizedBox(height: 28),
-                  Text(
-                    'Nenhuma resposta para essa checklist',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                ],
-              ),
-            );
-          }),
           const SizedBox(height: 16),
           Obx(() {
             return Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Visibility(
-                  visible: controller.listToShow.isNotEmpty,
+                  visible:
+                      controller.listToShow.isNotEmpty && !controller.isLoading,
                   replacement: Column(
                     children: [
                       const SizedBox(height: 28),

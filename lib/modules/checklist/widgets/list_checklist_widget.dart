@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:posto360/core/utils/enums/checklist_status.dart';
 import 'package:posto360/modules/checklist/checklist_controller.dart';
 import 'package:posto360/modules/checklist/widgets/checklist_card_widget.dart';
 
@@ -18,9 +19,19 @@ class ListChecklistWidget extends GetView<ChecklistController> {
             return InkWell(
               onTap: () async {
                 // se checklist nao iniciado perguntar se quer iniciar
-                final isToStartChecklist = await controller
-                    .showDialogToStartChecklist(check.id);
-                if (isToStartChecklist) {
+                if (check.status == ChecklistStatus.aFazer) {
+                  final isToStartChecklist = await controller
+                      .showDialogToStartChecklist(check.id);
+                  if (isToStartChecklist) {
+                    Get.toNamed(
+                      '/checklists/answers/',
+                      parameters: {
+                        'name': check.name,
+                        'id': check.id.toString(),
+                      },
+                    );
+                  }
+                } else {
                   Get.toNamed(
                     '/checklists/answers/',
                     parameters: {'name': check.name, 'id': check.id.toString()},

@@ -11,4 +11,8 @@ abstract class ChecklistsRepository {
     required String usuarioId,
     required int checklistId,
   });
+  Future<ResultActionDTO<bool>> startChecklist({
+    required String usuarioId,
+    required int checklistId,
+  });
 }

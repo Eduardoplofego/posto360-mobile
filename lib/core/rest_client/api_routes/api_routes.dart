@@ -14,6 +14,8 @@ class ApiRoutes {
       '$_backendBaseUrl/api/checklists/vendedor/disponiveis';
   static const _checklistAnswers =
       '$_backendBaseUrl/api/checklists/vendedor/respostas';
+  static const _iniciarChecklist =
+      '$_backendBaseUrl/api/checklists/vendedor/iniciar-checklist';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -24,4 +26,5 @@ class ApiRoutes {
   static String dashboard() => _dashboard;
   static String checklists() => _checklists;
   static String checklistAnswers() => _checklistAnswers;
+  static String iniciarChecklist() => _iniciarChecklist;
 }

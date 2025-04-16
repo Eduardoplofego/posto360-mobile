@@ -30,4 +30,13 @@ class ChecklistServiceImpl extends ChecklistService {
     usuarioId: usuarioId,
     filialId: filialId,
   );
+
+  @override
+  Future<ResultActionDTO<bool>> startChecklist({
+    required String usuarioId,
+    required int checklistId,
+  }) async => _checklistsRepository.startChecklist(
+    usuarioId: usuarioId,
+    checklistId: checklistId,
+  );
 }

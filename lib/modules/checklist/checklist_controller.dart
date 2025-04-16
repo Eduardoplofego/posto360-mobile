@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
+import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/utils/enums/checklist_status.dart';
@@ -8,7 +9,8 @@ import 'package:posto360/models/checklist_model.dart';
 import 'package:posto360/modules/checklist/widgets/checklist_card_widget.dart';
 import 'package:posto360/services/checklists/checklist_service.dart';
 
-class ChecklistController extends GetxController with LoaderMixin {
+class ChecklistController extends GetxController
+    with LoaderMixin, MessageMixin {
   final ChecklistService _checklistService;
 
   ChecklistController({required ChecklistService checklistService})
@@ -18,6 +20,7 @@ class ChecklistController extends GetxController with LoaderMixin {
   void onInit() {
     super.onInit();
     loaderListener(_loading);
+    messageListener(_message);
   }
 
   @override
@@ -30,6 +33,7 @@ class ChecklistController extends GetxController with LoaderMixin {
 
   // Observables
   final _loading = false.obs;
+  final _message = Rxn<MessagesModel>();
   final _checklists = <ChecklistModel>[].obs;
   final _isRunningChecklistSelected = true.obs;
 
@@ -74,6 +78,28 @@ class ChecklistController extends GetxController with LoaderMixin {
         .toList();
   }
 
+  Future<bool> _tryStartChecklist({required int checklistId}) async {
+    final userAuthenticated = Get.find<AuthService>().authenticatedUser;
+    if (userAuthenticated != null) {
+      final resultStart = await _checklistService.startChecklist(
+        usuarioId: userAuthenticated.id,
+        checklistId: checklistId,
+      );
+      if (resultStart.isError) {
+        _message(
+          MessagesModel(
+            title: 'Erro',
+            message: resultStart.message,
+            type: MessageType.error,
+          ),
+        );
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
   Future<bool> showDialogToStartChecklist(int checklistId) async {
     bool isToStartChecklist = false;
     final response = await Get.defaultDialog<bool>(
@@ -91,8 +117,9 @@ class ChecklistController extends GetxController with LoaderMixin {
       contentPadding: EdgeInsets.all(8),
       barrierDismissible: true,
       textConfirm: 'Iniciar',
-      onConfirm: () {
-        Get.back<bool>(result: true);
+      onConfirm: () async {
+        final resultStart = await _tryStartChecklist(checklistId: checklistId);
+        Get.back<bool>(result: resultStart);
       },
       textCancel: 'Não',
       onCancel: () {
