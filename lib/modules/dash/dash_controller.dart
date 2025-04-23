@@ -5,14 +5,17 @@ import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/notification_service.dart';
 import 'package:posto360/core/utils/data_formatters.dart';
+import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/models/dashboard_model.dart';
 import 'package:posto360/models/horario_faltas_model.dart';
 import 'package:posto360/models/user_model.dart';
+import 'package:posto360/services/campanhas/campanhas_service.dart';
 import 'package:posto360/services/dashboard/dashboard_service.dart';
 import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
+  late CampanhasService _campanhasService;
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
   late DashboardService _dashboardService;
   late NotificationService _notificationService;
@@ -23,6 +26,7 @@ class DashController extends FullLifeCycleController
   final _selectPeriodScrollController = ScrollController();
 
   DashController() {
+    _campanhasService = Get.find<CampanhasService>();
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
     _notificationService = Get.find<NotificationService>();
     _dashboardService = Get.find<DashboardService>();
@@ -98,15 +102,34 @@ class DashController extends FullLifeCycleController
 
   Future<void> _loadDashboardModel() async {
     _loadingDashboardModel(true);
-    final result = await _dashboardService.getDashboardData(
-      funcionarioCodigo: autheticatedUser.codigoPDV!,
-      idsCamapnhas: [],
-      data: DataFormatters.formatarData(monthSelected),
+    final resultCampanhas = await _campanhasService.getAllCampanhas(
+      filialId: autheticatedUser.idFilial!,
+      tipoUsuario: autheticatedUser.tipoUsuario,
+      data: monthSelected,
     );
-    if (result.success) {
-      _dashboardModel.value = result.data!;
+
+    if (resultCampanhas.success || resultCampanhas.data!.isEmpty) {
+      final idsCampanhas = _getCampanhasIds(campanhas: resultCampanhas.data!);
+
+      final result = await _dashboardService.getDashboardData(
+        funcionarioCodigo: autheticatedUser.codigoPDV!,
+        idsCamapnhas: idsCampanhas,
+        data: DataFormatters.formatarData(monthSelected),
+      );
+      if (result.success) {
+        _dashboardModel.value = result.data!;
+      }
     }
+
     _loadingDashboardModel(false);
+  }
+
+  List<int> _getCampanhasIds({required List<CampanhaModel> campanhas}) {
+    var idsCamps = <int>[];
+    for (var campanha in campanhas) {
+      idsCamps.add(campanha.campanhaId);
+    }
+    return idsCamps;
   }
 
   Future<void> _loadHorarioFaltaAtraso() async {

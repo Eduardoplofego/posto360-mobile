@@ -5,6 +5,7 @@ import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/general_checklist_widget.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/modules/checklist_answer/widgets/checklist_answer_card.dart';
+import 'package:posto360/modules/checklist_answer/widgets/modals/answer_checklist_modal.dart';
 import './checklist_answer_controller.dart';
 
 class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
@@ -75,12 +76,31 @@ class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
                     ],
                   ),
                   child: ListView.separated(
-                    itemCount: controller.listToShow.length,
+                    itemCount: controller.listToShow.length + 1,
                     separatorBuilder:
                         (context, index) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
-                      final answer = controller.listToShow[index];
-                      return ChecklistAnswerCard(answer: answer);
+                      if (index == controller.listToShow.length) {
+                        return const SizedBox(height: 32);
+                      } else {
+                        final answer = controller.listToShow[index];
+                        return ChecklistAnswerCard(
+                          answer: answer,
+                          onPressed: () async {
+                            if (!answer.respostaDada) {
+                              await showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) {
+                                  return AnswerChecklistModal(
+                                    answerModel: answer,
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        );
+                      }
                     },
                   ),
                 ),

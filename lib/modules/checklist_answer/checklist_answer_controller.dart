@@ -17,6 +17,8 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
   final _answersList = <ChecklistAnswerModel>[].obs;
   final _isToConcludedSelect = true.obs;
 
+  final _cardOptionSelectedIndex = RxnInt(1);
+
   // Getters
   bool get isLoading => _loader.value;
   String get checklistName => _checklistName.value;
@@ -31,6 +33,7 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
       _answersList.where((answer) => answer.respostaDada).toList();
   int get totalConcludedAnswers => concludedAnswersList.length;
   int get totalToConcludeAnswers => toConcludedAnswersList.length;
+  int? get cardOptionSelectedIndex => _cardOptionSelectedIndex.value;
 
   // Actions
   @override
@@ -67,5 +70,9 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
       );
       _answersList.value = result.data!;
     }
+  }
+
+  void checkAnswerCard(int? index) {
+    _cardOptionSelectedIndex.value = index;
   }
 }

@@ -50,6 +50,7 @@ dependencies:
   video_player: ^2.9.5
   chewie: ^1.11.1
   syncfusion_flutter_pdfviewer: ^29.1.35
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_test:

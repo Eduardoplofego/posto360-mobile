@@ -52,8 +52,7 @@ class CampanhaCardWidget extends StatelessWidget {
               campanha.tipoBonificacao == TypeBonificacao.unidade
                   ? '${campanha.volumeBonificacao.toStringAsFixed(0)} unid.'
                   : UtilBrasilFields.obterReal(
-                    (campanha.volumeBonificacao * campanha.valorBonificacao)
-                        .toDouble(),
+                    (campanha.volumeBonificacao).toDouble(),
                   ),
             ),
           ),

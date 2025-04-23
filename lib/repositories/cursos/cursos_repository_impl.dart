@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:posto360/core/dto/result_action_dto.dart';
 import 'package:posto360/core/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/core/rest_client/posto_rest_client.dart';
-import 'package:posto360/core/utils/enums/curso_status.dart';
 import 'package:posto360/models/curso_model.dart';
 
 import './cursos_repository.dart';

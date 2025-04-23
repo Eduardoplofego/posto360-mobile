@@ -27,6 +27,11 @@ class DashboardRepositoryImpl extends DashboardRepository {
         "data": data,
       });
       if (result.statusCode != null && result.statusCode! >= 400) {
+        log(
+          'Erro get dashboardData',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
         return ResultActionDTO.failure(
           'Erro ao buscar dados',
           DashboardModel.empty(),

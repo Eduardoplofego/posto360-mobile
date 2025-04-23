@@ -35,7 +35,7 @@ class ChecklistAnswerModel {
       'fotoUrl': fotoUrl,
       'observacoes': observacoes,
       'usuarioId': usuarioId,
-      'necessitaRevisao': necessitaRevisao,
+      'NecessitaRevisao': necessitaRevisao,
       'opcoes': opcoes,
     };
   }
@@ -50,7 +50,7 @@ class ChecklistAnswerModel {
       fotoUrl: map['fotoUrl'],
       observacoes: map['observacoes'],
       usuarioId: map['usuarioId'] ?? '',
-      necessitaRevisao: map['necessitaRevisao'] ?? false,
+      necessitaRevisao: map['NecessitaRevisao'] ?? false,
       opcoes: map['opcoes'],
     );
   }
