@@ -52,6 +52,7 @@ class DashController extends FullLifeCycleController
   bool get loadingWork => _loadingWork.value;
 
   final _dashboardModel = Rx(DashboardModel.empty());
+  final _hasDashboardModel = false.obs;
   final _authenticatedUser = Rx<UserModel>(UserModel.empty());
   final _horarioFaltasAtrasos = Rx<HorarioFaltasModel>(
     HorarioFaltasModel.empty(),
@@ -62,6 +63,7 @@ class DashController extends FullLifeCycleController
   final _hasNextMonth = false.obs;
 
   DashboardModel get dashboardModel => _dashboardModel.value;
+  bool get hasDashboardModel => _hasDashboardModel.value;
   UserModel get autheticatedUser => _authenticatedUser.value;
   String get nameUser =>
       autheticatedUser.name + (autheticatedUser.lastName ?? '');
@@ -85,7 +87,7 @@ class DashController extends FullLifeCycleController
     _authenticatedUser.value = UserModel.fromMap(
       GetStorage().read(Constants.USER_KEY),
     );
-    await Future.wait([_loadHorarioFaltaAtraso(), _loadDashboardModel()]);
+    await Future.wait([_loadHorarioFaltaAtraso(), loadDashboardModel()]);
     _loadQuantityDaysInMonth();
   }
 
@@ -100,7 +102,7 @@ class DashController extends FullLifeCycleController
     }
   }
 
-  Future<void> _loadDashboardModel() async {
+  Future<void> loadDashboardModel() async {
     _loadingDashboardModel(true);
     final resultCampanhas = await _campanhasService.getAllCampanhas(
       filialId: autheticatedUser.idFilial!,
@@ -118,7 +120,10 @@ class DashController extends FullLifeCycleController
       );
       if (result.success) {
         _dashboardModel.value = result.data!;
+        _hasDashboardModel(true);
       }
+    } else {
+      _hasDashboardModel(false);
     }
 
     _loadingDashboardModel(false);
@@ -175,6 +180,7 @@ class DashController extends FullLifeCycleController
     _hasNextMonth.value = true;
     await _loadHorarioFaltaAtraso();
     _loadQuantityDaysInMonth();
+    await loadDashboardModel();
   }
 
   Future<void> nextMonth(DateTime monthSelected) async {
@@ -186,6 +192,7 @@ class DashController extends FullLifeCycleController
     _monthSelected.value = monthSelected;
     await _loadHorarioFaltaAtraso();
     _loadQuantityDaysInMonth();
+    await loadDashboardModel();
   }
 
   @override
