@@ -11,6 +11,7 @@ class AuthService extends GetxService {
   UserModel? get authenticatedUser => getUser();
 
   Future<AuthService> init() async {
+    await Future.delayed(const Duration(seconds: 2));
     _getStorage.listenKey(Constants.JWT_TOKEN, (value) {
       _isLogged(value != null);
     });
