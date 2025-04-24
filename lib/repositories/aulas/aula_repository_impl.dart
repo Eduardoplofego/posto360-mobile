@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:posto360/core/dto/result_action_dto.dart';
+import 'package:posto360/core/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/core/rest_client/posto_rest_client.dart';
 import 'package:posto360/core/utils/enums/aula_status.dart';
 
@@ -77,18 +78,18 @@ class AulaRepositoryImpl extends AulaRepository {
     required String usuarioId,
   }) async {
     try {
-      // final result = await _restClient.post(ApiRoutes.aulas(), {
-      //   'cursoId': cursoId,
-      //   'usuarioId': usuarioId,
-      // });
-      // if (result.statusCode! >= 400) {
-      //   return ResultActionDTO.failure(
-      //     'Não foi possível buscar as aulas deste curso.',
-      //     [],
-      //   );
-      // }
-      // return ResultActionDTO.success(data: result.body);
-      return ResultActionDTO.success(data: _aulas);
+      final result = await _restClient.post(ApiRoutes.aulas(), {
+        'cursoId': cursoId,
+        'usuarioId': usuarioId,
+      });
+      if (result.statusCode! >= 400) {
+        return ResultActionDTO.failure(
+          'Não foi possível buscar as aulas deste curso.',
+          [],
+        );
+      }
+      return ResultActionDTO.success(data: result.body);
+      // return ResultActionDTO.success(data: _aulas);
     } catch (e, s) {
       log('Erro ao buscar aulas', error: e, stackTrace: s);
       return ResultActionDTO.failure('Algo deu errado', []);

@@ -16,7 +16,7 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
     : _postoRestClient = postoRestClient;
 
   @override
-  Future<ResultActionDTO<List<ChecklistAnswerModel>>> checklistAnswer({
+  Future<ResultActionDTO<List<ChecklistAnswerModel>>> getChecklistAnswers({
     required String usuarioId,
     required int checklistId,
   }) async {
@@ -90,6 +90,43 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
       log('Error start checklist', error: e, stackTrace: s);
       return ResultActionDTO.failure(
         'Não foi possível iniciar esta checklist. Tente novamente.',
+        false,
+      );
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<bool>> pushChecklistAnswer({
+    required int respostaId,
+    required String resposta,
+    String? observacoes,
+    String? photoUrl,
+    bool? necessitaRevisao,
+  }) async {
+    try {
+      final result = await _postoRestClient.post(ApiRoutes.subirResposta(), {
+        'respostaId': respostaId,
+        'resposta': resposta,
+        'observacoes': observacoes,
+        'fotoUrl': photoUrl,
+        'necessitaRevisao': necessitaRevisao,
+      });
+
+      final resultMessage = result.body['message'] as String?;
+
+      if (resultMessage != null &&
+          resultMessage.contains("Resposta dada com sucesso!")) {
+        return ResultActionDTO.success();
+      } else {
+        return ResultActionDTO.failure(
+          'Não foi possível enviar essa resposta',
+          false,
+        );
+      }
+    } catch (e, s) {
+      log('Erro subir resposta', error: e, stackTrace: s);
+      return ResultActionDTO.failure(
+        'Não foi possível enviar essa resposta',
         false,
       );
     }

@@ -7,12 +7,19 @@ abstract class ChecklistsRepository {
     required String usuarioId,
     required int filialId,
   });
-  Future<ResultActionDTO<List<ChecklistAnswerModel>>> checklistAnswer({
+  Future<ResultActionDTO<List<ChecklistAnswerModel>>> getChecklistAnswers({
     required String usuarioId,
     required int checklistId,
   });
   Future<ResultActionDTO<bool>> startChecklist({
     required String usuarioId,
     required int checklistId,
+  });
+  Future<ResultActionDTO<bool>> pushChecklistAnswer({
+    required int respostaId,
+    required String resposta,
+    String? observacoes,
+    String? photoUrl,
+    bool? necessitaRevisao,
   });
 }

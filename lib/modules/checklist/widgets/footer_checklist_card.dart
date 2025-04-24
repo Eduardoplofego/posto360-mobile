@@ -32,7 +32,7 @@ class FooterChecklistCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Fernando Sampaio',
+                  'Indefinido',
                   style: TextStyle(
                     color: PostoAppUiConfigurations.textDarkColor,
                     fontSize: 12,

@@ -17,7 +17,7 @@ class ChecklistServiceImpl extends ChecklistService {
   Future<ResultActionDTO<List<ChecklistAnswerModel>>> checklistAnswer({
     required String usuarioId,
     required int checklistId,
-  }) async => await _checklistsRepository.checklistAnswer(
+  }) async => await _checklistsRepository.getChecklistAnswers(
     usuarioId: usuarioId,
     checklistId: checklistId,
   );
