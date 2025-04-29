@@ -90,7 +90,7 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   Future<void> _loadAulas() async {
     if (_curso.value != null) {
       final aulasDto = await _aulasService.getAulas(
-        cursoId: _curso.value!.id,
+        cursoId: _curso.value!.templateId,
         usuarioId: _authService.authenticatedUser!.id,
       );
       if (aulasDto.success) {
@@ -215,6 +215,14 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
     final result = await _aulasService.concludeAula(aulaId: currentAula!.id);
     if (result) {
       await _loadAulas();
+    } else {
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: 'Não foi possivel concluir a aula. \nTente novamente',
+          type: MessageType.error,
+        ),
+      );
     }
     _isVisulizeAulaLoading(false);
   }

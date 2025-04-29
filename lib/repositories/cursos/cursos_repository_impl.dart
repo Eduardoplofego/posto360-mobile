@@ -21,14 +21,16 @@ class CursosRepositoryImpl extends CursosRepository {
       final response = await _restClient.post(ApiRoutes.cursos(), {
         'usuarioId': usuarioId,
       });
+
+      final resultBody = response.body;
       final cursos =
-          response.body
+          resultBody
               .map<CursoModel>((curso) => CursoModel.fromMap(curso))
               .toList() ??
           [];
       return ResultActionDTO.success(data: cursos);
     } catch (e, s) {
-      log('Erro get campanhas', error: e, stackTrace: s);
+      log('Erro get cursos', error: e, stackTrace: s);
       return ResultActionDTO.failure('Não foi possível obter os cursos', []);
     }
   }

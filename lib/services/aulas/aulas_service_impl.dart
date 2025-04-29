@@ -21,7 +21,7 @@ class AulasServiceImpl extends AulasService {
   @override
   Future<bool> concludeAula({required int aulaId}) async {
     final result = await _aulasRepository.concludeAula(aulaId: aulaId);
-    if (result.isError) {
+    if (result.isError || result.data == false) {
       return false;
     }
     return true;

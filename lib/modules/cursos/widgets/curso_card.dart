@@ -56,7 +56,7 @@ class CursoCard extends StatelessWidget {
                   ),
                 ),
               ),
-              curso.ultimoAcesso != null
+              curso.ultimoAcesso != null && curso.ultimoAcesso!.year != 1900
                   ? Flexible(
                     child: Text(
                       'Acessado em ${DataFormatters.formatarData(curso.ultimoAcesso!)}',

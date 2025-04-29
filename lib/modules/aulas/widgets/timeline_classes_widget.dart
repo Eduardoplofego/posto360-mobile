@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/data_formatters.dart';
 import 'package:posto360/core/utils/enums/aula_status.dart';
 import 'package:posto360/models/aula_model.dart';
 
@@ -17,7 +16,7 @@ class TimelineClassItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isConcluded = aula.status == AulaStatus.finalizado;
-    final isBlocked = aula.status == AulaStatus.bloqueado;
+    final isBlocked = aula.status == AulaStatus.bloqueado || !isCurrent;
     return Stack(
       children: [
         Column(
@@ -93,9 +92,9 @@ class TimelineClassItemWidget extends StatelessWidget {
                                 color: PostoAppUiConfigurations.textDarkColor,
                               ),
                             ),
-                            Text(
-                              'Duração: ${DataFormatters.getDurationHM(aula.duracao)}',
-                            ),
+                            // Text(
+                            //   'Duração: ${DataFormatters.getDurationHM(aula.duracao)}',
+                            // ),
                           ],
                         ),
                       ),

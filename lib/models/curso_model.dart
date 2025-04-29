@@ -45,8 +45,8 @@ class CursoModel {
 
   factory CursoModel.fromMap(Map<String, dynamic> map) {
     return CursoModel(
-      id: int.tryParse(map['id']) ?? 0,
-      templateId: int.tryParse(map['templateId']) ?? 0,
+      id: map['id'] ?? 0,
+      templateId: map['templateId'] ?? 0,
       titulo: map['titulo'] ?? '',
       descricao: map['descricao'] ?? '',
       capa: map['capa'] ?? '',
@@ -54,9 +54,15 @@ class CursoModel {
       tipoUsuario: map['tipoUsuario'] ?? '',
       aulasConcluidas: map['aulasConcluidas'] ?? 0,
       totalAulas: map['totalAulas'] ?? 0,
-      inscricao: DateTime.parse(map['dataInicio'].toString()),
-      ultimoAcesso: DateTime.parse(map['ultimoAcesso'].toString()),
-      certificadoEmitido: map['certificadoEmitido'] ?? false,
+      inscricao:
+          map['dataInicio'] != null
+              ? DateTime.parse(map['dataInicio'])
+              : DateTime(1900),
+      ultimoAcesso:
+          map['ultimoAcesso'] != null
+              ? DateTime.parse(map['ultimoAcesso'])
+              : DateTime(1900),
+      certificadoEmitido: false,
     );
   }
 

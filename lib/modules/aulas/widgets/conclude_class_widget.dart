@@ -10,7 +10,7 @@ class ConcludeClassWidget extends GetView<AulasController> {
   Widget build(BuildContext context) {
     return Obx(() {
       bool isCurrentConcluded =
-          controller.currentAula!.status == AulaStatus.finalizado;
+          controller.currentAula?.status == AulaStatus.finalizado;
       return controller.hasData && !controller.isLoading
           ? Container(
             width: Get.width,
