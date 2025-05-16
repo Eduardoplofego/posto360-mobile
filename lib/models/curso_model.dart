@@ -70,4 +70,9 @@ class CursoModel {
 
   factory CursoModel.fromJson(String source) =>
       CursoModel.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'CursoModel(id: $id, templateId: $templateId, titulo: $titulo, descricao: $descricao, capa: $capa, status: $status, tipoUsuario: $tipoUsuario, totalAulas: $totalAulas, aulasConcluidas: $aulasConcluidas, inscricao: $inscricao, ultimoAcesso: $ultimoAcesso, certificadoEmitido: $certificadoEmitido)';
+  }
 }

@@ -16,6 +16,7 @@ class ChecklistCardWidget extends StatelessWidget {
         return _toDoChecklistCard(checklist);
       case ChecklistStatus.finalizado:
       case ChecklistStatus.emRevisao:
+        return const SizedBox.shrink();
       case ChecklistStatus.emAndamento:
         return _otherChecklistCard(checklist);
     }
@@ -86,7 +87,7 @@ Widget _otherChecklistCard(ChecklistModel checklist) {
                         checklist.name,
                         style: TextStyle(
                           color: PostoAppUiConfigurations.textDarkColor,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -112,14 +113,18 @@ Widget _otherChecklistCard(ChecklistModel checklist) {
                         : const SizedBox.shrink(),
                   ],
                 ),
-                const SizedBox(height: 6),
                 checklist.description != ''
-                    ? Text(
-                      checklist.description,
-                      style: TextStyle(
-                        color: PostoAppUiConfigurations.textDarkColor,
-                        fontWeight: FontWeight.w400,
-                      ),
+                    ? Column(
+                      children: [
+                        const SizedBox(height: 6),
+                        Text(
+                          checklist.description,
+                          style: TextStyle(
+                            color: PostoAppUiConfigurations.textDarkColor,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
                     )
                     : const SizedBox.shrink(),
               ],

@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 class DashboardModel {
-  final int quantidadeCampanhas;
-  final int realizadoCampanhas;
-  final int totalCursos;
-  final int cursosConcluidos;
-  final int totalChecklist;
-  final int checklistsConcluidas;
+  int quantidadeCampanhas;
+  int realizadoCampanhas;
+  int totalCursos;
+  int cursosConcluidos;
+  int totalChecklist;
+  int checklistsConcluidas;
 
   DashboardModel({
     required this.quantidadeCampanhas,
@@ -40,12 +40,13 @@ class DashboardModel {
 
   factory DashboardModel.fromMap(Map<String, dynamic> map) {
     return DashboardModel(
-      quantidadeCampanhas: map['quantidadeCampanhas']?.toInt() ?? 0,
-      realizadoCampanhas: map['realizadoCampanha']?.toInt() ?? 0.0,
-      totalCursos: map['totalCursos']?.toInt() ?? 0,
-      cursosConcluidos: map['cursosConcluidos']?.toInt() ?? 0,
-      totalChecklist: map['totalChecklist']?.toInt() ?? 0,
-      checklistsConcluidas: map['checklistsConcluidas']?.toInt() ?? 0,
+      quantidadeCampanhas: map['quantidadeCampanhas'] ?? 0,
+      realizadoCampanhas: map['realizadoCampanha'] ?? 0,
+
+      totalCursos: map['cursos']['total'] ?? 0,
+      cursosConcluidos: map['cursos']['concluidos'] ?? 0,
+      totalChecklist: map['checklists']['total'] ?? 0,
+      checklistsConcluidas: map['checklists']['concluidos'] ?? 0,
     );
   }
 

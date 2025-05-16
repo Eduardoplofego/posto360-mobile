@@ -133,20 +133,35 @@ class ItemCamapanhaPercentCompletedWidget extends StatelessWidget {
         const SizedBox(width: 10),
         Text(titleItem),
         const SizedBox(width: 10),
-        Expanded(
-          child: Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: List.generate(
-              totalPercentCompleted,
-              (index) => Icon(
+        if (totalPercentCompleted < 5)
+          Expanded(
+            child: Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              children: List.generate(
+                totalPercentCompleted,
+                (index) => Icon(
+                  Icons.workspace_premium_outlined,
+                  size: 18,
+                  color: Colors.yellow.shade900,
+                ),
+              ),
+            ),
+          ),
+        if (totalPercentCompleted >= 5) ...[
+          Row(
+            children: [
+              Text('+$totalPercentCompleted'),
+              Icon(
                 Icons.workspace_premium_outlined,
                 size: 18,
                 color: Colors.yellow.shade900,
               ),
-            ),
+            ],
           ),
-        ),
+          Spacer(),
+        ],
+
         Text(value, style: TextStyle(fontWeight: FontWeight.w500)),
       ],
     );

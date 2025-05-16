@@ -8,7 +8,12 @@ import 'package:posto360/modules/cursos/widgets/curso_progress_widget.dart';
 
 class CursoCard extends StatelessWidget {
   final CursoModel curso;
-  const CursoCard({super.key, required this.curso});
+  final VoidCallback afterReturnClass;
+  const CursoCard({
+    super.key,
+    required this.curso,
+    required this.afterReturnClass,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +25,7 @@ class CursoCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          CursoFolderWidget(curso: curso),
+          CursoFolderWidget(curso: curso, afterReturnClass: afterReturnClass),
           const SizedBox(height: 12),
           SizedBox(
             width: Get.width,
@@ -48,7 +53,7 @@ class CursoCard extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Inscrito em ${DataFormatters.formatarData(curso.inscricao)}',
+                  'Inscrito em: ${DataFormatters.formatarData(curso.inscricao)}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,

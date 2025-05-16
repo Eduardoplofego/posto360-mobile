@@ -21,7 +21,7 @@ class NumberChecksWidget extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: PostoAppUiConfigurations.lightPurpleColor,
+              color: Color(0xFFF5F6F8),
             ),
             child: Text(
               '$totalChecks tarefas',
@@ -35,7 +35,7 @@ class NumberChecksWidget extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: PostoAppUiConfigurations.lightPurpleColor,
+              color: Color(0xFFF5F6F8),
             ),
             child: Text(
               '$concludedChecks concluídas',

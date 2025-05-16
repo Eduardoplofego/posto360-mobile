@@ -16,7 +16,7 @@ class DataFormatters {
   }
 
   static String formatarData(DateTime data) {
-    DateFormat formato = DateFormat('dd/MM/yyyy', 'pt_BR');
+    DateFormat formato = DateFormat('yyyy-MM-dd', 'pt_BR');
     String dataFormatada = formato.format(data);
     return dataFormatada;
   }

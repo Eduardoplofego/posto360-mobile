@@ -6,7 +6,12 @@ import 'package:posto360/modules/cursos/dtos/curso_to_aula_dto.dart';
 
 class CursoFolderWidget extends StatelessWidget {
   final CursoModel curso;
-  const CursoFolderWidget({super.key, required this.curso});
+  final VoidCallback afterReturnClass;
+  const CursoFolderWidget({
+    super.key,
+    required this.curso,
+    required this.afterReturnClass,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,22 +19,27 @@ class CursoFolderWidget extends StatelessWidget {
       width: Get.width,
       height: 142,
       decoration: BoxDecoration(
+        color: curso.capa == '' ? Colors.grey.shade200 : null,
         borderRadius: BorderRadius.circular(10),
-        image: DecorationImage(
-          image: NetworkImage(curso.capa),
-          fit: BoxFit.cover,
-        ),
+        image:
+            curso.capa != ''
+                ? DecorationImage(
+                  image: NetworkImage(curso.capa),
+                  fit: BoxFit.cover,
+                )
+                : null,
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: () {
-                Get.toNamed(
+              onTap: () async {
+                await Get.toNamed(
                   '/cursos/aulas',
                   arguments: CursoToAulaDTO(curso: curso),
                 );
+                afterReturnClass();
               },
               borderRadius: BorderRadius.circular(50),
               child: Container(

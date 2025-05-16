@@ -5,7 +5,6 @@ import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/notification_service.dart';
 import 'package:posto360/core/utils/data_formatters.dart';
-import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/models/dashboard_model.dart';
 import 'package:posto360/models/horario_faltas_model.dart';
 import 'package:posto360/models/user_model.dart';
@@ -87,8 +86,10 @@ class DashController extends FullLifeCycleController
     _authenticatedUser.value = UserModel.fromMap(
       GetStorage().read(Constants.USER_KEY),
     );
-    await Future.wait([_loadHorarioFaltaAtraso(), loadDashboardModel()]);
     _loadQuantityDaysInMonth();
+    _loader(true);
+    await Future.wait([_loadHorarioFaltaAtraso(), loadDashboardModel()]);
+    _loader(false);
   }
 
   void _loadQuantityDaysInMonth() {
@@ -110,31 +111,24 @@ class DashController extends FullLifeCycleController
       data: monthSelected,
     );
 
-    if (resultCampanhas.success || resultCampanhas.data!.isEmpty) {
-      final idsCampanhas = _getCampanhasIds(campanhas: resultCampanhas.data!);
-
-      final result = await _dashboardService.getDashboardData(
+    if (resultCampanhas.success || resultCampanhas.data!.isNotEmpty) {
+      final dashboardResult = await _dashboardService.getDashboardData(
         funcionarioCodigo: autheticatedUser.codigoPDV!,
-        idsCamapnhas: idsCampanhas,
+        campanhas: resultCampanhas.data!,
         data: DataFormatters.formatarData(monthSelected),
       );
-      if (result.success) {
-        _dashboardModel.value = result.data!;
+
+      if (dashboardResult.success) {
+        _dashboardModel.value = dashboardResult.data!;
         _hasDashboardModel(true);
+      } else {
+        _hasDashboardModel(false);
       }
     } else {
       _hasDashboardModel(false);
     }
 
     _loadingDashboardModel(false);
-  }
-
-  List<int> _getCampanhasIds({required List<CampanhaModel> campanhas}) {
-    var idsCamps = <int>[];
-    for (var campanha in campanhas) {
-      idsCamps.add(campanha.campanhaId);
-    }
-    return idsCamps;
   }
 
   Future<void> _loadHorarioFaltaAtraso() async {
@@ -178,6 +172,7 @@ class DashController extends FullLifeCycleController
   Future<void> prevMonth(DateTime monthSelected) async {
     _monthSelected.value = monthSelected;
     _hasNextMonth.value = true;
+    _loadingDashboardModel(true);
     await _loadHorarioFaltaAtraso();
     _loadQuantityDaysInMonth();
     await loadDashboardModel();
@@ -190,6 +185,7 @@ class DashController extends FullLifeCycleController
         !(monthSelected.year == now.year && monthSelected.month == now.month);
 
     _monthSelected.value = monthSelected;
+    _loadingDashboardModel(true);
     await _loadHorarioFaltaAtraso();
     _loadQuantityDaysInMonth();
     await loadDashboardModel();

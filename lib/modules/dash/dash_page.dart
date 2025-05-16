@@ -42,137 +42,160 @@ class DashPage extends GetView<DashController> {
             onRefresh: controller.onRefresh,
             backgroundColor: Colors.white,
             color: PostoAppUiConfigurations.blueMediumColor,
-            child: ListView(
-              children: [
-                const SizedBox(height: 8),
-                CardLoadingWidget(
-                  isLoading: controller.loadingWork,
-                  height: 80,
-                  initDelay: 50,
-                  child: ProfileCardWidget(),
-                ),
-                const SizedBox(height: 26),
-                CardLoadingWidget(
-                  isLoading: controller.loadingWork,
-                  height: 100,
-                  initDelay: 150,
-                  child: WorkingDayWidget(),
-                ),
-                const SizedBox(height: 28),
-                DashboardSectionHeaderWidget(),
-                const SizedBox(height: 16),
-                CardLoadingWidget(
-                  isLoading: controller.loadingWork,
-                  height: 190,
-                  initDelay: 200,
-                  child: CardDetailedWidget(
-                    icon: Icons.event_busy_outlined,
-                    totalNumber: controller.horarioFaltasAtrasos.faltas,
-                    title: 'Número de faltas',
-                    totalNumberDetailed: controller.daysRegistered,
-                    totalNumberDetailedText: 'dias registrados',
-                    totalTakeNumberDetailedText: 'dias com falta',
-                    trendingUp: controller.horarioFaltasAtrasos.faltas == 0,
-                  ),
-                ),
-                const SizedBox(height: 17),
-                CardLoadingWidget(
-                  isLoading: controller.loadingWork,
-                  height: 190,
-                  initDelay: 250,
-                  child: CardDetailedWidget(
-                    icon: Icons.timer_off_outlined,
-                    totalNumber: controller.horarioFaltasAtrasos.atrasos,
-                    title: 'Número de atrasos',
-                    totalNumberDetailed: controller.daysRegistered,
-                    totalNumberDetailedText: 'dias registrados',
-                    totalTakeNumberDetailedText: 'dias com atraso',
-                    trendingUp: controller.horarioFaltasAtrasos.atrasos == 0,
-                  ),
-                ),
-                const SizedBox(height: 17),
-                if (controller.loadingDashboardModel)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24),
-                    child: Center(
-                      child: SizedBox(
-                        width: 35,
-                        height: 35,
-                        child: CircularProgressIndicator(
-                          color: PostoAppUiConfigurations.blueMediumColor,
+            child:
+                controller.isLoading
+                    ? Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Center(
+                        child: SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: CircularProgressIndicator(
+                            color: PostoAppUiConfigurations.blueMediumColor,
+                          ),
                         ),
                       ),
+                    )
+                    : ListView(
+                      children: [
+                        const SizedBox(height: 8),
+                        CardLoadingWidget(
+                          isLoading: controller.loadingWork,
+                          height: 80,
+                          initDelay: 50,
+                          child: ProfileCardWidget(),
+                        ),
+                        const SizedBox(height: 26),
+                        CardLoadingWidget(
+                          isLoading: controller.loadingWork,
+                          height: 100,
+                          initDelay: 150,
+                          child: WorkingDayWidget(),
+                        ),
+                        const SizedBox(height: 28),
+                        DashboardSectionHeaderWidget(),
+                        const SizedBox(height: 16),
+                        CardLoadingWidget(
+                          isLoading: controller.loadingWork,
+                          height: 190,
+                          initDelay: 200,
+                          child: CardDetailedWidget(
+                            icon: Icons.event_busy_outlined,
+                            totalNumber: controller.horarioFaltasAtrasos.faltas,
+                            title: 'Número de faltas',
+                            totalNumberDetailed: controller.daysRegistered,
+                            totalNumberDetailedText: 'dias registrados',
+                            totalTakeNumberDetailedText: 'dias com falta',
+                            trendingUp:
+                                controller.horarioFaltasAtrasos.faltas == 0,
+                          ),
+                        ),
+                        const SizedBox(height: 17),
+                        CardLoadingWidget(
+                          isLoading: controller.loadingWork,
+                          height: 190,
+                          initDelay: 250,
+                          child: CardDetailedWidget(
+                            icon: Icons.timer_off_outlined,
+                            totalNumber:
+                                controller.horarioFaltasAtrasos.atrasos,
+                            title: 'Número de atrasos',
+                            totalNumberDetailed: controller.daysRegistered,
+                            totalNumberDetailedText: 'dias registrados',
+                            totalTakeNumberDetailedText: 'dias com atraso',
+                            trendingUp:
+                                controller.horarioFaltasAtrasos.atrasos == 0,
+                          ),
+                        ),
+                        const SizedBox(height: 17),
+                        if (controller.loadingDashboardModel)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 24),
+                            child: Center(
+                              child: SizedBox(
+                                width: 35,
+                                height: 35,
+                                child: CircularProgressIndicator(
+                                  color:
+                                      PostoAppUiConfigurations.blueMediumColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (controller.hasDashboardModel &&
+                            !controller.loadingDashboardModel) ...[
+                          CardLoadingWidget(
+                            isLoading: controller.loadingDashboardModel,
+                            height: 200,
+                            initDelay: 300,
+                            child: CardDetailedWidget(
+                              icon: Icons.speed_outlined,
+                              totalNumber:
+                                  controller.dashboardModel.realizadoCampanhas,
+                              title: 'Performance Produtos Incentivados',
+                              totalNumberDetailed:
+                                  controller.dashboardModel.quantidadeCampanhas,
+                              totalNumberDetailedText: 'Meta',
+                              totalTakeNumberDetailedText: 'Realizado',
+                              hideTrendingDetail: true,
+                              onPressed: () {
+                                Get.toNamed('/campanhas');
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 17),
+                          CardLoadingWidget(
+                            isLoading: controller.loadingDashboardModel,
+                            height: 190,
+                            initDelay: 200,
+                            child: CardDetailedWidget(
+                              icon: Icons.school_outlined,
+                              totalNumber:
+                                  controller.dashboardModel.cursosConcluidos
+                                      .toInt(),
+                              title: 'Performance Cursos',
+                              totalNumberDetailed:
+                                  controller.dashboardModel.totalCursos.toInt(),
+                              totalNumberDetailedText: 'cursos',
+                              totalTakeNumberDetailedText: 'concluídos',
+                              trendingUp: true,
+                              onPressed: () {
+                                Get.toNamed('/cursos');
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 17),
+                          CardLoadingWidget(
+                            isLoading: controller.loadingDashboardModel,
+                            height: 190,
+                            initDelay: 200,
+                            child: CardDetailedWidget(
+                              icon: Icons.checklist_sharp,
+                              totalNumber:
+                                  controller.dashboardModel.checklistsConcluidas
+                                      .toInt(),
+                              title: 'Performance Checklists',
+                              totalNumberDetailed:
+                                  controller.dashboardModel.totalChecklist
+                                      .toInt(),
+                              totalNumberDetailedText: 'checklists',
+                              totalTakeNumberDetailedText: 'concluídos',
+                              trendingUp: true,
+                              onPressed: () {
+                                Get.toNamed('/checklists');
+                              },
+                            ),
+                          ),
+                        ],
+                        if (!controller.hasDashboardModel &&
+                            !controller.loadingDashboardModel) ...[
+                          EmptyDashboardModelWidget(
+                            onRefresh: controller.loadDashboardModel,
+                          ),
+                        ],
+                        const SizedBox(height: 32),
+                      ],
                     ),
-                  ),
-                if (controller.hasDashboardModel &&
-                    controller.loadingDashboardModel) ...[
-                  CardLoadingWidget(
-                    isLoading: controller.loadingDashboardModel,
-                    height: 200,
-                    initDelay: 300,
-                    child: CardDetailedWidget(
-                      icon: Icons.speed_outlined,
-                      totalNumber: controller.dashboardModel.realizadoCampanhas,
-                      title: 'Performance Produtos Incentivados',
-                      totalNumberDetailed:
-                          controller.dashboardModel.quantidadeCampanhas,
-                      totalNumberDetailedText: 'Meta',
-                      totalTakeNumberDetailedText: 'Realizado',
-                      hideTrendingDetail: true,
-                      onPressed: () {
-                        Get.toNamed('/campanhas');
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 17),
-                  CardLoadingWidget(
-                    isLoading: controller.loadingDashboardModel,
-                    height: 190,
-                    initDelay: 200,
-                    child: CardDetailedWidget(
-                      icon: Icons.school_outlined,
-                      totalNumber: controller.dashboardModel.cursosConcluidos,
-                      title: 'Performance Cursos',
-                      totalNumberDetailed:
-                          controller.dashboardModel.totalCursos,
-                      totalNumberDetailedText: 'cursos',
-                      totalTakeNumberDetailedText: 'concluídos',
-                      trendingUp: true,
-                      onPressed: () {
-                        Get.toNamed('/cursos');
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 17),
-                  CardLoadingWidget(
-                    isLoading: controller.loadingDashboardModel,
-                    height: 190,
-                    initDelay: 200,
-                    child: CardDetailedWidget(
-                      icon: Icons.checklist_sharp,
-                      totalNumber:
-                          controller.dashboardModel.checklistsConcluidas,
-                      title: 'Performance Checklists',
-                      totalNumberDetailed:
-                          controller.dashboardModel.totalChecklist,
-                      totalNumberDetailedText: 'checklists',
-                      totalTakeNumberDetailedText: 'concluídos',
-                      trendingUp: true,
-                      onPressed: () {
-                        Get.toNamed('/checklists');
-                      },
-                    ),
-                  ),
-                ],
-                if (!controller.hasDashboardModel &&
-                    !controller.loadingDashboardModel) ...[
-                  EmptyDashboardModelWidget(
-                    onRefresh: controller.loadDashboardModel,
-                  ),
-                ],
-                const SizedBox(height: 32),
-              ],
-            ),
           ),
         );
       }),

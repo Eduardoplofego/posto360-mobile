@@ -34,7 +34,7 @@ class _AulasPageState extends State<AulasPage> {
 
   @override
   Widget build(BuildContext context) {
-    final dto = Get.arguments as CursoToAulaDTO;
+    final dto = Get.arguments as CursoToAulaDTO?;
     _controller.getCursoArgument(dto);
     return Scaffold(
       appBar: PreferredSize(

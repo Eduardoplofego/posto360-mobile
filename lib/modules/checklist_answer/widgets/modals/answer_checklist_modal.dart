@@ -1,10 +1,10 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/utils/data_formatters.dart';
 import 'package:posto360/models/checklist_answer_model.dart';
 import 'package:posto360/modules/checklist_answer/checklist_answer_controller.dart';
+import 'package:posto360/modules/checklist_answer/widgets/dotted_border_button_widget.dart';
 import 'package:posto360/modules/checklist_answer/widgets/option_card_widget.dart';
 
 class AnswerChecklistModal extends StatefulWidget {
@@ -31,6 +31,17 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
     _observationEC.dispose();
     _controller.checkAnswerCard(null);
     super.dispose();
+  }
+
+  Future<void> _onTakePhoto() async {
+    await _controller.openCameraScreenAndTakePhoto();
+  }
+
+  Future<void> _onConcludeChecklist() async {
+    await _controller.concludeChecklist(
+      answerModel: widget.answerModel,
+      comment: _observationEC.text,
+    );
   }
 
   @override
@@ -95,41 +106,38 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
                 ),
               ),
               _divider(),
-              if (widget.answerModel.opcoes != null) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    spacing: 10,
-                    children: [
-                      Icon(Icons.camera_enhance, color: Colors.grey.shade500),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+              if (widget.answerModel.opcoes == null) ...[
+                Obx(() {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      spacing: 10,
+                      children: [
+                        Icon(Icons.camera_enhance, color: Colors.grey.shade500),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(74, 8, 159, 247),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text('Upload de foto'),
                         ),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(74, 8, 159, 247),
-                          borderRadius: BorderRadius.circular(20),
+                        Spacer(),
+                        DottedBorderButtonWidget(
+                          onTap: _onTakePhoto,
+                          isLoading: _controller.isLoadingImageBase64,
+                          isCompleted: _controller.hasImageSelected,
                         ),
-                        child: Text('Upload de foto'),
-                      ),
-                      Spacer(),
-                      DottedBorder(
-                        borderType: BorderType.Circle,
-                        padding: EdgeInsets.all(6),
-                        color: PostoAppUiConfigurations.blueLightColor,
-                        child: Icon(
-                          Icons.add,
-                          size: 20,
-                          color: PostoAppUiConfigurations.blueLightColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                }),
                 _divider(),
               ],
               const SizedBox(height: 16),
@@ -138,11 +146,18 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
                 width: Get.width,
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Concluir tarefa',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  onPressed: _onConcludeChecklist,
+                  child: Obx(() {
+                    return !_controller.isLoadingSendAnswer
+                        ? Text(
+                          'Concluir tarefa',
+                          style: TextStyle(color: Colors.white),
+                        )
+                        : CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        );
+                  }),
                 ),
               ),
               const SizedBox(height: 16),
@@ -162,6 +177,7 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: TextField(
+          controller: _observationEC,
           minLines: 1,
           maxLines: 3,
           focusNode: _observationFocus,

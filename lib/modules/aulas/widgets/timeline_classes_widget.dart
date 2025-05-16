@@ -54,7 +54,7 @@ class TimelineClassItemWidget extends StatelessWidget {
                       SizedBox(
                         height: 25,
                         child:
-                            isBlocked
+                            isBlocked && !isConcluded
                                 ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [

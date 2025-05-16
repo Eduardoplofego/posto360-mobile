@@ -1,8 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:posto360/core/dto/image_answer_dto.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/models/checklist_answer_model.dart';
 import 'package:posto360/services/checklists/checklist_service.dart';
+import 'package:path/path.dart' as path;
 
 class ChecklistAnswerController extends GetxController with LoaderMixin {
   final ChecklistService _checklistService;
@@ -17,7 +25,15 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
   final _answersList = <ChecklistAnswerModel>[].obs;
   final _isToConcludedSelect = true.obs;
 
-  final _cardOptionSelectedIndex = RxnInt(1);
+  final _cardOptionSelectedIndex = RxnInt(-1);
+
+  final _selectedImagePath = ''.obs;
+  final _hasSelectedImage = false.obs;
+  final _answerSelected = Rxn<ChecklistAnswerModel>();
+
+  final _loadingImageBase64 = false.obs;
+  final _loadingSendAnswer = false.obs;
+  final _imageAnswerDto = Rxn<ImageAnswerDto>();
 
   // Getters
   bool get isLoading => _loader.value;
@@ -34,6 +50,12 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
   int get totalConcludedAnswers => concludedAnswersList.length;
   int get totalToConcludeAnswers => toConcludedAnswersList.length;
   int? get cardOptionSelectedIndex => _cardOptionSelectedIndex.value;
+  String get selectedImagePath => _selectedImagePath.value;
+  bool get hasImageSelected => _hasSelectedImage.value;
+  ChecklistAnswerModel? get answerSelected => _answerSelected.value;
+  bool get isLoadingImageBase64 => _loadingImageBase64.value;
+  ImageAnswerDto? get imageAnswerDto => _imageAnswerDto.value;
+  bool get isLoadingSendAnswer => _loadingSendAnswer.value;
 
   // Actions
   @override
@@ -49,6 +71,12 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
     _loader(true);
     await _loadChecklistAnswers();
     _loader(false);
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    disposeVaribales();
   }
 
   void changeSelectTab() {
@@ -74,5 +102,82 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
 
   void checkAnswerCard(int? index) {
     _cardOptionSelectedIndex.value = index;
+  }
+
+  Future<void> openCameraScreenAndTakePhoto() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+
+    if (image != null) {
+      await _saveImagePathA(image.path);
+    }
+  }
+
+  Future<void> _saveImagePathA(String imagePath) async {
+    File imageFile = File(imagePath);
+
+    final imageName = _getImageName(imageFile.path);
+    final type = path.extension(imageFile.path);
+    String imageBase64 = await _getImageBase64(imageFile);
+
+    if (imageBase64.isNotEmpty) {
+      _imageAnswerDto.value = ImageAnswerDto(
+        name: imageName,
+        base64: imageBase64,
+        type: type,
+      );
+      _hasSelectedImage(true);
+    }
+  }
+
+  Future<String> _getImageBase64(File imageFile) async {
+    _loadingImageBase64(true);
+    String imageBase64 = '';
+    try {
+      final bytes = await imageFile.readAsBytes();
+      imageBase64 = base64Encode(bytes);
+    } catch (e) {
+      debugPrint('Erro ao codificar imagem: $e');
+    } finally {
+      _loadingImageBase64(false);
+    }
+    return imageBase64;
+  }
+
+  String _getImageName(String imagePath) {
+    final nameUser = Get.find<AuthService>().getUser()?.name ?? '';
+    final nameUserReplace = nameUser.replaceAll(' ', '_');
+    final now = DateTime.now();
+    final nowStringFormated = DateFormat('yyyy_MM_dd', 'pt_BR').format(now);
+    final nowStringFormatedHour = DateFormat('HH_mm_ss', 'pt_BR').format(now);
+    final imageName =
+        '$nameUserReplace-$nowStringFormated-$nowStringFormatedHour';
+    return imageName;
+  }
+
+  void selectAnswerModel(ChecklistAnswerModel? answer) {
+    _answerSelected.value = answer;
+  }
+
+  void disposeVaribales() {
+    _selectedImagePath.value = '';
+    _hasSelectedImage(false);
+  }
+
+  Future<void> concludeChecklist({
+    required ChecklistAnswerModel answerModel,
+    String comment = '',
+  }) async {
+    if (imageAnswerDto == null) {
+      return;
+    }
+    _loadingSendAnswer(true);
+    // enviar photo e esperar a url de resposta
+    final resultPhotoUrl = await _checklistService.subirImagem(
+      respostaId: answerModel.id,
+      imageAnswer: imageAnswerDto!,
+    );
+    debugPrint('Resultado da imagem: ${resultPhotoUrl.toString()}');
+    // com a url, enviar resposta
+    _loadingSendAnswer(false);
   }
 }

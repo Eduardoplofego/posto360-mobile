@@ -29,7 +29,10 @@ class CursosTabItem extends GetView<CursosController> {
           itemCount: controller.cursosToShow.length,
           itemBuilder: (context, index) {
             final curso = controller.cursosToShow[index];
-            return CursoCard(curso: curso);
+            return CursoCard(
+              curso: curso,
+              afterReturnClass: controller.loadCursos,
+            );
           },
         ),
       );

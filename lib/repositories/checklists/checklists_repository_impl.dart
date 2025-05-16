@@ -131,4 +131,32 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
       );
     }
   }
+
+  @override
+  Future<ResultActionDTO<bool>> subirImagem({
+    required int respostaId,
+    required Map<String, dynamic> imageAnswer,
+  }) async {
+    try {
+      final result = await _postoRestClient.post(ApiRoutes.subirImagem(), {
+        'respostaId': respostaId,
+        'imagem': imageAnswer,
+      });
+
+      final resultMessage = result.body['message'] as String?;
+
+      if (resultMessage != null &&
+          resultMessage.contains("Imagem salva com sucesso!")) {
+        return ResultActionDTO.success();
+      } else {
+        return ResultActionDTO.failure(
+          'Não foi possível salvar a imagem',
+          false,
+        );
+      }
+    } catch (e, s) {
+      log('Erro subir imagem', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Não foi possível salvar a imagem', false);
+    }
+  }
 }

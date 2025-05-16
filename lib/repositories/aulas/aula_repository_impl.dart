@@ -103,11 +103,14 @@ class AulaRepositoryImpl extends AulaRepository {
   @override
   Future<ResultActionDTO<bool>> concludeAula({required int aulaId}) async {
     try {
-      final result = await _restClient.post(ApiRoutes.aulas(), {
+      final result = await _restClient.post(ApiRoutes.aulaConcluida(), {
         'aulaId': aulaId,
       });
-      if (result.body.contains('Aula visualizada com sucesso')) {
-        return ResultActionDTO.success(data: true);
+      if (result.statusCode != 200) {
+        return ResultActionDTO.failure(
+          'Não foi possível concluir a aula',
+          false,
+        );
       }
       return ResultActionDTO.success(data: false);
     } catch (e, s) {

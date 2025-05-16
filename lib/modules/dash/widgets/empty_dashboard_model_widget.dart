@@ -12,7 +12,10 @@ class EmptyDashboardModelWidget extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Text('Não foi possível obter sua performance'),
+            Text(
+              textAlign: TextAlign.center,
+              'Não foi possível obter sua performance ou você não tem dados para esse período',
+            ),
             SizedBox(
               width: 200,
               child: TextButton(

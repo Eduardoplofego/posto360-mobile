@@ -1,3 +1,4 @@
+import 'package:posto360/core/dto/image_answer_dto.dart';
 import 'package:posto360/core/dto/result_action_dto.dart';
 import 'package:posto360/models/checklist_answer_model.dart';
 import 'package:posto360/models/checklist_model.dart';
@@ -14,5 +15,16 @@ abstract class ChecklistService {
   Future<ResultActionDTO<bool>> startChecklist({
     required String usuarioId,
     required int checklistId,
+  });
+  Future<ResultActionDTO<bool>> pushChecklistAnswer({
+    required int respostaId,
+    required String resposta,
+    String? observacoes,
+    String? photoUrl,
+    bool? necessitaRevisao,
+  });
+  Future<ResultActionDTO<bool>> subirImagem({
+    required int respostaId,
+    required ImageAnswerDto imageAnswer,
   });
 }

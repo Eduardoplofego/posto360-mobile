@@ -13,6 +13,7 @@ class PostoRestClient extends GetConnect {
 
   PostoRestClient() {
     httpClient.followRedirects = false;
+    httpClient.timeout = const Duration(seconds: 10);
     httpClient.addRequestModifier<Object?>((request) {
       final requestWithHeaders = _applyHeaders(request);
       final storage = GetStorage();

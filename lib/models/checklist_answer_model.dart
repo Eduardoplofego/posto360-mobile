@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class ChecklistAnswerModel {
+  final int id;
   final String descricao;
   final String? resposta;
   final bool respostaDada;
@@ -13,6 +14,7 @@ class ChecklistAnswerModel {
   final List<String>? opcoes;
 
   ChecklistAnswerModel({
+    required this.id,
     required this.descricao,
     this.resposta,
     required this.respostaDada,
@@ -27,6 +29,7 @@ class ChecklistAnswerModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'descricao': descricao,
       'resposta': resposta,
       'respostaDada': respostaDada,
@@ -42,6 +45,7 @@ class ChecklistAnswerModel {
 
   factory ChecklistAnswerModel.fromMap(Map<String, dynamic> map) {
     return ChecklistAnswerModel(
+      id: map['id']?.toInt() ?? 0,
       descricao: map['descricao'] ?? '',
       resposta: map['resposta'],
       respostaDada: map['respostaDada'] ?? false,

@@ -123,11 +123,11 @@ class CursosController extends GetxController with LoaderMixin {
 
   Future<void> _init() async {
     _loading(true);
-    await _loadCursos();
+    await loadCursos();
     _loading(false);
   }
 
-  Future<void> _loadCursos() async {
+  Future<void> loadCursos() async {
     final user = Get.find<AuthService>().authenticatedUser;
     if (user != null) {
       final result = await _cursosService.getAllCursos(usuarioId: user.id);

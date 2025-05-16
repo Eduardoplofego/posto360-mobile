@@ -1,3 +1,4 @@
+import 'package:posto360/core/dto/image_answer_dto.dart';
 import 'package:posto360/core/dto/result_action_dto.dart';
 
 import 'package:posto360/models/checklist_answer_model.dart';
@@ -38,5 +39,29 @@ class ChecklistServiceImpl extends ChecklistService {
   }) async => _checklistsRepository.startChecklist(
     usuarioId: usuarioId,
     checklistId: checklistId,
+  );
+
+  @override
+  Future<ResultActionDTO<bool>> pushChecklistAnswer({
+    required int respostaId,
+    required String resposta,
+    String? observacoes,
+    String? photoUrl,
+    bool? necessitaRevisao,
+  }) async => _checklistsRepository.pushChecklistAnswer(
+    respostaId: respostaId,
+    resposta: resposta,
+    observacoes: observacoes,
+    photoUrl: photoUrl,
+    necessitaRevisao: necessitaRevisao,
+  );
+
+  @override
+  Future<ResultActionDTO<bool>> subirImagem({
+    required int respostaId,
+    required ImageAnswerDto imageAnswer,
+  }) async => _checklistsRepository.subirImagem(
+    respostaId: respostaId,
+    imageAnswer: imageAnswer.toJson(),
   );
 }
