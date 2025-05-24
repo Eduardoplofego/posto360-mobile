@@ -7,12 +7,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:posto360/core/dto/image_answer_dto.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
+import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
+import 'package:posto360/core/utils/enums/checklist_answer_tipo.dart';
 import 'package:posto360/models/checklist_answer_model.dart';
 import 'package:posto360/services/checklists/checklist_service.dart';
-import 'package:path/path.dart' as path;
 
-class ChecklistAnswerController extends GetxController with LoaderMixin {
+class ChecklistAnswerController extends GetxController
+    with LoaderMixin, MessageMixin {
   final ChecklistService _checklistService;
 
   ChecklistAnswerController({required ChecklistService checklistService})
@@ -22,6 +24,7 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
   final _checklistName = ''.obs;
   final _checklistId = 0.obs;
   final _loader = false.obs;
+  final _message = Rxn<MessagesModel>();
   final _answersList = <ChecklistAnswerModel>[].obs;
   final _isToConcludedSelect = true.obs;
 
@@ -34,6 +37,7 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
   final _loadingImageBase64 = false.obs;
   final _loadingSendAnswer = false.obs;
   final _imageAnswerDto = Rxn<ImageAnswerDto>();
+  final _yesNoOptionSelected = Rxn<bool>();
 
   // Getters
   bool get isLoading => _loader.value;
@@ -62,6 +66,7 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
   void onInit() {
     super.onInit();
     loaderListener(_loader);
+    messageListener(_message);
   }
 
   @override
@@ -73,10 +78,20 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
     _loader(false);
   }
 
+  Future<void> onRefresh() async {
+    _loader(true);
+    await _loadChecklistAnswers();
+    _loader(false);
+  }
+
   @override
   void onClose() {
     super.onClose();
     disposeVaribales();
+  }
+
+  void selectedYesNoQuestion(bool value) {
+    _yesNoOptionSelected(value);
   }
 
   void changeSelectTab() {
@@ -116,14 +131,13 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
     File imageFile = File(imagePath);
 
     final imageName = _getImageName(imageFile.path);
-    final type = path.extension(imageFile.path);
     String imageBase64 = await _getImageBase64(imageFile);
 
     if (imageBase64.isNotEmpty) {
       _imageAnswerDto.value = ImageAnswerDto(
         name: imageName,
         base64: imageBase64,
-        type: type,
+        type: 'image/jpeg',
       );
       _hasSelectedImage(true);
     }
@@ -150,7 +164,7 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
     final nowStringFormated = DateFormat('yyyy_MM_dd', 'pt_BR').format(now);
     final nowStringFormatedHour = DateFormat('HH_mm_ss', 'pt_BR').format(now);
     final imageName =
-        '$nameUserReplace-$nowStringFormated-$nowStringFormatedHour';
+        '$nameUserReplace-$nowStringFormated-$nowStringFormatedHour.jpg';
     return imageName;
   }
 
@@ -160,24 +174,106 @@ class ChecklistAnswerController extends GetxController with LoaderMixin {
 
   void disposeVaribales() {
     _selectedImagePath.value = '';
+    _yesNoOptionSelected.value = null;
     _hasSelectedImage(false);
+  }
+
+  dynamic _getAnswerByType(ChecklistAnswerModel answerModel, String comment) {
+    switch (answerModel.tipo) {
+      case ChecklistAnswerTipo.texto:
+        return comment;
+      case ChecklistAnswerTipo.opcoes:
+        return answerModel.opcoes![cardOptionSelectedIndex!];
+      case ChecklistAnswerTipo.numerico:
+        return num.tryParse(comment) ?? '';
+      case ChecklistAnswerTipo.boolean:
+        return _yesNoOptionSelected.value;
+    }
+  }
+
+  bool _validateForm(ChecklistAnswerModel answerModel, String comment) {
+    switch (answerModel.tipo) {
+      case ChecklistAnswerTipo.texto:
+        return comment.isNotEmpty;
+      case ChecklistAnswerTipo.opcoes:
+        return cardOptionSelectedIndex != null;
+      case ChecklistAnswerTipo.numerico:
+        return comment.isNotEmpty;
+      case ChecklistAnswerTipo.boolean:
+        return _yesNoOptionSelected.value != null;
+    }
+  }
+
+  void showConcludedTaskMessage() {
+    _message(
+      MessagesModel(
+        title: 'Sucesso',
+        message: 'Resposta enviada com sucesso',
+        type: MessageType.info,
+      ),
+    );
   }
 
   Future<void> concludeChecklist({
     required ChecklistAnswerModel answerModel,
     String comment = '',
   }) async {
-    if (imageAnswerDto == null) {
+    _loadingSendAnswer(true);
+    final isFormValid = _validateForm(answerModel, comment);
+    if (!isFormValid) {
+      _message(
+        MessagesModel(
+          title: 'Atenção',
+          message: 'Nenhuma resposta foi feita',
+          type: MessageType.info,
+        ),
+      );
+      _loadingSendAnswer(false);
       return;
     }
-    _loadingSendAnswer(true);
-    // enviar photo e esperar a url de resposta
-    final resultPhotoUrl = await _checklistService.subirImagem(
+
+    String? photoUrl;
+    if (imageAnswerDto != null) {
+      final resultPhotoUrl = await _checklistService.subirImagem(
+        respostaId: answerModel.id,
+        imageAnswer: imageAnswerDto!,
+      );
+
+      if (resultPhotoUrl.isError) {
+        _loadingSendAnswer(false);
+        _message(
+          MessagesModel(
+            title: 'Erro',
+            message: 'Não foi possível enviar sua resposta',
+            type: MessageType.error,
+          ),
+        );
+      }
+      photoUrl = resultPhotoUrl.data;
+    }
+
+    var resposta = _getAnswerByType(answerModel, comment);
+
+    final resultSendAnswer = await _checklistService.pushChecklistAnswer(
       respostaId: answerModel.id,
-      imageAnswer: imageAnswerDto!,
+      resposta: resposta,
+      observacoes: comment,
+      photoUrl: photoUrl,
+      necessitaRevisao: answerModel.necessitaRevisao,
     );
-    debugPrint('Resultado da imagem: ${resultPhotoUrl.toString()}');
-    // com a url, enviar resposta
+
+    if (resultSendAnswer.isError) {
+      _loadingSendAnswer(false);
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: 'Não foi possível salvar a resposta',
+          type: MessageType.error,
+        ),
+      );
+      return;
+    }
     _loadingSendAnswer(false);
+    Get.back(result: true);
   }
 }

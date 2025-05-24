@@ -16,14 +16,14 @@ abstract class ChecklistService {
     required String usuarioId,
     required int checklistId,
   });
-  Future<ResultActionDTO<bool>> pushChecklistAnswer({
+  Future<ResultActionDTO<bool>> pushChecklistAnswer<T>({
     required int respostaId,
-    required String resposta,
+    required T resposta,
     String? observacoes,
     String? photoUrl,
     bool? necessitaRevisao,
   });
-  Future<ResultActionDTO<bool>> subirImagem({
+  Future<ResultActionDTO<String>> subirImagem({
     required int respostaId,
     required ImageAnswerDto imageAnswer,
   });

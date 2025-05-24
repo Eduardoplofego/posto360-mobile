@@ -96,9 +96,9 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
   }
 
   @override
-  Future<ResultActionDTO<bool>> pushChecklistAnswer({
+  Future<ResultActionDTO<bool>> pushChecklistAnswer<T>({
     required int respostaId,
-    required String resposta,
+    required T resposta,
     String? observacoes,
     String? photoUrl,
     bool? necessitaRevisao,
@@ -133,7 +133,7 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
   }
 
   @override
-  Future<ResultActionDTO<bool>> subirImagem({
+  Future<ResultActionDTO<String>> subirImagem({
     required int respostaId,
     required Map<String, dynamic> imageAnswer,
   }) async {
@@ -143,20 +143,16 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
         'imagem': imageAnswer,
       });
 
-      final resultMessage = result.body['message'] as String?;
+      final resultUrl = result.body['url'] as String?;
 
-      if (resultMessage != null &&
-          resultMessage.contains("Imagem salva com sucesso!")) {
-        return ResultActionDTO.success();
+      if (resultUrl != null) {
+        return ResultActionDTO.success(data: resultUrl);
       } else {
-        return ResultActionDTO.failure(
-          'Não foi possível salvar a imagem',
-          false,
-        );
+        return ResultActionDTO.failure('Não foi possível salvar a imagem', '');
       }
     } catch (e, s) {
       log('Erro subir imagem', error: e, stackTrace: s);
-      return ResultActionDTO.failure('Não foi possível salvar a imagem', false);
+      return ResultActionDTO.failure('Não foi possível salvar a imagem', '');
     }
   }
 }

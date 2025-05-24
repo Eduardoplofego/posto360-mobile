@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 
 class OptionCardWidget extends StatelessWidget {
   final bool isSelected;
@@ -22,7 +23,11 @@ class OptionCardWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Checkbox(value: isSelected, onChanged: (value) => onPressed(value!)),
+          Checkbox(
+            value: isSelected,
+            activeColor: PostoAppUiConfigurations.blueMediumColor,
+            onChanged: (value) => onPressed(value!),
+          ),
           Text(label),
         ],
       ),

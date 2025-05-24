@@ -31,6 +31,12 @@ class ChecklistController extends GetxController
     _loading(false);
   }
 
+  Future<void> onRefresh() async {
+    _loading(true);
+    await _loadChecklists();
+    _loading(false);
+  }
+
   // Observables
   final _loading = false.obs;
   final _message = Rxn<MessagesModel>();

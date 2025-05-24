@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:posto360/core/utils/enums/checklist_answer_tipo.dart';
+
 class ChecklistAnswerModel {
   final int id;
   final String descricao;
   final String? resposta;
+  final ChecklistAnswerTipo tipo;
   final bool respostaDada;
   final int checklistId;
   final int gestaoChecklistId;
@@ -18,6 +21,7 @@ class ChecklistAnswerModel {
     required this.descricao,
     this.resposta,
     required this.respostaDada,
+    required this.tipo,
     required this.checklistId,
     required this.gestaoChecklistId,
     this.fotoUrl,
@@ -33,6 +37,7 @@ class ChecklistAnswerModel {
       'descricao': descricao,
       'resposta': resposta,
       'respostaDada': respostaDada,
+      'tipo': ChecklistAnswerTipoDescription.getTipoString(tipo),
       'checklistId': checklistId,
       'gestaoChecklistId': gestaoChecklistId,
       'fotoUrl': fotoUrl,
@@ -49,13 +54,14 @@ class ChecklistAnswerModel {
       descricao: map['descricao'] ?? '',
       resposta: map['resposta'],
       respostaDada: map['respostaDada'] ?? false,
+      tipo: ChecklistAnswerTipoDescription.getTipo(map['tipo']),
       checklistId: map['checklistId']?.toInt() ?? 0,
       gestaoChecklistId: map['gestaoChecklistId']?.toInt() ?? 0,
       fotoUrl: map['fotoUrl'],
       observacoes: map['observacoes'],
       usuarioId: map['usuarioId'] ?? '',
       necessitaRevisao: map['NecessitaRevisao'] ?? false,
-      opcoes: map['opcoes'],
+      opcoes: map['opcoes'] != null ? List<String>.from(map['opcoes']) : null,
     );
   }
 

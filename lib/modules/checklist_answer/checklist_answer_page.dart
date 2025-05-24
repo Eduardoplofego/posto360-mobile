@@ -89,7 +89,7 @@ class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
                           onPressed: () async {
                             if (!answer.respostaDada) {
                               controller.selectAnswerModel(answer);
-                              await showModalBottomSheet(
+                              final result = await showModalBottomSheet<bool?>(
                                 context: context,
                                 isScrollControlled: true,
                                 builder: (context) {
@@ -98,7 +98,11 @@ class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
                                   );
                                 },
                               );
-                              controller.disposeVaribales();
+
+                              if (result != null && result) {
+                                await controller.onRefresh();
+                                controller.showConcludedTaskMessage();
+                              }
                             }
                           },
                         );

@@ -18,24 +18,18 @@ class ListChecklistWidget extends GetView<ChecklistController> {
             final check = controller.getChecklistSelected[index];
             return InkWell(
               onTap: () async {
-                // se checklist nao iniciado perguntar se quer iniciar
                 if (check.status == ChecklistStatus.aFazer) {
                   final isToStartChecklist = await controller
                       .showDialogToStartChecklist(check.id);
                   if (isToStartChecklist) {
-                    Get.toNamed(
-                      '/checklists/answers/',
-                      parameters: {
-                        'name': check.name,
-                        'id': check.id.toString(),
-                      },
-                    );
+                    await controller.onRefresh();
                   }
                 } else {
-                  Get.toNamed(
+                  await Get.toNamed(
                     '/checklists/answers/',
                     parameters: {'name': check.name, 'id': check.id.toString()},
                   );
+                  controller.onRefresh();
                 }
               },
               child: ChecklistCardWidget(checklist: check),

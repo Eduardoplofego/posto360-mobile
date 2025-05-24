@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/utils/data_formatters.dart';
+import 'package:posto360/core/utils/enums/checklist_answer_tipo.dart';
 import 'package:posto360/models/checklist_answer_model.dart';
 import 'package:posto360/modules/checklist_answer/checklist_answer_controller.dart';
 import 'package:posto360/modules/checklist_answer/widgets/dotted_border_button_widget.dart';
@@ -18,6 +19,7 @@ class AnswerChecklistModal extends StatefulWidget {
 class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
   final _observationEC = TextEditingController();
   final _observationFocus = FocusNode();
+  final ValueNotifier<List<bool>?> isYesNoSelected = ValueNotifier(null);
   late ChecklistAnswerController _controller;
 
   @override
@@ -46,6 +48,7 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(widget.answerModel.tipo.toString());
     final now = DateTime.now();
     return SingleChildScrollView(
       child: IntrinsicHeight(
@@ -173,7 +176,12 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
     int? cardSelectedIndex,
     Function(int value) onOptionSelected,
   ) {
-    if (widget.answerModel.opcoes == null) {
+    if (widget.answerModel.tipo == ChecklistAnswerTipo.boolean) {
+      isYesNoSelected.value = [false, false];
+      return _yesNoAnswers();
+    } else if (widget.answerModel.tipo == ChecklistAnswerTipo.opcoes) {
+      return _optionsAsnwers(cardSelectedIndex, onOptionSelected);
+    } else {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: TextField(
@@ -181,6 +189,10 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
           minLines: 1,
           maxLines: 3,
           focusNode: _observationFocus,
+          keyboardType:
+              widget.answerModel.tipo == ChecklistAnswerTipo.numerico
+                  ? TextInputType.number
+                  : TextInputType.text,
           onTapOutside: (event) {
             FocusScope.of(context).unfocus();
           },
@@ -205,54 +217,15 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
           ),
         ),
       );
-    } else {
-      var options = widget.answerModel.opcoes;
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: SizedBox(
-          height:
-              (65 * options!.length) < 200
-                  ? (65 * options.length).toDouble()
-                  : 200,
-          child: ListView.separated(
-            itemCount: options.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              return OptionCardWidget(
-                label: options[index],
-                isSelected:
-                    cardSelectedIndex != null
-                        ? cardSelectedIndex == index
-                        : false,
-                onPressed: (value) {
-                  if (value) {
-                    onOptionSelected(index);
-                  }
-                },
-              );
-            },
-          ),
-        ),
-      );
     }
   }
 
-  Visibility titleModal() {
-    return Visibility(
-      visible: widget.answerModel.opcoes != null,
-      replacement: Flexible(
-        child: Text(
-          'Deseja fazer alguma observação?',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-        ),
-      ),
-      child: Flexible(
-        child: Text(
-          'Pergunta?',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-        ),
+  Widget titleModal() {
+    return Flexible(
+      child: Text(
+        widget.answerModel.descricao,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -261,6 +234,72 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 32),
       child: Divider(),
+    );
+  }
+
+  Widget _yesNoAnswers() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24),
+      child: ValueListenableBuilder(
+        valueListenable: isYesNoSelected,
+        builder: (context, value, child) {
+          return Column(
+            children: [
+              OptionCardWidget(
+                label: 'Sim',
+                isSelected: value![0],
+                onPressed: (value) {
+                  isYesNoSelected.value = [true, false];
+                  _controller.selectedYesNoQuestion(value);
+                },
+              ),
+              const SizedBox(height: 10),
+              OptionCardWidget(
+                label: 'Não',
+                isSelected: value[1],
+                onPressed: (value) {
+                  isYesNoSelected.value = [false, true];
+                  _controller.selectedYesNoQuestion(value);
+                },
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _optionsAsnwers(
+    int? cardSelectedIndex,
+    Function(int value) onOptionSelected,
+  ) {
+    var options = widget.answerModel.opcoes;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: SizedBox(
+        height:
+            (65 * options!.length) < 200
+                ? (65 * options.length).toDouble()
+                : 200,
+        child: ListView.separated(
+          itemCount: options.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 10),
+          itemBuilder: (context, index) {
+            return OptionCardWidget(
+              label: options[index],
+              isSelected:
+                  cardSelectedIndex != null
+                      ? cardSelectedIndex == index
+                      : false,
+              onPressed: (value) {
+                if (value) {
+                  onOptionSelected(index);
+                }
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }

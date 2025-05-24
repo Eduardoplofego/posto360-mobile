@@ -42,13 +42,13 @@ class ChecklistServiceImpl extends ChecklistService {
   );
 
   @override
-  Future<ResultActionDTO<bool>> pushChecklistAnswer({
+  Future<ResultActionDTO<bool>> pushChecklistAnswer<T>({
     required int respostaId,
-    required String resposta,
+    required T resposta,
     String? observacoes,
     String? photoUrl,
     bool? necessitaRevisao,
-  }) async => _checklistsRepository.pushChecklistAnswer(
+  }) async => await _checklistsRepository.pushChecklistAnswer(
     respostaId: respostaId,
     resposta: resposta,
     observacoes: observacoes,
@@ -57,7 +57,7 @@ class ChecklistServiceImpl extends ChecklistService {
   );
 
   @override
-  Future<ResultActionDTO<bool>> subirImagem({
+  Future<ResultActionDTO<String>> subirImagem({
     required int respostaId,
     required ImageAnswerDto imageAnswer,
   }) async => _checklistsRepository.subirImagem(
