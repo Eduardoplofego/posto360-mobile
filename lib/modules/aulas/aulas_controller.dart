@@ -31,43 +31,33 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   final _hasData = false.obs;
   final _curso = Rxn<CursoModel>();
   final _aulas = <AulaModel>[].obs;
+
   final _currentAulaIndex = 0.obs;
   final _currentAula = Rxn<AulaModel>();
   final _isToShowMaterialComplementar = false.obs;
   final _pdfLoaded = false.obs;
+
   final _isVisulizeAulaLoading = false.obs;
+
   final _chewieController = Rxn<ChewieController>();
 
   // Getters
   CursoModel? get curso => _curso.value;
   bool get isLoading => _loading.value;
   bool get hasData => _hasData.value;
+
   AulaModel? get currentAula => _currentAula.value;
-  int get totalAulas => _aulas.length;
-  int get totalAulasConcluidas =>
-      _aulas.where((aula) => aula.status == AulaStatus.finalizado).length;
   int get currentAulaIndex => _currentAulaIndex.value;
   bool get isToShowMaterial => _isToShowMaterialComplementar.value;
   bool get hasPrevClass => hasData && _currentAulaIndex.value >= 1;
-  bool get hasNextClass {
-    if (!hasData || _aulas.isEmpty) return false;
-
-    final currentIndex = _currentAulaIndex.value;
-
-    if (currentIndex < 0 || currentIndex >= _aulas.length) return false;
-
-    final hasMaterial = _aulas[currentIndex].hasMaterial;
-
-    final nextIndex = currentIndex + 1;
-    final hasNextAulaDesbloqueada =
-        nextIndex < _aulas.length &&
-        _aulas[nextIndex].status != AulaStatus.bloqueado;
-
-    return hasMaterial || hasNextAulaDesbloqueada;
-  }
-
+  bool get hasNextClass =>
+      hasData && _aulas[_currentAulaIndex.value].hasMaterial ||
+      (_currentAulaIndex.value <= _aulas.length - 1 &&
+          _aulas[_currentAulaIndex.value + 1].status != AulaStatus.bloqueado);
   bool get pdfLoaded => _pdfLoaded.value;
+
   bool get isVisulizeAulaLoading => _isVisulizeAulaLoading.value;
+
   bool get videoInitialized => _chewieController.value != null;
   ChewieController? get chewieController => _chewieController.value;
 
@@ -93,23 +83,20 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
     _loading(false);
   }
 
-  Future<void> getCursoArgument(CursoToAulaDTO? dto) async {
-    if (dto != null) {
-      _curso.value = dto.curso;
-    }
+  Future<void> getCursoArgument(CursoToAulaDTO dto) async {
+    _curso.value = dto.curso;
   }
 
   Future<void> _loadAulas() async {
-    _loading(true);
     if (_curso.value != null) {
       final aulasDto = await _aulasService.getAulas(
-        cursoId: _curso.value!.templateId,
+        cursoId: _curso.value!.id,
         usuarioId: _authService.authenticatedUser!.id,
       );
       if (aulasDto.success) {
         final aulas = aulasDto.data!;
-        if (aulas.length > 1) aulas.sort((a, b) => a.ordem.compareTo(b.ordem));
-        _aulas.assignAll(aulas);
+        aulas.sort((a, b) => a.ordem.compareTo(b.ordem));
+        _aulas.assignAll(aulasDto.data!);
         await _loadFirstCurrentAula();
         if (aulas.isEmpty) {
           _hasData(false);
@@ -118,28 +105,19 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
         }
       }
     }
-    _loading(false);
   }
 
   Future<void> _loadFirstCurrentAula() async {
-    int current = 0;
+    int current = 1;
     for (var aula in _aulas) {
       if (aula.status == AulaStatus.finalizado) {
         current++;
       }
     }
-    if (current < _aulas.length) {
-      _currentAulaIndex.value = current;
-      _currentAula.value = _aulas[_currentAulaIndex.value];
-      if (_currentAula.value != null) {
-        await initializeVideoPlayer();
-      }
-    } else {
-      _currentAulaIndex.value = 0;
-      _currentAula.value = _aulas[_currentAulaIndex.value];
-      if (_currentAula.value != null) {
-        await initializeVideoPlayer();
-      }
+    _currentAulaIndex.value = current - 1;
+    _currentAula.value = _aulas[_currentAulaIndex.value];
+    if (_currentAula.value != null) {
+      await initializeVideoPlayer();
     }
   }
 
@@ -236,16 +214,7 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
     await Future.delayed(const Duration(seconds: 2));
     final result = await _aulasService.concludeAula(aulaId: currentAula!.id);
     if (result) {
-      _isVisulizeAulaLoading(false);
       await _loadAulas();
-    } else {
-      _message(
-        MessagesModel(
-          title: 'Erro',
-          message: 'Não foi possivel concluir a aula. \nTente novamente',
-          type: MessageType.error,
-        ),
-      );
     }
     _isVisulizeAulaLoading(false);
   }

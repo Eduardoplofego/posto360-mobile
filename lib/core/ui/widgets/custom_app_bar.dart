@@ -30,7 +30,6 @@ class CustomAppBar extends StatelessWidget {
                   bottomRight: Radius.circular(20),
                 )
                 : null,
-        boxShadow: [BoxShadow(color: Colors.black)],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,

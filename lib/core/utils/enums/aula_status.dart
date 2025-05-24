@@ -5,7 +5,7 @@ extension GetAulaStatus on AulaStatus {
     switch (status) {
       case 'Finalizado':
         return AulaStatus.finalizado;
-      case 'Em andamento' || 'Não Iniciado':
+      case 'Em andamento':
         return AulaStatus.emAndamento;
       default:
         return AulaStatus.bloqueado;

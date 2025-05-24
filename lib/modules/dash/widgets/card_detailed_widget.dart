@@ -34,9 +34,7 @@ class CardDetailedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final percentTaked =
-        totalNumberDetailed == 0
-            ? 0.0
-            : (totalNumber / totalNumberDetailed) <= 1.0
+        (totalNumber / totalNumberDetailed) <= 1.0
             ? (totalNumber / totalNumberDetailed)
             : 1.0;
     return Container(
@@ -71,14 +69,15 @@ class CardDetailedWidget extends StatelessWidget {
                           child: Icon(
                             icon,
                             color: PostoAppUiConfigurations.blueMediumColor,
-                            size: 30,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: AnimatedDigitWidget(
                             value:
-                                !hideNumberDetailed ? totalNumber.toInt() : 0,
+                                !hideNumberDetailed
+                                    ? totalNumber.toDouble()
+                                    : 0,
                             textStyle: TextStyle(fontSize: 48),
                           ),
                         ),

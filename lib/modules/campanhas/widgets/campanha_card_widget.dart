@@ -52,7 +52,8 @@ class CampanhaCardWidget extends StatelessWidget {
               campanha.tipoBonificacao == TypeBonificacao.unidade
                   ? '${campanha.volumeBonificacao.toStringAsFixed(0)} unid.'
                   : UtilBrasilFields.obterReal(
-                    (campanha.volumeBonificacao).toDouble(),
+                    (campanha.volumeBonificacao * campanha.valorBonificacao)
+                        .toDouble(),
                   ),
             ),
           ),
@@ -133,35 +134,20 @@ class ItemCamapanhaPercentCompletedWidget extends StatelessWidget {
         const SizedBox(width: 10),
         Text(titleItem),
         const SizedBox(width: 10),
-        if (totalPercentCompleted < 5)
-          Expanded(
-            child: Wrap(
-              spacing: 4,
-              runSpacing: 4,
-              children: List.generate(
-                totalPercentCompleted,
-                (index) => Icon(
-                  Icons.workspace_premium_outlined,
-                  size: 18,
-                  color: Colors.yellow.shade900,
-                ),
-              ),
-            ),
-          ),
-        if (totalPercentCompleted >= 5) ...[
-          Row(
-            children: [
-              Text('+$totalPercentCompleted'),
-              Icon(
+        Expanded(
+          child: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: List.generate(
+              totalPercentCompleted,
+              (index) => Icon(
                 Icons.workspace_premium_outlined,
                 size: 18,
                 color: Colors.yellow.shade900,
               ),
-            ],
+            ),
           ),
-          Spacer(),
-        ],
-
+        ),
         Text(value, style: TextStyle(fontWeight: FontWeight.w500)),
       ],
     );

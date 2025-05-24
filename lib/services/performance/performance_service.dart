@@ -3,8 +3,8 @@ import 'package:posto360/models/performance_model.dart';
 
 abstract class PerformanceService {
   Future<ResultActionDTO<List<PerformanceModel>>> getPerformances({
-    required int codigoFuncionario,
+    required String codigoFuncionario,
     required List<int> campanhasId,
-    required String dataMes,
+    required DateTime dataMes,
   });
 }

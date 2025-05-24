@@ -47,7 +47,7 @@ class CampanhaModel {
 
   factory CampanhaModel.fromMap(Map<String, dynamic> map) {
     return CampanhaModel(
-      campanhaId: map['campanhaId'] ?? 0,
+      campanhaId: map['campanhaId']?.toInt() ?? 0,
       nomeCampanha: map['nomeCampanha'] ?? '',
       produtos:
           map['produtos']
@@ -57,8 +57,8 @@ class CampanhaModel {
           map['tipoBonificacao'] == 'UNIDADE'
               ? TypeBonificacao.unidade
               : TypeBonificacao.valor,
-      volumeBonificacao: map['volumeBonificacao'].toDouble() ?? 0,
-      valorBonificacao: map['valorBonificacao'].toDouble() ?? 0,
+      volumeBonificacao: map['volumeBonificacao'] ?? 0,
+      valorBonificacao: map['valorBonificacao'] ?? 0,
       dataDisponibilidade: DateTime.parse(map['dataDisponibilidade']),
     );
   }

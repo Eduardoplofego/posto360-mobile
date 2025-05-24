@@ -34,11 +34,8 @@ class PerformanceModel {
   factory PerformanceModel.fromMap(Map<String, dynamic> map) {
     return PerformanceModel(
       campanhaId: map['campanhaId'] ?? 0,
-      unidadesVendidas:
-          double.tryParse(map['performance']['valorVendas'].toString()) ?? 0.0,
-      valorBonificacao:
-          double.tryParse(map['performance']['valorBonificacao'].toString()) ??
-          0.0,
+      unidadesVendidas: map['unidadesVendidas'] ?? 0.0,
+      valorBonificacao: map['valorBonificacao'] ?? 0.0,
     );
   }
 

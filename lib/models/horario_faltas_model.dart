@@ -12,7 +12,11 @@ class HorarioFaltasModel {
   });
 
   factory HorarioFaltasModel.empty() {
-    return HorarioFaltasModel(horarioPrevisto: '', faltas: 0, atrasos: 0);
+    return HorarioFaltasModel(
+      horarioPrevisto: '00:00-00:00  00:00-00:00',
+      faltas: 0,
+      atrasos: 0,
+    );
   }
 
   String getJornadaTrabalho() {

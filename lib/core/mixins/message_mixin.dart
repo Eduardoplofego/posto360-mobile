@@ -8,12 +8,9 @@ mixin MessageMixin on GetxController {
         Get.snackbar(
           model.title,
           model.message,
-          messageText: Text(
-            model.message,
-            style: TextStyle(color: Colors.white),
-          ),
           backgroundColor: model.type.color(),
           colorText: model.type.textColor(),
+          snackStyle: SnackStyle.FLOATING,
         );
       }
     });
@@ -38,9 +35,9 @@ extension MessageTypeColorExt on MessageType {
   Color color() {
     switch (this) {
       case MessageType.error:
-        return Colors.red.shade400;
+        return Colors.red.shade300;
       case MessageType.info:
-        return Colors.blue.shade400;
+        return Colors.blue[400]!;
     }
   }
 

@@ -52,15 +52,15 @@ class CursosGeneralDetails extends GetView<CursosController> {
                     value: controller.cursosFinalizados.toString(),
                   ),
                 ),
-                // SizedBox(
-                //   width: (Get.width - 32) * .44,
-                //   child: CursoDashboardItem(
-                //     image: 'assets/images/icones/certificado.png',
-                //     text: 'Certificados',
-                //     value:
-                //         '${controller.certificadosEmitidos}/${controller.totalCertificados}',
-                //   ),
-                // ),
+                SizedBox(
+                  width: (Get.width - 32) * .44,
+                  child: CursoDashboardItem(
+                    image: 'assets/images/icones/certificado.png',
+                    text: 'Certificados',
+                    value:
+                        '${controller.certificadosEmitidos}/${controller.totalCertificados}',
+                  ),
+                ),
               ],
             ),
           ],

@@ -27,17 +27,12 @@ class SplashPage extends GetView<SplashPageController> {
               children: [
                 Image.asset(
                   'assets/images/logo_branco.png',
-                  width: (Get.width * .55) >= 221 ? 221 : Get.width * .55,
+                  width: Get.width * .7,
                 ),
-                const SizedBox(height: 32),
+                // const SizedBox(height: 46),
                 Text(
                   'Sua performance na palma da mão',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),

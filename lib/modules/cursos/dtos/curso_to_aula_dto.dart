@@ -4,7 +4,4 @@ class CursoToAulaDTO {
   final CursoModel curso;
 
   CursoToAulaDTO({required this.curso});
-
-  @override
-  String toString() => 'CursoToAulaDTO(curso: $curso)';
 }

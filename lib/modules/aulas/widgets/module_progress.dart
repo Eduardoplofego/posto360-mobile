@@ -31,13 +31,13 @@ class ModuleProgress extends GetView<AulasController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${((controller.totalAulasConcluidas / controller.totalAulas) * 100).toStringAsFixed(0)}% completo',
+                      '${((controller.curso!.aulasConcluidas / controller.curso!.totalAulas) * 100).toStringAsFixed(0)}% completo',
                       style: TextStyle(
                         color: PostoAppUiConfigurations.greyColor,
                       ),
                     ),
                     Text(
-                      'Aulas: ${controller.totalAulasConcluidas}/${controller.totalAulas}',
+                      'Aulas: ${controller.curso?.aulasConcluidas}/${controller.curso?.totalAulas}',
                       style: TextStyle(
                         color: PostoAppUiConfigurations.greyColor,
                       ),

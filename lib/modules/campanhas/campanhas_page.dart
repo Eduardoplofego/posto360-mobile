@@ -50,6 +50,17 @@ class CampanhasPage extends GetView<CampanhasController> {
                   hasNextMonth: controller.hasNextMonth,
                   prevMonthPressed: controller.prevMonth,
                 ),
+                // CardLoadingWidget(
+                //   isLoading: controller.isLoading,
+                //   height: 50,
+                //   initDelay: 100,
+                //   child: SelectDateWidget(
+                //     nextMonthPressed: controller.nextMonth,
+                //     period: controller.monthSelected,
+                //     hasNextMonth: controller.hasNextMonth,
+                //     prevMonthPressed: controller.prevMonth,
+                //   ),
+                // ),
                 const SizedBox(height: 8),
                 controller.isLoading
                     ? Column(
