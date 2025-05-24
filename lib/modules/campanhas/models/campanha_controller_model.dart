@@ -1,5 +1,4 @@
 import 'package:posto360/core/utils/data_formatters.dart';
-import 'package:posto360/core/utils/enums/type_bonificacao.dart';
 import 'package:posto360/models/campanha_model.dart';
 import 'package:posto360/models/performance_model.dart';
 
@@ -52,6 +51,14 @@ class CampanhaControllerModel {
     );
   }
 
+  void resetController() {
+    _totalValueBonus = 0.0;
+    firstDateSelected = firstDateSelected;
+    lastDateSelected = lastDateSelected;
+    campanhas.clear();
+    performances.clear();
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'totalValueBonus': _totalValueBonus,
@@ -82,34 +89,10 @@ class CampanhaControllerModel {
   double get totalValueBonus => _totalValueBonus;
 
   void calculateValueTotalBonus() {
+    double valorTotal = 0;
     for (var performance in performances) {
-      final campanhaPerformance = campanhas.firstWhere(
-        (campanha) => campanha.campanhaId == performance.campanhaId,
-        orElse: () => CampanhaModel.empty(),
-      );
-
-      if (campanhaPerformance.campanhaId == 0) return;
-
-      bool isBonificacaoUnidade =
-          campanhaPerformance.tipoBonificacao == TypeBonificacao.unidade;
-
-      final targetToWin =
-          isBonificacaoUnidade
-              ? campanhaPerformance.volumeBonificacao.toDouble()
-              : campanhaPerformance.valorBonificacao *
-                  campanhaPerformance.valorBonificacao;
-      final currentTaken =
-          isBonificacaoUnidade
-              ? performance.unidadesVendidas.toDouble()
-              : (performance.unidadesVendidas *
-                  campanhaPerformance.valorBonificacao);
-
-      if (targetToWin <= currentTaken) {
-        final totalToAdd =
-            (currentTaken ~/ targetToWin) *
-            campanhaPerformance.valorBonificacao;
-        _totalValueBonus += totalToAdd;
-      }
+      valorTotal += performance.valorBonificacao;
     }
+    _totalValueBonus = valorTotal;
   }
 }

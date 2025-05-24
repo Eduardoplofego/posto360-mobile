@@ -12,9 +12,8 @@ class CursoModel {
   final String tipoUsuario;
   final int totalAulas;
   final int aulasConcluidas;
-  final String inscricao;
-  final String ultimoAcesso;
-  final int duracaoMedia;
+  final DateTime inscricao;
+  final DateTime? ultimoAcesso;
   final bool certificadoEmitido;
 
   CursoModel({
@@ -29,7 +28,6 @@ class CursoModel {
     required this.aulasConcluidas,
     required this.inscricao,
     required this.ultimoAcesso,
-    required this.duracaoMedia,
     required this.certificadoEmitido,
   });
 
@@ -47,8 +45,8 @@ class CursoModel {
 
   factory CursoModel.fromMap(Map<String, dynamic> map) {
     return CursoModel(
-      id: int.tryParse(map['id']) ?? 0,
-      templateId: int.tryParse(map['templateId']) ?? 0,
+      id: map['id'] ?? 0,
+      templateId: map['templateId'] ?? 0,
       titulo: map['titulo'] ?? '',
       descricao: map['descricao'] ?? '',
       capa: map['capa'] ?? '',
@@ -56,10 +54,15 @@ class CursoModel {
       tipoUsuario: map['tipoUsuario'] ?? '',
       aulasConcluidas: map['aulasConcluidas'] ?? 0,
       totalAulas: map['totalAulas'] ?? 0,
-      inscricao: map['inscricao'] ?? '',
-      ultimoAcesso: map['ultimoAcesso'] ?? '',
-      duracaoMedia: map['duracaoMedia'] ?? 0,
-      certificadoEmitido: map['certificadoEmitido'] ?? false,
+      inscricao:
+          map['dataInicio'] != null
+              ? DateTime.parse(map['dataInicio'])
+              : DateTime(1900),
+      ultimoAcesso:
+          map['ultimoAcesso'] != null
+              ? DateTime.parse(map['ultimoAcesso'])
+              : DateTime(1900),
+      certificadoEmitido: false,
     );
   }
 
@@ -68,10 +71,8 @@ class CursoModel {
   factory CursoModel.fromJson(String source) =>
       CursoModel.fromMap(json.decode(source));
 
-  String getDuracaoMedia() {
-    final horas = duracaoMedia ~/ 60;
-    final minutos = duracaoMedia - (horas * 60);
-    final horasString = horas > 0 ? '${horas}h' : '';
-    return '$horasString${minutos}min';
+  @override
+  String toString() {
+    return 'CursoModel(id: $id, templateId: $templateId, titulo: $titulo, descricao: $descricao, capa: $capa, status: $status, tipoUsuario: $tipoUsuario, totalAulas: $totalAulas, aulasConcluidas: $aulasConcluidas, inscricao: $inscricao, ultimoAcesso: $ultimoAcesso, certificadoEmitido: $certificadoEmitido)';
   }
 }

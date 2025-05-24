@@ -22,14 +22,17 @@ class CursosTabItem extends GetView<CursosController> {
         );
       }
       return SizedBox(
-        height: 400 * (controller.cursosToShow.length).toDouble(),
+        height: 380 * (controller.cursosToShow.length).toDouble(),
         child: ListView.separated(
           physics: NeverScrollableScrollPhysics(),
           separatorBuilder: (context, index) => const SizedBox(height: 24),
           itemCount: controller.cursosToShow.length,
           itemBuilder: (context, index) {
             final curso = controller.cursosToShow[index];
-            return CursoCard(curso: curso);
+            return CursoCard(
+              curso: curso,
+              afterReturnClass: controller.loadCursos,
+            );
           },
         ),
       );

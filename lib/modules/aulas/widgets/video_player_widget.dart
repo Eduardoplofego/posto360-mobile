@@ -35,7 +35,9 @@ class VideoPlayerWidget extends GetView<AulasController> {
           ),
           child: Center(
             child: Text(
-              'Video não encontrado!',
+              controller.isLoading
+                  ? 'Carregando video...'
+                  : 'Video não encontrado!',
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
