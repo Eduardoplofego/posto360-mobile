@@ -1,16 +1,19 @@
 import 'package:get/get.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
+import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/utils/enums/curso_status.dart';
 import 'package:posto360/models/curso_model.dart';
+import 'package:posto360/services/cursos/cursos_service.dart';
 
 class CursosController extends GetxController with LoaderMixin {
-  CursosController();
+  final CursosService _cursosService;
+
+  CursosController({required CursosService cursosService})
+    : _cursosService = cursosService;
 
   @override
   void onInit() {
     loaderListener(_loading);
-    _cursosSearched.assignAll(Get.arguments ?? []);
-    _cursos.assignAll(_cursosSearched);
     super.onInit();
   }
 
@@ -21,31 +24,45 @@ class CursosController extends GetxController with LoaderMixin {
   }
 
   // Observables
-  final _loading = false.obs;
-  final _totalCursos = 0.obs;
-  final _cursosFinalizados = 0.obs;
-  final _totalAulas = 0.obs;
-  final _aulasRealizadas = 0.obs;
-  final _totalCertificados = 0.obs;
-  final _certificadosEmitidos = 0.obs;
-  final _searchText = 'Texto'.obs;
-  final _isConcludedCursosSelected = false.obs;
   final _cursos = <CursoModel>[].obs;
-  final _cursosSearched = <CursoModel>[].obs;
+
+  final _loading = false.obs;
+  final _searchText = ''.obs;
+  final _isConcludedCursosSelected = false.obs;
   final _cursosConluidos = <CursoModel>[].obs;
   final _cursosEmAndamento = <CursoModel>[].obs;
+  final _cursosSearched = <CursoModel>[].obs;
 
   // Getters
-  int get totalCursos => _totalCursos.value;
-  int get cursosFinalizados => _cursosFinalizados.value;
-  int get aulasFinalizadas => _aulasRealizadas.value;
-  int get totalAulas => _totalAulas.value;
-  int get totalCertificados => _totalCertificados.value;
-  int get certificadosEmitidos => _certificadosEmitidos.value;
+  int get totalCursos => _cursos.length;
+  int get cursosFinalizados =>
+      _cursos
+          .where((curso) => curso.status == CursoStatus.finalizado)
+          .toList()
+          .length;
+  int get aulasFinalizadas {
+    var aulasCount = 0;
+    for (var curso in _cursos) {
+      aulasCount += curso.aulasConcluidas;
+    }
+    return aulasCount;
+  }
+
+  int get totalAulas {
+    var aulasCount = 0;
+    for (var curso in _cursos) {
+      aulasCount += curso.totalAulas;
+    }
+    return aulasCount;
+  }
+
+  int get totalCertificados => totalCursos;
+  int get certificadosEmitidos =>
+      _cursos.where((curso) => curso.certificadoEmitido).toList().length;
   String get searchText => _searchText.value;
   bool get isConcludedCursosSelected => _isConcludedCursosSelected.value;
   List<CursoModel> get cursosToShow =>
-      isConcludedCursosSelected ? _cursosConluidos : _cursosEmAndamento;
+      isConcludedCursosSelected ? cursosConcluidos : cursosEmAndamento;
 
   List<CursoModel> get cursosConcluidos => _cursosConluidos;
   List<CursoModel> get cursosEmAndamento => _cursosEmAndamento;
@@ -56,12 +73,12 @@ class CursosController extends GetxController with LoaderMixin {
     if (text.isEmpty) {
       _cursosSearched.assignAll(_cursos);
       _cursosConluidos.assignAll(
-        _cursosSearched
+        _cursos
             .where((curso) => curso.status == CursoStatus.finalizado)
             .toList(),
       );
       _cursosEmAndamento.assignAll(
-        _cursosSearched
+        _cursos
             .where((curso) => curso.status == CursoStatus.andamento)
             .toList(),
       );
@@ -89,42 +106,43 @@ class CursosController extends GetxController with LoaderMixin {
 
   void changeSelectedTab(int index) {
     _isConcludedCursosSelected.value = index == 1;
+    if (_isConcludedCursosSelected.value) {
+      _cursosSearched.assignAll(
+        _cursos.where((curso) => curso.status == CursoStatus.finalizado),
+      );
+    } else {
+      _cursosSearched.assignAll(
+        _cursos.where((curso) => curso.status != CursoStatus.finalizado),
+      );
+    }
   }
 
   Future<void> onRefresh() async {
-    initVariables();
     await _init();
-  }
-
-  void initVariables() {
-    _totalCursos.value = 0;
-    _totalAulas.value = 0;
-    _aulasRealizadas.value = 0;
-    _certificadosEmitidos.value = 0;
-    _totalCertificados.value = 0;
-    _cursosFinalizados.value = 0;
-    _cursosConluidos.assignAll([]);
-    _cursosEmAndamento.assignAll([]);
   }
 
   Future<void> _init() async {
     _loading(true);
-    await _loadCursos();
+    await loadCursos();
     _loading(false);
   }
 
-  Future<void> _loadCursos() async {
-    for (var curso in _cursos) {
-      _totalCursos.value += 1;
-      _totalAulas.value += curso.totalAulas;
-      _aulasRealizadas.value += curso.aulasConcluidas;
-      _certificadosEmitidos.value += curso.certificadoEmitido == true ? 1 : 0;
-      _totalCertificados.value += 1;
-      if (curso.status == CursoStatus.andamento) {
-        _cursosEmAndamento.add(curso);
-      } else if (curso.status == CursoStatus.finalizado) {
-        _cursosFinalizados.value += 1;
-        _cursosConluidos.add(curso);
+  Future<void> loadCursos() async {
+    final user = Get.find<AuthService>().authenticatedUser;
+    if (user != null) {
+      final result = await _cursosService.getAllCursos(usuarioId: user.id);
+      if (result.success) {
+        _cursos.assignAll(result.data!);
+        _cursosConluidos.assignAll(
+          result.data!
+              .where((curso) => curso.status == CursoStatus.finalizado)
+              .toList(),
+        );
+        _cursosEmAndamento.assignAll(
+          result.data!
+              .where((curso) => curso.status != CursoStatus.finalizado)
+              .toList(),
+        );
       }
     }
   }

@@ -34,7 +34,7 @@ class _AulasPageState extends State<AulasPage> {
 
   @override
   Widget build(BuildContext context) {
-    final dto = Get.arguments as CursoToAulaDTO;
+    final dto = Get.arguments as CursoToAulaDTO?;
     _controller.getCursoArgument(dto);
     return Scaffold(
       appBar: PreferredSize(
@@ -58,9 +58,7 @@ class _AulasPageState extends State<AulasPage> {
       backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
       body: Obx(() {
         if (_controller.pdfLoaded) {
-          return SfPdfViewer.network(
-            'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
-          );
+          return SfPdfViewer.network(_controller.currentAula!.urlMaterial);
         } else {
           return ListView(
             children: [
@@ -73,7 +71,7 @@ class _AulasPageState extends State<AulasPage> {
               ),
               ConcludeClassWidget(),
               ModuleProgress(),
-              ..._controller.generateTimeLineItems(),
+              if (_controller.hasData) ..._controller.generateTimeLineItems(),
             ],
           );
         }

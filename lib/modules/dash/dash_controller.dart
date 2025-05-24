@@ -3,20 +3,21 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
-import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/services/notification_service.dart';
-import 'package:posto360/core/utils/enums/curso_status.dart';
-import 'package:posto360/models/curso_model.dart';
+import 'package:posto360/core/utils/data_formatters.dart';
+import 'package:posto360/models/dashboard_model.dart';
 import 'package:posto360/models/horario_faltas_model.dart';
 import 'package:posto360/models/user_model.dart';
-import 'package:posto360/services/cursos/cursos_service.dart';
+import 'package:posto360/services/campanhas/campanhas_service.dart';
+import 'package:posto360/services/dashboard/dashboard_service.dart';
 import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
+  late CampanhasService _campanhasService;
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
+  late DashboardService _dashboardService;
   late NotificationService _notificationService;
-  late CursosService _cursosService;
 
   final _loader = false.obs;
   final _message = Rxn<MessagesModel>();
@@ -24,9 +25,10 @@ class DashController extends FullLifeCycleController
   final _selectPeriodScrollController = ScrollController();
 
   DashController() {
+    _campanhasService = Get.find<CampanhasService>();
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
     _notificationService = Get.find<NotificationService>();
-    _cursosService = Get.find<CursosService>();
+    _dashboardService = Get.find<DashboardService>();
   }
 
   @override
@@ -43,18 +45,13 @@ class DashController extends FullLifeCycleController
   }
 
   // loadings
+  final _loadingDashboardModel = false.obs;
   final _loadingWork = false.obs;
-  final _loadingPerformance = false.obs;
-  final _loadingCursos = false.obs;
-  final _loadingCheckList = false.obs;
+  bool get loadingDashboardModel => _loadingDashboardModel.value;
   bool get loadingWork => _loadingWork.value;
-  bool get loadingPerformance => _loadingPerformance.value;
-  bool get loadingCursos => _loadingCursos.value;
-  bool get loadingCheckList => _loadingCheckList.value;
 
-  final _cursosList = <CursoModel>[].obs;
-  final _totalCursos = 0.obs;
-  final _totalCursosConcluidos = 0.obs;
+  final _dashboardModel = Rx(DashboardModel.empty());
+  final _hasDashboardModel = false.obs;
   final _authenticatedUser = Rx<UserModel>(UserModel.empty());
   final _horarioFaltasAtrasos = Rx<HorarioFaltasModel>(
     HorarioFaltasModel.empty(),
@@ -64,9 +61,8 @@ class DashController extends FullLifeCycleController
   final _monthSelected = DateTime.now().obs;
   final _hasNextMonth = false.obs;
 
-  List<CursoModel> get cursos => _cursosList;
-  int get totalCursos => _totalCursos.value;
-  int get totalCursosConcluidos => _totalCursosConcluidos.value;
+  DashboardModel get dashboardModel => _dashboardModel.value;
+  bool get hasDashboardModel => _hasDashboardModel.value;
   UserModel get autheticatedUser => _authenticatedUser.value;
   String get nameUser =>
       autheticatedUser.name + (autheticatedUser.lastName ?? '');
@@ -90,8 +86,10 @@ class DashController extends FullLifeCycleController
     _authenticatedUser.value = UserModel.fromMap(
       GetStorage().read(Constants.USER_KEY),
     );
-    await Future.wait([_loadHorarioFaltaAtraso(), _loadCursos()]);
     _loadQuantityDaysInMonth();
+    _loader(true);
+    await Future.wait([_loadHorarioFaltaAtraso(), loadDashboardModel()]);
+    _loader(false);
   }
 
   void _loadQuantityDaysInMonth() {
@@ -105,25 +103,32 @@ class DashController extends FullLifeCycleController
     }
   }
 
-  Future<void> _loadCursos() async {
-    _loadingCursos(true);
-    final result = await _cursosService.getAllCursos(
-      usuarioId: Get.find<AuthService>().getUser()!.id,
+  Future<void> loadDashboardModel() async {
+    _loadingDashboardModel(true);
+    final resultCampanhas = await _campanhasService.getAllCampanhas(
+      filialId: autheticatedUser.idFilial!,
+      tipoUsuario: autheticatedUser.tipoUsuario,
+      data: monthSelected,
     );
-    final cursos = result.data!;
-    var totalCursos = 0;
-    var totalConcluidos = 0;
-    for (var curso in cursos) {
-      if (curso.status == CursoStatus.finalizado) {
-        totalConcluidos += 1;
+
+    if (resultCampanhas.success || resultCampanhas.data!.isNotEmpty) {
+      final dashboardResult = await _dashboardService.getDashboardData(
+        funcionarioCodigo: autheticatedUser.codigoPDV!,
+        campanhas: resultCampanhas.data!,
+        data: DataFormatters.formatarData(monthSelected),
+      );
+
+      if (dashboardResult.success) {
+        _dashboardModel.value = dashboardResult.data!;
+        _hasDashboardModel(true);
+      } else {
+        _hasDashboardModel(false);
       }
-      totalCursos += 1;
-      _cursosList.add(curso);
+    } else {
+      _hasDashboardModel(false);
     }
-    _totalCursos.value = totalCursos;
-    _totalCursosConcluidos.value = totalConcluidos;
-    _cursosList.assignAll(cursos);
-    _loadingCursos(false);
+
+    _loadingDashboardModel(false);
   }
 
   Future<void> _loadHorarioFaltaAtraso() async {
@@ -152,7 +157,7 @@ class DashController extends FullLifeCycleController
         _message(
           MessagesModel(
             title: 'Erro',
-            message: 'Não foi possível buscar os horários de hoje',
+            message: 'Não foi possível buscar os horários na data selecionada',
             type: MessageType.info,
           ),
         );
@@ -167,8 +172,10 @@ class DashController extends FullLifeCycleController
   Future<void> prevMonth(DateTime monthSelected) async {
     _monthSelected.value = monthSelected;
     _hasNextMonth.value = true;
+    _loadingDashboardModel(true);
     await _loadHorarioFaltaAtraso();
     _loadQuantityDaysInMonth();
+    await loadDashboardModel();
   }
 
   Future<void> nextMonth(DateTime monthSelected) async {
@@ -178,8 +185,10 @@ class DashController extends FullLifeCycleController
         !(monthSelected.year == now.year && monthSelected.month == now.month);
 
     _monthSelected.value = monthSelected;
+    _loadingDashboardModel(true);
     await _loadHorarioFaltaAtraso();
     _loadQuantityDaysInMonth();
+    await loadDashboardModel();
   }
 
   @override
