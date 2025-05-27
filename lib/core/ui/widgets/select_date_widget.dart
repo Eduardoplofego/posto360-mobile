@@ -32,6 +32,7 @@ class SelectDateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 60,
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Row(
         spacing: 10,

@@ -5,6 +5,8 @@ import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/core/ui/widgets/loading/card_loading_widget.dart';
 import 'package:posto360/core/ui/widgets/select_date_widget.dart';
+import 'package:posto360/models/performance_model.dart';
+import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
 import 'package:posto360/modules/campanhas/widgets/card_total_bonus_widget.dart';
 import './campanhas_controller.dart';
 
@@ -27,77 +29,62 @@ class CampanhasPage extends GetView<CampanhasController> {
           actions: [],
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: controller.onRefresh,
-        backgroundColor: Colors.white,
-        color: PostoAppUiConfigurations.blueMediumColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Obx(() {
-            return ListView(
-              children: [
-                const SizedBox(height: 16),
-                CardLoadingWidget(
-                  isLoading: controller.isLoading,
-                  height: 120,
-                  initDelay: 50,
-                  child: CardTotalBonusWidget(),
-                ),
-                const SizedBox(height: 8),
-                SelectDateWidget(
-                  nextMonthPressed: controller.nextMonth,
-                  period: controller.monthSelected,
-                  hasNextMonth: controller.hasNextMonth,
-                  prevMonthPressed: controller.prevMonth,
-                ),
-                const SizedBox(height: 8),
-                controller.isLoading
-                    ? Column(
-                      children: [
-                        CardLoadingWidget(
-                          isLoading: controller.isLoading,
-                          height: 400,
-                          initDelay: 100,
-                          child: const SizedBox.shrink(),
-                        ),
-                        const SizedBox(height: 16),
-                        CardLoadingWidget(
-                          isLoading: controller.isLoading,
-                          height: 400,
-                          initDelay: 200,
-                          child: const SizedBox.shrink(),
-                        ),
-                        const SizedBox(height: 16),
-                        CardLoadingWidget(
-                          isLoading: controller.isLoading,
-                          height: 400,
-                          initDelay: 250,
-                          child: const SizedBox.shrink(),
-                        ),
-                      ],
-                    )
-                    : Column(
-                      spacing: 16,
-                      children:
-                          controller.campanhas.isNotEmpty
-                              ? controller.loadCampanhaCards()
-                              : [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 28,
-                                  ),
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    'Nenhuma campanha listada\n para esse período',
-                                  ),
-                                ),
-                              ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Obx(() {
+                return Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    CardLoadingWidget(
+                      isLoading: controller.isLoading,
+                      height: 120,
+                      initDelay: 50,
+                      child: CardTotalBonusWidget(),
                     ),
-                const SizedBox(height: 32),
-              ],
-            );
-          }),
-        ),
+                    SelectDateWidget(
+                      nextMonthPressed: controller.nextMonth,
+                      period: controller.monthSelected,
+                      hasNextMonth: controller.hasNextMonth,
+                      prevMonthPressed: controller.prevMonth,
+                    ),
+                    if (controller.isLoading && controller.campanhas.isEmpty)
+                      SizedBox(
+                        height: 60,
+                        child: Center(
+                          child: Text('Nenhuma campanha encontrada nesse mês'),
+                        ),
+                      ),
+                    if (!controller.isLoading &&
+                        controller.campanhas.isNotEmpty)
+                      SizedBox(
+                        height: constraints.maxHeight - 220,
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            final campanhaItem = controller.campanhas[index];
+                            final performanceItem =
+                                controller.performancesListMap[campanhaItem
+                                    .campanhaId] ??
+                                PerformanceModel.empty();
+                            return CampanhaCardWidget(
+                              campanha: campanhaItem,
+                              performace: performanceItem,
+                            );
+                          },
+                          separatorBuilder:
+                              (context, index) => const SizedBox(height: 16),
+                          itemCount: controller.campanhas.length,
+                        ),
+                      ),
+                  ],
+                );
+              }),
+            ),
+          );
+        },
       ),
     );
   }
