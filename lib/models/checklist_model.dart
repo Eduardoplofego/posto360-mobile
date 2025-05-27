@@ -37,12 +37,14 @@ class ChecklistModel {
   }
 
   factory ChecklistModel.fromMap(Map<String, dynamic> map) {
+    final totalConcludedChecks = map['respostasConcluidas'] ?? 0;
+    final totalChecks = map['totalRespostas'] ?? 0;
     return ChecklistModel(
       id: map['checklistId']?.toInt() ?? 0,
       name: map['nomeChecklist'] ?? '',
       description: map['description'] ?? '',
-      totalChecks: map['totalRespostas'] ?? 0,
-      concludedChecks: map['respostasConcluidas'] ?? 0,
+      totalChecks: totalChecks,
+      concludedChecks: totalConcludedChecks,
       status: GetChecklistStatus.getStatus(map['status']),
       usuarioId: map['usuarioId'] ?? '',
       filialId: map['filialId']?.toInt() ?? 0,

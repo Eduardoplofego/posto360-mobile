@@ -35,7 +35,8 @@ class PerformanceModel {
     return PerformanceModel(
       campanhaId: map['campanhaId'] ?? 0,
       unidadesVendidas:
-          double.tryParse(map['performance']['valorVendas'].toString()) ?? 0.0,
+          double.tryParse(map['performance']['unidadesVendidas'].toString()) ??
+          0.0,
       valorBonificacao:
           double.tryParse(map['performance']['valorBonificacao'].toString()) ??
           0.0,
