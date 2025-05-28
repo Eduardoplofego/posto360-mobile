@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/core/utils/enums/curso_status.dart';
 import 'package:posto360/models/curso_model.dart';
 import 'package:posto360/modules/cursos/dtos/curso_to_aula_dto.dart';
 
@@ -35,11 +36,13 @@ class CursoFolderWidget extends StatelessWidget {
           children: [
             InkWell(
               onTap: () async {
-                await Get.toNamed(
-                  '/cursos/aulas',
-                  arguments: CursoToAulaDTO(curso: curso),
-                );
-                afterReturnClass();
+                if (curso.status != CursoStatus.finalizado) {
+                  await Get.toNamed(
+                    '/cursos/aulas',
+                    arguments: CursoToAulaDTO(curso: curso),
+                  );
+                  afterReturnClass();
+                }
               },
               borderRadius: BorderRadius.circular(50),
               child: Container(
