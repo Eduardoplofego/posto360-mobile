@@ -3,25 +3,26 @@ class ApiRoutes {
 
   static const _backendBaseUrl = 'https://www.posto360.app';
 
-  static const _login = '$_backendBaseUrl/api/login';
-  static const _honorary = '$_backendBaseUrl/api/horario-faltas-atrasos';
-  static const _campanhas = '$_backendBaseUrl/api/produtos-incentivados';
-  static const _performance = '$_backendBaseUrl/api/calcular-performance';
-  static const _cursos = '$_backendBaseUrl/api/ead/vendedor/cursos';
-  static const _aulas = '$_backendBaseUrl/api/ead/vendedor/aulas';
+  static const _login = '$_backendBaseUrl/api/mobile/login';
+  static const _honorary = '$_backendBaseUrl/api/mobile/horario-faltas-atrasos';
+  static const _campanhas = '$_backendBaseUrl/api/mobile/produtos-incentivados';
+  static const _performance =
+      '$_backendBaseUrl/api/mobile/calcular-performance';
+  static const _cursos = '$_backendBaseUrl/api/mobile/ead/vendedor/cursos';
+  static const _aulas = '$_backendBaseUrl/api/mobile/ead/vendedor/aulas';
   static const _aulaConcluida =
-      '$_backendBaseUrl/api/ead/vendedor/subir-visualizacao';
+      '$_backendBaseUrl/api/mobile/ead/vendedor/subir-visualizacao';
   static const _dashboard = '$_backendBaseUrl/api/mobile/dashboard';
   static const _checklists =
-      '$_backendBaseUrl/api/checklists/vendedor/disponiveis';
+      '$_backendBaseUrl/api/mobile/checklists/vendedor/disponiveis';
   static const _checklistAnswers =
-      '$_backendBaseUrl/api/checklists/vendedor/respostas';
+      '$_backendBaseUrl/api/mobile/checklists/vendedor/respostas';
   static const _iniciarChecklist =
-      '$_backendBaseUrl/api/checklists/vendedor/iniciar-checklist';
+      '$_backendBaseUrl/api/mobile/checklists/vendedor/iniciar-checklist';
   static const _subirResposta =
-      '$_backendBaseUrl/api/checklists/vendedor/subir-resposta';
+      '$_backendBaseUrl/api/mobile/checklists/vendedor/subir-resposta';
   static const _subirImagem =
-      '$_backendBaseUrl/api/checklists/vendedor/subir-imagem';
+      '$_backendBaseUrl/api/mobile/checklists/vendedor/subir-imagem';
 
   static String login() => _login;
   static String honorario() => _honorary;
