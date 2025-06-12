@@ -6,4 +6,5 @@ class Constants {
   static const String JWT_TOKEN = 'JWT_TOKEN';
   static const String USER_KEY = 'USER_TOKEN';
   static const String CAMPANHAS_CONTROLLER = 'CAMPANHAS_CONTROLLER';
+  static const String USER_PHOTO_URL = 'USER_PHOTO_URL';
 }

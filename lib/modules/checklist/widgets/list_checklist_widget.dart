@@ -12,32 +12,46 @@ class ListChecklistWidget extends GetView<ChecklistController> {
     return SizedBox(
       height: Get.height,
       child: Obx(() {
-        return ListView.separated(
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            final check = controller.getChecklistSelected[index];
-            return InkWell(
-              onTap: () async {
-                if (check.status == ChecklistStatus.aFazer) {
-                  final isToStartChecklist = await controller
-                      .showDialogToStartChecklist(check.id);
-                  if (isToStartChecklist) {
-                    await controller.onRefresh();
+        if (controller.getChecklistSelected.isEmpty) {
+          return Column(
+            children: [
+              Text(
+                'Nenhum checklist disponível',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            ],
+          );
+        } else {
+          return ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              final check = controller.getChecklistSelected[index];
+              return InkWell(
+                onTap: () async {
+                  if (check.status == ChecklistStatus.aFazer) {
+                    final isToStartChecklist = await controller
+                        .showDialogToStartChecklist(check.id);
+                    if (isToStartChecklist) {
+                      await controller.onRefresh();
+                    }
+                  } else {
+                    await Get.toNamed(
+                      '/checklists/answers/',
+                      parameters: {
+                        'name': check.name,
+                        'id': check.id.toString(),
+                      },
+                    );
+                    controller.onRefresh();
                   }
-                } else {
-                  await Get.toNamed(
-                    '/checklists/answers/',
-                    parameters: {'name': check.name, 'id': check.id.toString()},
-                  );
-                  controller.onRefresh();
-                }
-              },
-              child: ChecklistCardWidget(checklist: check),
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox(height: 16),
-          itemCount: controller.getChecklistSelected.length,
-        );
+                },
+                child: ChecklistCardWidget(checklist: check),
+              );
+            },
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemCount: controller.getChecklistSelected.length,
+          );
+        }
       }),
     );
   }

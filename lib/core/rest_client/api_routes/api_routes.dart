@@ -19,10 +19,14 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/checklists/vendedor/respostas';
   static const _iniciarChecklist =
       '$_backendBaseUrl/api/mobile/checklists/vendedor/iniciar-checklist';
+  static const _finalizarChecklist =
+      '$_backendBaseUrl/api/mobile/checklists/vendedor/finalizar-checklist';
   static const _subirResposta =
       '$_backendBaseUrl/api/mobile/checklists/vendedor/subir-resposta';
   static const _subirImagem =
       '$_backendBaseUrl/api/mobile/checklists/vendedor/subir-imagem';
+  static const _subirFotoPerfil =
+      '$_backendBaseUrl/api/mobile/subir-foto-perfil';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -35,6 +39,8 @@ class ApiRoutes {
   static String checklists() => _checklists;
   static String checklistAnswers() => _checklistAnswers;
   static String iniciarChecklist() => _iniciarChecklist;
+  static String finalizarChecklist() => _finalizarChecklist;
   static String subirResposta() => _subirResposta;
   static String subirImagem() => _subirImagem;
+  static String subirFotoPerfil() => _subirFotoPerfil;
 }

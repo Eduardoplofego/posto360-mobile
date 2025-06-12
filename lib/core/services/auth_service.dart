@@ -32,6 +32,7 @@ class AuthService extends GetxService {
     _getStorage.write(Constants.JWT_TOKEN, null);
     _getStorage.write(Constants.USER_KEY, null);
     _getStorage.write(Constants.CAMPANHAS_CONTROLLER, null);
+    _getStorage.write(Constants.USER_PHOTO_URL, null);
   }
 
   UserModel? getUser() {

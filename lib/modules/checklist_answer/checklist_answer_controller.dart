@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mime/mime.dart';
 import 'package:posto360/core/dto/image_answer_dto.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
@@ -131,13 +132,18 @@ class ChecklistAnswerController extends GetxController
     File imageFile = File(imagePath);
 
     final imageName = _getImageName(imageFile.path);
+    final mimeType = lookupMimeType(imagePath);
+    if (mimeType == null) {
+      debugPrint('Mime type não encontrado para a imagem: $imagePath');
+      return;
+    }
     String imageBase64 = await _getImageBase64(imageFile);
 
     if (imageBase64.isNotEmpty) {
       _imageAnswerDto.value = ImageAnswerDto(
         name: imageName,
         base64: imageBase64,
-        type: 'image/jpeg',
+        type: mimeType,
       );
       _hasSelectedImage(true);
     }

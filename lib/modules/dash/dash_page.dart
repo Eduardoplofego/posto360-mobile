@@ -34,14 +34,16 @@ class DashPage extends GetView<DashController> {
       ),
       drawer: PostoAppDrawer(
         autheticatedUser: Get.find<AuthService>().getUser()!,
+        onSavePhoto: controller.onSavePhoto,
       ),
       body: Obx(() {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: RefreshIndicator(
             onRefresh: controller.onRefresh,
-            backgroundColor: Colors.white,
-            color: PostoAppUiConfigurations.blueMediumColor,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            color: Colors.transparent,
             child:
                 controller.isLoading
                     ? Padding(

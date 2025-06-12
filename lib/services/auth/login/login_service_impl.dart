@@ -29,14 +29,16 @@ class LoginServiceImpl extends LoginService {
 
       storage.write(Constants.JWT_TOKEN, response.token);
       storage.write(Constants.USER_KEY, response.user.toMap());
-
+      storage.write(Constants.USER_PHOTO_URL, null);
       return ResultActionDTO.success();
     } on UserNotFoundException catch (_) {
       return ResultActionDTO.failure('Usuário não encontrado', null);
-    } on LoginExcpetion catch (_) {
-      return ResultActionDTO.failure('Problema ao realizar login', null);
+    } on LoginExcpetion catch (e) {
+      return ResultActionDTO.failure(e.message, null);
     } on WrongCredentialsException catch (_) {
       return ResultActionDTO.failure('Credenciais inválidas', null);
+    } catch (_) {
+      return ResultActionDTO.failure('Erro ao realizar login}', null);
     }
   }
 }

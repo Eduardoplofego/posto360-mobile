@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/core/ui/widgets/loading/card_loading_widget.dart';
@@ -51,7 +50,7 @@ class CampanhasPage extends GetView<CampanhasController> {
                       hasNextMonth: controller.hasNextMonth,
                       prevMonthPressed: controller.prevMonth,
                     ),
-                    if (controller.isLoading && controller.campanhas.isEmpty)
+                    if (!controller.isLoading && controller.campanhas.isEmpty)
                       SizedBox(
                         height: 60,
                         child: Center(

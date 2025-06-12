@@ -27,6 +27,10 @@ class LoginRepositoryImpl extends LoginRepository {
       throw LoginExcpetion();
     }
 
+    if (response.statusCode == 404) {
+      throw LoginExcpetion(message: 'Usuário não encontrado');
+    }
+
     if (response.statusCode == 401) {
       throw WrongCredentialsException();
     }

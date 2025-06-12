@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
+import 'package:posto360/core/dto/result_action_dto.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
+import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/services/notification_service.dart';
 import 'package:posto360/core/utils/data_formatters.dart';
 import 'package:posto360/models/dashboard_model.dart';
@@ -11,6 +13,7 @@ import 'package:posto360/models/user_model.dart';
 import 'package:posto360/services/campanhas/campanhas_service.dart';
 import 'package:posto360/services/dashboard/dashboard_service.dart';
 import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service.dart';
+import 'package:posto360/services/user/user_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
@@ -18,6 +21,7 @@ class DashController extends FullLifeCycleController
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
   late DashboardService _dashboardService;
   late NotificationService _notificationService;
+  late UserService _userService;
 
   final _loader = false.obs;
   final _message = Rxn<MessagesModel>();
@@ -29,6 +33,7 @@ class DashController extends FullLifeCycleController
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
     _notificationService = Get.find<NotificationService>();
     _dashboardService = Get.find<DashboardService>();
+    _userService = Get.find<UserService>();
   }
 
   @override
@@ -67,6 +72,7 @@ class DashController extends FullLifeCycleController
   String get nameUser =>
       autheticatedUser.name + (autheticatedUser.lastName ?? '');
   bool get hasPhotoUrl =>
+      GetStorage().read(Constants.USER_PHOTO_URL) != null ||
       autheticatedUser.photoUrl != null && autheticatedUser.photoUrl != '';
   bool get hasNotification => _notificationService.hasNotification;
   HorarioFaltasModel get horarioFaltasAtrasos => _horarioFaltasAtrasos.value;
@@ -77,6 +83,15 @@ class DashController extends FullLifeCycleController
   int get daysRegistered => _daysRegistered.value;
   ScrollController get selectPeriodScrollController =>
       _selectPeriodScrollController;
+  String get photoUrl {
+    final isToTakeFomrStorage =
+        GetStorage().read(Constants.USER_PHOTO_URL) != null;
+    if (isToTakeFomrStorage) {
+      return GetStorage().read(Constants.USER_PHOTO_URL);
+    } else {
+      return autheticatedUser.photoUrl ?? '';
+    }
+  }
 
   Future<void> onRefresh() async {
     await _initVariables();
@@ -189,6 +204,15 @@ class DashController extends FullLifeCycleController
     await _loadHorarioFaltaAtraso();
     _loadQuantityDaysInMonth();
     await loadDashboardModel();
+  }
+
+  Future<ResultActionDTO<String>> onSavePhoto(String imagePath) async {
+    final result = await _userService.sendProfilePhoto(
+      userId: Get.find<AuthService>().getUser()!.id,
+      imagePath: imagePath,
+    );
+
+    return result;
   }
 
   @override

@@ -9,6 +9,8 @@ import 'package:posto360/repositories/horario_faltas_atrasos/horario_faltas_atra
 import 'package:posto360/repositories/horario_faltas_atrasos/horario_faltas_atrasos_repository_impl.dart';
 import 'package:posto360/repositories/performance/performance_repository.dart';
 import 'package:posto360/repositories/performance/performance_repository_impl.dart';
+import 'package:posto360/repositories/user/user_repository.dart';
+import 'package:posto360/repositories/user/user_repository_impl.dart';
 import 'package:posto360/services/campanhas/campanhas_service.dart';
 import 'package:posto360/services/campanhas/campanhas_service_impl.dart';
 import 'package:posto360/services/cursos/cursos_service.dart';
@@ -19,11 +21,17 @@ import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_
 import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service_impl.dart';
 import 'package:posto360/services/performance/performance_service.dart';
 import 'package:posto360/services/performance/performance_service_impl.dart';
+import 'package:posto360/services/user/user_service.dart';
+import 'package:posto360/services/user/user_service_impl.dart';
 import 'dash_controller.dart';
 
 class DashBindings implements Bindings {
   @override
   void dependencies() {
+    Get.lazyPut<UserRepository>(
+      () => UserRepositoryImpl(postoRestClient: Get.find()),
+    );
+    Get.lazyPut<UserService>(() => UserServiceImpl(userRepository: Get.find()));
     Get.lazyPut<HorarioFaltasAtrasosRepository>(
       () => HorarioFaltasAtrasosRepositoryImpl(postoRestClient: Get.find()),
     );

@@ -19,31 +19,30 @@ class ProfileCardWidget extends GetView<DashController> {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 10,
               children: [
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: PostoAppUiConfigurations.greyColor,
-                      child: CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Colors.grey.shade200,
-                        backgroundImage:
-                            controller.hasPhotoUrl
-                                ? NetworkImage(
-                                  controller.autheticatedUser.photoUrl!,
-                                )
-                                : null,
-                        child:
-                            !controller.hasPhotoUrl
-                                ? Icon(
-                                  Icons.person,
-                                  size: 40,
-                                  color: Colors.grey.shade400,
-                                )
-                                : const SizedBox.shrink(),
-                      ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    color: Colors.grey.shade200,
+                    child: Image.network(
+                      controller.photoUrl,
+                      cacheHeight: 60,
+                      cacheWidth: 60,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.grey.shade200,
+                          ),
+                        );
+                      },
+                      fit: BoxFit.cover,
                     ),
-                  ],
+                  ),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
