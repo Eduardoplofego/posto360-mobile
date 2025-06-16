@@ -5,14 +5,57 @@ import 'package:posto360/core/utils/enums/curso_status.dart';
 import 'package:posto360/models/curso_model.dart';
 import 'package:posto360/modules/cursos/dtos/curso_to_aula_dto.dart';
 
-class CursoFolderWidget extends StatelessWidget {
+class CursoFolderWidget extends StatefulWidget {
   final CursoModel curso;
   final VoidCallback afterReturnClass;
+  final Function(String) showMessageError;
+  final Future<bool> Function({required int cursoId}) onStartCourse;
   const CursoFolderWidget({
     super.key,
     required this.curso,
     required this.afterReturnClass,
+    required this.onStartCourse,
+    required this.showMessageError,
   });
+
+  @override
+  State<CursoFolderWidget> createState() => _CursoFolderWidgetState();
+}
+
+class _CursoFolderWidgetState extends State<CursoFolderWidget> {
+  Future<bool> _checkIfToStartCurso() async {
+    final shouldStart = await Get.dialog<bool>(
+      AlertDialog(
+        title: Text('Iniciar Curso'),
+        content: Text(
+          'Deseja iniciar esse curso?',
+          style: TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Colors.white,
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: Text(
+              'Cancelar',
+              style: TextStyle(fontSize: 16, color: Colors.red.shade400),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: Text(
+              'Iniciar',
+              style: TextStyle(
+                fontSize: 16,
+                color: PostoAppUiConfigurations.blueMediumColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return shouldStart ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +63,12 @@ class CursoFolderWidget extends StatelessWidget {
       width: Get.width,
       height: 142,
       decoration: BoxDecoration(
-        color: curso.capa == '' ? Colors.grey.shade200 : null,
+        color: widget.curso.capa == '' ? Colors.grey.shade200 : null,
         borderRadius: BorderRadius.circular(10),
         image:
-            curso.capa != ''
+            widget.curso.capa != ''
                 ? DecorationImage(
-                  image: NetworkImage(curso.capa),
+                  image: NetworkImage(widget.curso.capa),
                   fit: BoxFit.cover,
                 )
                 : null,
@@ -36,12 +79,29 @@ class CursoFolderWidget extends StatelessWidget {
           children: [
             InkWell(
               onTap: () async {
-                if (curso.status != CursoStatus.finalizado) {
+                bool isToCourse = true;
+                if (widget.curso.status == CursoStatus.naoIniciado) {
+                  final shouldStart = await _checkIfToStartCurso();
+
+                  if (shouldStart) {
+                    final resultStart = await widget.onStartCourse(
+                      cursoId: widget.curso.id,
+                    );
+
+                    if (!resultStart) {
+                      isToCourse = false;
+                    }
+                  }
+                }
+
+                if (isToCourse) {
                   await Get.toNamed(
                     '/cursos/aulas',
-                    arguments: CursoToAulaDTO(curso: curso),
+                    arguments: CursoToAulaDTO(curso: widget.curso),
                   );
-                  afterReturnClass();
+                  widget.afterReturnClass();
+                } else {
+                  widget.showMessageError('Não foi possível iniciar o curso');
                 }
               },
               borderRadius: BorderRadius.circular(50),

@@ -27,4 +27,5 @@ abstract class ChecklistService {
     required int respostaId,
     required ImageAnswerDto imageAnswer,
   });
+  Future<ResultActionDTO<bool>> finalizarChecklist({required int checklistId});
 }

@@ -32,6 +32,8 @@ class CursosTabItem extends GetView<CursosController> {
             return CursoCard(
               curso: curso,
               afterReturnClass: controller.loadCursos,
+              onStartCourse: controller.startCurso,
+              showMessageError: controller.showMessageError,
             );
           },
         ),

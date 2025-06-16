@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
+import 'package:posto360/core/mixins/message_mixin.dart';
 import 'package:posto360/core/services/auth_service.dart';
 import 'package:posto360/core/utils/enums/curso_status.dart';
 import 'package:posto360/models/curso_model.dart';
 import 'package:posto360/services/cursos/cursos_service.dart';
 
-class CursosController extends GetxController with LoaderMixin {
+class CursosController extends GetxController with LoaderMixin, MessageMixin {
   final CursosService _cursosService;
 
   CursosController({required CursosService cursosService})
@@ -13,8 +14,9 @@ class CursosController extends GetxController with LoaderMixin {
 
   @override
   void onInit() {
-    loaderListener(_loading);
     super.onInit();
+    loaderListener(_loading);
+    messageListener(_message);
   }
 
   @override
@@ -27,6 +29,7 @@ class CursosController extends GetxController with LoaderMixin {
   final _cursos = <CursoModel>[].obs;
 
   final _loading = false.obs;
+  final _message = Rxn<MessagesModel>();
   final _searchText = ''.obs;
   final _isConcludedCursosSelected = false.obs;
   final _cursosConluidos = <CursoModel>[].obs;
@@ -145,5 +148,24 @@ class CursosController extends GetxController with LoaderMixin {
         );
       }
     }
+  }
+
+  Future<bool> startCurso({required int cursoId}) async {
+    final user = Get.find<AuthService>().authenticatedUser;
+    if (user != null) {
+      final result = await _cursosService.iniciarCurso(
+        usuarioId: user.id,
+        cursoId: cursoId,
+      );
+
+      return result.data ?? false;
+    }
+    return false;
+  }
+
+  void showMessageError(String message) {
+    _message(
+      MessagesModel(title: 'Erro', message: message, type: MessageType.error),
+    );
   }
 }

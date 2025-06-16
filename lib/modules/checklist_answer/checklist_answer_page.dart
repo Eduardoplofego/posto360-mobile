@@ -4,6 +4,7 @@ import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/general_checklist_widget.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
+import 'package:posto360/modules/checklist/widgets/footer_conclude_checklist.dart';
 import 'package:posto360/modules/checklist_answer/widgets/checklist_answer_card.dart';
 import 'package:posto360/modules/checklist_answer/widgets/modals/answer_checklist_modal.dart';
 import './checklist_answer_controller.dart';
@@ -25,6 +26,10 @@ class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
           ),
           actions: [],
         ),
+      ),
+      bottomNavigationBar: FooterConcludeChecklist(
+        onPressed: controller.concludedChecklist,
+        isActive: controller.canConcludeChecklist,
       ),
       body: Column(
         children: [

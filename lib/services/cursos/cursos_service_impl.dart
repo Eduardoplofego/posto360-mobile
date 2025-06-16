@@ -14,4 +14,11 @@ class CursosServiceImpl extends CursosService {
   Future<ResultActionDTO<List<CursoModel>>> getAllCursos({
     required String usuarioId,
   }) async => await _cursosRepository.getCursos(usuarioId: usuarioId);
+
+  @override
+  Future<ResultActionDTO<bool>> iniciarCurso({
+    required String usuarioId,
+    required int cursoId,
+  }) async =>
+      _cursosRepository.iniciarCurso(usuarioId: usuarioId, cursoId: cursoId);
 }

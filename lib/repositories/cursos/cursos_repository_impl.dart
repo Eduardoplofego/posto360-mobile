@@ -34,4 +34,35 @@ class CursosRepositoryImpl extends CursosRepository {
       return ResultActionDTO.failure('Não foi possível obter os cursos', []);
     }
   }
+
+  @override
+  Future<ResultActionDTO<bool>> iniciarCurso({
+    required String usuarioId,
+    required int cursoId,
+  }) async {
+    try {
+      final result = await _restClient.post(ApiRoutes.iniciarCurso(), {
+        'usuarioId': usuarioId,
+        'cursoId': cursoId,
+      });
+
+      final resultMessage = result.body['message'] as String?;
+
+      if (resultMessage == null) {
+        return ResultActionDTO.failure(
+          'Não foi possível iniciar o curso',
+          false,
+        );
+      }
+
+      if (resultMessage.contains('foi iniciado')) {
+        return ResultActionDTO.success(data: true);
+      }
+
+      return ResultActionDTO.failure(resultMessage, false);
+    } catch (e, s) {
+      log('Erro iniciar curso', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Não foi possível iniciar o curso', false);
+    }
+  }
 }

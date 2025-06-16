@@ -40,7 +40,7 @@ class _AnswerChecklistModalState extends State<AnswerChecklistModal> {
   }
 
   Future<void> _onConcludeChecklist() async {
-    await _controller.concludeChecklist(
+    await _controller.concludeChecklistAnswer(
       answerModel: widget.answerModel,
       comment: _observationEC.text,
     );

@@ -5,4 +5,8 @@ abstract class CursosService {
   Future<ResultActionDTO<List<CursoModel>>> getAllCursos({
     required String usuarioId,
   });
+  Future<ResultActionDTO<bool>> iniciarCurso({
+    required String usuarioId,
+    required int cursoId,
+  });
 }

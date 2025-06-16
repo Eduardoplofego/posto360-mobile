@@ -64,4 +64,10 @@ class ChecklistServiceImpl extends ChecklistService {
     respostaId: respostaId,
     imageAnswer: imageAnswer.toJson(),
   );
+
+  @override
+  Future<ResultActionDTO<bool>> finalizarChecklist({
+    required int checklistId,
+  }) async =>
+      _checklistsRepository.finalizarChecklist(checklistid: checklistId);
 }

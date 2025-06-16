@@ -9,10 +9,14 @@ import 'package:posto360/modules/cursos/widgets/curso_progress_widget.dart';
 class CursoCard extends StatelessWidget {
   final CursoModel curso;
   final VoidCallback afterReturnClass;
+  final Function(String) showMessageError;
+  final Future<bool> Function({required int cursoId}) onStartCourse;
   const CursoCard({
     super.key,
     required this.curso,
     required this.afterReturnClass,
+    required this.onStartCourse,
+    required this.showMessageError,
   });
 
   @override
@@ -25,7 +29,12 @@ class CursoCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          CursoFolderWidget(curso: curso, afterReturnClass: afterReturnClass),
+          CursoFolderWidget(
+            curso: curso,
+            afterReturnClass: afterReturnClass,
+            onStartCourse: onStartCourse,
+            showMessageError: showMessageError,
+          ),
           const SizedBox(height: 12),
           SizedBox(
             width: Get.width,

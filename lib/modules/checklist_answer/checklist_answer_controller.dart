@@ -61,6 +61,7 @@ class ChecklistAnswerController extends GetxController
   bool get isLoadingImageBase64 => _loadingImageBase64.value;
   ImageAnswerDto? get imageAnswerDto => _imageAnswerDto.value;
   bool get isLoadingSendAnswer => _loadingSendAnswer.value;
+  bool get canConcludeChecklist => totalToConcludeAnswers == 0;
 
   // Actions
   @override
@@ -220,7 +221,7 @@ class ChecklistAnswerController extends GetxController
     );
   }
 
-  Future<void> concludeChecklist({
+  Future<void> concludeChecklistAnswer({
     required ChecklistAnswerModel answerModel,
     String comment = '',
   }) async {
@@ -281,5 +282,23 @@ class ChecklistAnswerController extends GetxController
     }
     _loadingSendAnswer(false);
     Get.back(result: true);
+  }
+
+  Future<void> concludedChecklist() async {
+    final result = await _checklistService.finalizarChecklist(
+      checklistId: checklistId,
+    );
+
+    if (result.isError) {
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: result.message,
+          type: MessageType.error,
+        ),
+      );
+    }
+
+    Get.back();
   }
 }

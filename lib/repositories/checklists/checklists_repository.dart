@@ -26,4 +26,5 @@ abstract class ChecklistsRepository {
     required int respostaId,
     required Map<String, dynamic> imageAnswer,
   });
+  Future<ResultActionDTO<bool>> finalizarChecklist({required int checklistid});
 }

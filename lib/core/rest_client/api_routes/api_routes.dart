@@ -9,6 +9,8 @@ class ApiRoutes {
   static const _performance =
       '$_backendBaseUrl/api/mobile/calcular-performance';
   static const _cursos = '$_backendBaseUrl/api/mobile/ead/vendedor/cursos';
+  static const _iniciarCurso =
+      '$_backendBaseUrl/api/mobile/ead/vendedor/iniciar-curso';
   static const _aulas = '$_backendBaseUrl/api/mobile/ead/vendedor/aulas';
   static const _aulaConcluida =
       '$_backendBaseUrl/api/mobile/ead/vendedor/subir-visualizacao';
@@ -33,6 +35,7 @@ class ApiRoutes {
   static String campanhas() => _campanhas;
   static String performance() => _performance;
   static String cursos() => _cursos;
+  static String iniciarCurso() => _iniciarCurso;
   static String aulas() => _aulas;
   static String aulaConcluida() => _aulaConcluida;
   static String dashboard() => _dashboard;

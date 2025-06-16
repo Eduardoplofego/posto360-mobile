@@ -155,4 +155,33 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
       return ResultActionDTO.failure('Não foi possível salvar a imagem', '');
     }
   }
+
+  @override
+  Future<ResultActionDTO<bool>> finalizarChecklist({
+    required int checklistid,
+  }) async {
+    try {
+      final result = await _postoRestClient.post(
+        ApiRoutes.finalizarChecklist(),
+        {'checklistId': checklistid},
+      );
+      final resultMessage = result.body['message'] as String?;
+
+      if (resultMessage != null &&
+          resultMessage.contains('Checklist finalizado com sucesso')) {
+        return ResultActionDTO.success(data: true);
+      }
+
+      return ResultActionDTO.failure(
+        'Não foi possível finalizar a checklist',
+        false,
+      );
+    } catch (e, s) {
+      log('Erro finalizar checklist', error: e, stackTrace: s);
+      return ResultActionDTO.failure(
+        'Não foi possível finalizar a checklist',
+        false,
+      );
+    }
+  }
 }
