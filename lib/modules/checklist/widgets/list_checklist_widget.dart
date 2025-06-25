@@ -28,6 +28,9 @@ class ListChecklistWidget extends GetView<ChecklistController> {
               final check = controller.getChecklistSelected[index];
               return InkWell(
                 onTap: () async {
+                  if (check.status == ChecklistStatus.finalizado) {
+                    return;
+                  }
                   if (check.status == ChecklistStatus.aFazer) {
                     final isToStartChecklist = await controller
                         .showDialogToStartChecklist(check.id);

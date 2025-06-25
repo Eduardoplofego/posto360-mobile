@@ -17,6 +17,8 @@ class ApiRoutes {
   static const _dashboard = '$_backendBaseUrl/api/mobile/dashboard';
   static const _checklists =
       '$_backendBaseUrl/api/mobile/checklists/vendedor/disponiveis';
+  static const _checklistFinalizadas =
+      '$_backendBaseUrl/api/mobile/checklists/vendedor/finalizados';
   static const _checklistAnswers =
       '$_backendBaseUrl/api/mobile/checklists/vendedor/respostas';
   static const _iniciarChecklist =
@@ -40,6 +42,7 @@ class ApiRoutes {
   static String aulaConcluida() => _aulaConcluida;
   static String dashboard() => _dashboard;
   static String checklists() => _checklists;
+  static String checklistsFinalizadas() => _checklistFinalizadas;
   static String checklistAnswers() => _checklistAnswers;
   static String iniciarChecklist() => _iniciarChecklist;
   static String finalizarChecklist() => _finalizarChecklist;

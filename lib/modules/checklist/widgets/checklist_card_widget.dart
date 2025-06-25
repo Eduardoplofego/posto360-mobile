@@ -12,11 +12,13 @@ class ChecklistCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (checklist.status) {
-      case ChecklistStatus.aFazer:
-        return _toDoChecklistCard(checklist);
+      // case ChecklistStatus.aFazer:
+      //   return _toDoChecklistCard(checklist);
       case ChecklistStatus.finalizado:
       case ChecklistStatus.emRevisao:
-        return const SizedBox.shrink();
+      // return const SizedBox.shrink();
+      case ChecklistStatus.aFazer:
+        return _toDoChecklistCard(checklist);
       case ChecklistStatus.emAndamento:
         return _otherChecklistCard(checklist);
     }

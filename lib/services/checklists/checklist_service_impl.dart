@@ -27,16 +27,33 @@ class ChecklistServiceImpl extends ChecklistService {
   Future<ResultActionDTO<List<ChecklistModel>>> getChechlists({
     required String usuarioId,
     required int filialId,
-  }) async => await _checklistsRepository.getChechlists(
-    usuarioId: usuarioId,
-    filialId: filialId,
-  );
+  }) async {
+    final resultChecklistAvailables = await _checklistsRepository.getChechlists(
+      usuarioId: usuarioId,
+      filialId: filialId,
+    );
+
+    final resultChecklistConcluded = await _checklistsRepository
+        .getChechlistsConcluded(usuarioId: usuarioId, filialId: filialId);
+
+    if (resultChecklistAvailables.success && resultChecklistConcluded.success) {
+      final checklists = <ChecklistModel>[];
+      checklists.addAll(resultChecklistConcluded.data!.toList());
+      checklists.addAll(resultChecklistAvailables.data!.toList());
+      return ResultActionDTO.success(data: checklists);
+    }
+
+    return ResultActionDTO.failure(
+      'Não foi possivel carregar as checklists',
+      [],
+    );
+  }
 
   @override
   Future<ResultActionDTO<bool>> startChecklist({
     required String usuarioId,
     required int checklistId,
-  }) async => _checklistsRepository.startChecklist(
+  }) async => await _checklistsRepository.startChecklist(
     usuarioId: usuarioId,
     checklistId: checklistId,
   );
@@ -60,7 +77,7 @@ class ChecklistServiceImpl extends ChecklistService {
   Future<ResultActionDTO<String>> subirImagem({
     required int respostaId,
     required ImageAnswerDto imageAnswer,
-  }) async => _checklistsRepository.subirImagem(
+  }) async => await _checklistsRepository.subirImagem(
     respostaId: respostaId,
     imageAnswer: imageAnswer.toJson(),
   );
@@ -69,5 +86,5 @@ class ChecklistServiceImpl extends ChecklistService {
   Future<ResultActionDTO<bool>> finalizarChecklist({
     required int checklistId,
   }) async =>
-      _checklistsRepository.finalizarChecklist(checklistid: checklistId);
+      await _checklistsRepository.finalizarChecklist(checklistid: checklistId);
 }

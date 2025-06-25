@@ -7,6 +7,10 @@ abstract class ChecklistsRepository {
     required String usuarioId,
     required int filialId,
   });
+  Future<ResultActionDTO<List<ChecklistModel>>> getChechlistsConcluded({
+    required String usuarioId,
+    required int filialId,
+  });
   Future<ResultActionDTO<List<ChecklistAnswerModel>>> getChecklistAnswers({
     required String usuarioId,
     required int checklistId,

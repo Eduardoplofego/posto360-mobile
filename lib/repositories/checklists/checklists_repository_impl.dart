@@ -184,4 +184,27 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
       );
     }
   }
+
+  @override
+  Future<ResultActionDTO<List<ChecklistModel>>> getChechlistsConcluded({
+    required String usuarioId,
+    required int filialId,
+  }) async {
+    try {
+      final result = await _postoRestClient.post(
+        ApiRoutes.checklistsFinalizadas(),
+        {"usuarioId": usuarioId, "filialId": filialId},
+      );
+      final checklistMap = result.body['checklistsDisponiveis'];
+      final checklists =
+          checklistMap
+              .map<ChecklistModel>((model) => ChecklistModel.fromMap(model))
+              .toList() ??
+          [];
+      return ResultActionDTO.success(data: checklists);
+    } catch (e, s) {
+      log('Erro Get checklists finalizadas', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao buscar checklists', []);
+    }
+  }
 }
