@@ -51,13 +51,8 @@ class CardTotalBonusWidget extends GetView<CampanhasController> {
                       ),
                       AnimatedDigitWidget(
                         value: controller.valueTotalBonus,
-                        textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
                         fractionDigits: 2,
-                        enableSeparator: true,
+                        enableSeparator: false,
                         decimalSeparator: ',',
                         separateSymbol: '.',
                       ),

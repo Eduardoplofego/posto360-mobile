@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -138,30 +138,17 @@ class ChecklistAnswerController extends GetxController
       debugPrint('Mime type não encontrado para a imagem: $imagePath');
       return;
     }
-    String imageBase64 = await _getImageBase64(imageFile);
+    // String imageBase64 = await _getImageBase64(imageFile);
+    Uint8List imageRaw = await imageFile.readAsBytes();
 
-    if (imageBase64.isNotEmpty) {
+    if (imageRaw.isNotEmpty) {
       _imageAnswerDto.value = ImageAnswerDto(
         name: imageName,
-        base64: imageBase64,
+        imageRaw: imageRaw,
         type: mimeType,
       );
       _hasSelectedImage(true);
     }
-  }
-
-  Future<String> _getImageBase64(File imageFile) async {
-    _loadingImageBase64(true);
-    String imageBase64 = '';
-    try {
-      final bytes = await imageFile.readAsBytes();
-      imageBase64 = base64Encode(bytes);
-    } catch (e) {
-      debugPrint('Erro ao codificar imagem: $e');
-    } finally {
-      _loadingImageBase64(false);
-    }
-    return imageBase64;
   }
 
   String _getImageName(String imagePath) {
@@ -255,6 +242,7 @@ class ChecklistAnswerController extends GetxController
             type: MessageType.error,
           ),
         );
+        return;
       }
       photoUrl = resultPhotoUrl.data;
     }

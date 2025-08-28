@@ -143,6 +143,10 @@ class ChecklistsRepositoryImpl extends ChecklistsRepository {
         'imagem': imageAnswer,
       });
 
+      if (result.statusCode != null && result.statusCode! > 400) {
+        return ResultActionDTO.failure('Não foi possível salvar a imagem', '');
+      }
+
       final resultUrl = result.body['url'] as String?;
 
       if (resultUrl != null) {

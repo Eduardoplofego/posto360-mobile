@@ -36,14 +36,11 @@ class DashPage extends GetView<DashController> {
         autheticatedUser: Get.find<AuthService>().getUser()!,
         onSavePhoto: controller.onSavePhoto,
       ),
-      body: Obx(() {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: RefreshIndicator(
-            onRefresh: controller.onRefresh,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            color: Colors.transparent,
+      body: RefreshIndicator.noSpinner(
+        onRefresh: controller.onRefresh,
+        child: Obx(() {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child:
                 controller.isLoading
                     ? Padding(
@@ -198,9 +195,9 @@ class DashPage extends GetView<DashController> {
                         const SizedBox(height: 32),
                       ],
                     ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }

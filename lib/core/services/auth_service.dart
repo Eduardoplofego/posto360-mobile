@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/core/constants/constants.dart';
 import 'package:posto360/models/user_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService extends GetxService {
   final _isLogged = RxnBool();
@@ -9,6 +10,8 @@ class AuthService extends GetxService {
   final _authenticatedUser = Rxn<UserModel>();
 
   UserModel? get authenticatedUser => getUser();
+
+  SupabaseClient? get clientSupabase => Supabase.instance.client;
 
   Future<AuthService> init() async {
     await Future.delayed(const Duration(seconds: 2));

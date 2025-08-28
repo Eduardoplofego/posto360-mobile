@@ -1,15 +1,17 @@
+import 'dart:typed_data';
+
 class ImageAnswerDto {
   final String name;
   final String type;
-  final String base64;
+  final Uint8List imageRaw;
 
   ImageAnswerDto({
     required this.name,
     required this.type,
-    required this.base64,
+    required this.imageRaw,
   });
 
   Map<String, dynamic> toJson() {
-    return {'nome': name, 'tipo': type, 'base64': base64};
+    return {'nome': name, 'tipo': type, 'imageRaw': imageRaw};
   }
 }

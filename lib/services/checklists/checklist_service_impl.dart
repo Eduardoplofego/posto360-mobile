@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+
+import 'package:get/get.dart';
 import 'package:posto360/core/dto/image_answer_dto.dart';
 import 'package:posto360/core/dto/result_action_dto.dart';
+import 'package:posto360/core/services/auth_service.dart';
 
 import 'package:posto360/models/checklist_answer_model.dart';
 
 import 'package:posto360/models/checklist_model.dart';
 import 'package:posto360/repositories/checklists/checklists_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import './checklist_service.dart';
 
@@ -77,10 +82,52 @@ class ChecklistServiceImpl extends ChecklistService {
   Future<ResultActionDTO<String>> subirImagem({
     required int respostaId,
     required ImageAnswerDto imageAnswer,
-  }) async => await _checklistsRepository.subirImagem(
-    respostaId: respostaId,
-    imageAnswer: imageAnswer.toJson(),
-  );
+  }) async {
+    final userAuth = Get.find<AuthService>().authenticatedUser;
+
+    final photoUrl = await _uploadImagemResposta(
+      userId: userAuth!.id,
+      bytes: imageAnswer.imageRaw,
+      fileName: imageAnswer.name,
+      typeImage: imageAnswer.type,
+    );
+
+    if (photoUrl == '') {
+      return ResultActionDTO.failure('Erro ao subir a imagem', photoUrl);
+    }
+    return ResultActionDTO.success(
+      message: 'Imagem salva com sucesso',
+      data: photoUrl,
+    );
+  }
+
+  Future<String> _uploadImagemResposta({
+    required String userId,
+    required Uint8List bytes,
+    required String fileName,
+    required String typeImage,
+  }) async {
+    final supabase = Get.find<AuthService>().clientSupabase;
+    try {
+      final path =
+          'respostas/$userId/${DateTime.now().millisecondsSinceEpoch}_$fileName';
+
+      await supabase!.storage
+          .from('imagens-respostas')
+          .uploadBinary(
+            path,
+            bytes,
+            fileOptions: FileOptions(contentType: typeImage, upsert: false),
+          );
+
+      final publicUrl = supabase.storage
+          .from('imagens-respostas')
+          .getPublicUrl(path);
+      return publicUrl;
+    } catch (e) {
+      return '';
+    }
+  }
 
   @override
   Future<ResultActionDTO<bool>> finalizarChecklist({
