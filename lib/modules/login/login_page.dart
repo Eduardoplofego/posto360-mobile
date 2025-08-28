@@ -150,24 +150,24 @@ class LoginPage extends GetView<LoginController> {
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(height: 21),
-                                          TextButton(
-                                            onPressed: () {},
-                                            child: Text(
-                                              'Esqueceu sua senha?',
-                                              style: PostoAppUiConfigurations
-                                                  .textNormal
-                                                  .copyWith(
-                                                    fontSize: 16,
-                                                    color:
-                                                        PostoAppUiConfigurations
-                                                            .blueLightColor,
-                                                    decoration:
-                                                        TextDecoration
-                                                            .underline,
-                                                  ),
-                                            ),
-                                          ),
+                                          // const SizedBox(height: 21),
+                                          // TextButton(
+                                          //   onPressed: () {},
+                                          //   child: Text(
+                                          //     'Esqueceu sua senha?',
+                                          //     style: PostoAppUiConfigurations
+                                          //         .textNormal
+                                          //         .copyWith(
+                                          //           fontSize: 16,
+                                          //           color:
+                                          //               PostoAppUiConfigurations
+                                          //                   .blueLightColor,
+                                          //           decoration:
+                                          //               TextDecoration
+                                          //                   .underline,
+                                          //         ),
+                                          //   ),
+                                          // ),
                                         ],
                                       ),
                                     ),
