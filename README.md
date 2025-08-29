@@ -1,16 +1,10 @@
-# posto360
+# Posto 360
 
-A new Flutter project.
+Projeto para monitoramento de performance para colaboradores da Rede Pedra Branca
 
-## Getting Started
+Para executar o projeto, adicione as variáveis a seguir no ```launch.json``` ou na linha de comando:
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```console
+--dart-define=SUPABASE_BACKEND_URL=<url_backend>
+--dart-define=ANON_KEY=<anon_key>
+```
