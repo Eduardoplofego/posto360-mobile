@@ -6,6 +6,7 @@ import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/core/ui/widgets/drawer/posto_app_drawer.dart';
 import 'package:posto360/core/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
 import 'package:posto360/core/ui/widgets/loading/card_loading_widget.dart';
+import 'package:posto360/modules/dash/widgets/card_close_money.dart';
 import 'package:posto360/modules/dash/widgets/empty_dashboard_model_widget.dart';
 import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_detailed_widget.dart';
@@ -73,6 +74,20 @@ class DashPage extends GetView<DashController> {
                         ),
                         const SizedBox(height: 28),
                         DashboardSectionHeaderWidget(),
+                        const SizedBox(height: 16),
+                        CardLoadingWidget(
+                          isLoading: controller.loadingWork,
+                          height: 190,
+                          initDelay: 200,
+                          child: CardCloseMoney(
+                            cashClosed: 0,
+                            cardsDeleted: 1,
+                            cardsLinked: 2,
+                            cardsCorrected: 3,
+                            cardsInserted: 4,
+                            onPressed: () {},
+                          ),
+                        ),
                         const SizedBox(height: 16),
                         CardLoadingWidget(
                           isLoading: controller.loadingWork,
