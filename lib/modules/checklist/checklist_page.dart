@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
-import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/modules/checklist/widgets/general_checklist_widget.dart';
 import 'package:posto360/modules/checklist/widgets/list_checklist_widget.dart';
 import './checklist_controller.dart';

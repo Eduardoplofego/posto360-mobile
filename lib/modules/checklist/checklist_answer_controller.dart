@@ -6,12 +6,12 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
-import 'package:posto360/core/dto/image_answer_dto.dart';
-import 'package:posto360/core/mixins/loader_mixin.dart';
-import 'package:posto360/core/mixins/message_mixin.dart';
-import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/utils/enums/checklist_answer_tipo.dart';
-import 'package:posto360/models/checklist_answer_model.dart';
+import 'package:posto360/modules/core/domain/dto/image_answer_dto.dart';
+import 'package:posto360/modules/core/domain/mixins/loader_mixin.dart';
+import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/utils/enums/checklist_answer_tipo.dart';
+import 'package:posto360/modules/checklist/domain/models/checklist_answer_model.dart';
 import 'package:posto360/modules/checklist/infra/services/checklist_service.dart';
 
 class ChecklistAnswerController extends GetxController

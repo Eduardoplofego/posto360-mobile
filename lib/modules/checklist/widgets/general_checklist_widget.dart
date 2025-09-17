@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/checklist/checklist_controller.dart';
 
 class GeneralChecklistWidget extends GetView<ChecklistController> {

@@ -1,7 +1,7 @@
-import 'package:posto360/core/dto/image_answer_dto.dart';
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/models/checklist_answer_model.dart';
-import 'package:posto360/models/checklist_model.dart';
+import 'package:posto360/modules/core/domain/dto/image_answer_dto.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/checklist/domain/models/checklist_answer_model.dart';
+import 'package:posto360/modules/checklist/domain/models/checklist_model.dart';
 
 abstract class ChecklistService {
   Future<ResultActionDTO<List<ChecklistModel>>> getChechlists({

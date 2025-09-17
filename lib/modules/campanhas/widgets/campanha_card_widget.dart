@@ -2,10 +2,10 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/enums/type_bonificacao.dart';
-import 'package:posto360/models/campanha_model.dart';
-import 'package:posto360/models/performance_model.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/utils/enums/type_bonificacao.dart';
+import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
 
 class CampanhaCardWidget extends StatelessWidget {
   final CampanhaModel campanha;

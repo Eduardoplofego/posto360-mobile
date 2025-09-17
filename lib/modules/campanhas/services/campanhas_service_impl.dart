@@ -1,6 +1,6 @@
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/core/utils/data_formatters.dart';
-import 'package:posto360/models/campanha_model.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
 import 'package:posto360/modules/campanhas/domain/repositories/campanhas_repository.dart';
 
 import '../infra/services/campanhas_service.dart';

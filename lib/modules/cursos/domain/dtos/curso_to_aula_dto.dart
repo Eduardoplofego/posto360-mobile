@@ -1,4 +1,4 @@
-import 'package:posto360/models/curso_model.dart';
+import 'package:posto360/modules/aulas/domain/models/curso_model.dart';
 
 class CursoToAulaDTO {
   final CursoModel curso;

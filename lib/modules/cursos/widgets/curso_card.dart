@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/data_formatters.dart';
-import 'package:posto360/models/curso_model.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/aulas/domain/models/curso_model.dart';
 import 'package:posto360/modules/cursos/widgets/curso_folder_widget.dart';
 import 'package:posto360/modules/cursos/widgets/curso_progress_widget.dart';
 

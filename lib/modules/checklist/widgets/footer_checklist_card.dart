@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/enums/checklist_status.dart';
-import 'package:posto360/models/checklist_model.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/utils/enums/checklist_status.dart';
+import 'package:posto360/modules/checklist/domain/models/checklist_model.dart';
 
 class FooterChecklistCard extends StatelessWidget {
   final ChecklistModel checklist;

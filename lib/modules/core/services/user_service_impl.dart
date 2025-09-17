@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:posto360/core/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/repositories/user_repository.dart';
 import 'package:mime/mime.dart';
 

@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 
 class DottedBorderButtonWidget extends StatelessWidget {
   final bool isCompleted;

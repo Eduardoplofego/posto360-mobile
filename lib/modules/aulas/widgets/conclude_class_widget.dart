@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/utils/enums/aula_status.dart';
+import 'package:posto360/modules/core/domain/utils/enums/aula_status.dart';
 import 'package:posto360/modules/aulas/aulas_controller.dart';
 
 class ConcludeClassWidget extends GetView<AulasController> {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 
 class OptionCardWidget extends StatelessWidget {
   final bool isSelected;

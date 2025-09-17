@@ -1,9 +1,9 @@
-import 'package:posto360/core/dto/login_dto.dart';
-import 'package:posto360/core/exceptions/login_excpetion.dart';
-import 'package:posto360/core/exceptions/wrong_credentials_exception.dart';
-import 'package:posto360/core/rest_client/api_routes/api_routes.dart';
-import 'package:posto360/core/rest_client/posto_rest_client.dart';
-import 'package:posto360/models/user_model.dart';
+import 'package:posto360/modules/core/domain/dto/login_dto.dart';
+import 'package:posto360/modules/core/domain/exceptions/login_excpetion.dart';
+import 'package:posto360/modules/core/domain/exceptions/wrong_credentials_exception.dart';
+import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.dart';
+import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
+import 'package:posto360/modules/core/domain/models/user_model.dart';
 
 import '../../domain/repositories/login_repository.dart';
 

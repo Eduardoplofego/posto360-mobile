@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/ui/widgets/extra/point_widget.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/extra/point_widget.dart';
 import 'package:posto360/modules/dash/dash_controller.dart';
 
 class ProfileCardWidget extends GetView<DashController> {

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:posto360/core/utils/enums/curso_status.dart';
+import 'package:posto360/modules/core/domain/utils/enums/curso_status.dart';
 
 class CursoModel {
   final int id;

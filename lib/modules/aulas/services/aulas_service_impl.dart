@@ -1,6 +1,6 @@
-import 'package:posto360/core/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 
-import 'package:posto360/models/aula_model.dart';
+import 'package:posto360/modules/aulas/domain/models/aula_model.dart';
 import 'package:posto360/modules/aulas/domain/repositories/aula_repository.dart';
 
 import '../infra/services/aulas_service.dart';

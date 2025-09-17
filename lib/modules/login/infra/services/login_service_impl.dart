@@ -1,9 +1,9 @@
 import 'package:get_storage/get_storage.dart';
-import 'package:posto360/core/constants/constants.dart';
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/core/exceptions/login_excpetion.dart';
-import 'package:posto360/core/exceptions/user_not_found_exception.dart';
-import 'package:posto360/core/exceptions/wrong_credentials_exception.dart';
+import 'package:posto360/modules/core/domain/constants/constants.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/exceptions/login_excpetion.dart';
+import 'package:posto360/modules/core/domain/exceptions/user_not_found_exception.dart';
+import 'package:posto360/modules/core/domain/exceptions/wrong_credentials_exception.dart';
 import 'package:posto360/modules/login/domain/repositories/login_repository.dart';
 
 import 'login_service.dart';

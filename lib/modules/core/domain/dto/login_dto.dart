@@ -1,4 +1,4 @@
-import 'package:posto360/models/user_model.dart';
+import 'package:posto360/modules/core/domain/models/user_model.dart';
 
 class LoginDto {
   final String token;

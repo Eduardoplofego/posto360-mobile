@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:posto360/core/constants/constants.dart';
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/models/user_model.dart';
+import 'package:posto360/modules/core/domain/constants/constants.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/models/user_model.dart';
 
 class PostoAppDrawer extends StatefulWidget {
   final UserModel autheticatedUser;

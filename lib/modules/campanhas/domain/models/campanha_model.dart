@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:posto360/core/utils/enums/type_bonificacao.dart';
-import 'package:posto360/models/produto_model.dart';
+import 'package:posto360/modules/core/domain/utils/enums/type_bonificacao.dart';
+import 'package:posto360/modules/campanhas/domain/models/produto_model.dart';
 
 class CampanhaModel {
   final int campanhaId;

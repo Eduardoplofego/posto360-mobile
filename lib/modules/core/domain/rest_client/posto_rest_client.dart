@@ -1,7 +1,7 @@
 import 'package:get/get_connect/connect.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:posto360/core/constants/constants.dart';
+import 'package:posto360/modules/core/domain/constants/constants.dart';
 
 class PostoRestClient extends GetConnect {
   final _headers = {'content-type': 'application/json'};

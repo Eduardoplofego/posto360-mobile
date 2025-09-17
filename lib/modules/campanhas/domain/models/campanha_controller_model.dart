@@ -1,6 +1,6 @@
-import 'package:posto360/core/utils/data_formatters.dart';
-import 'package:posto360/models/campanha_model.dart';
-import 'package:posto360/models/performance_model.dart';
+import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
 
 class CampanhaControllerModel {
   double _totalValueBonus;

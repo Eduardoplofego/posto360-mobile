@@ -1,5 +1,5 @@
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/models/campanha_model.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
 
 abstract class CampanhasRepository {
   Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhas({

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/models/checklist_answer_model.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/checklist/domain/models/checklist_answer_model.dart';
 import 'package:posto360/modules/checklist/widgets/check_icon_widget.dart';
 
 class ChecklistAnswerCard extends StatelessWidget {

@@ -1,6 +1,6 @@
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/core/utils/data_formatters.dart';
-import 'package:posto360/models/horario_faltas_model.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 import 'package:posto360/modules/dash/domain/repositories/horario_faltas_atrasos_repository.dart';
 
 import '../infra/services/horario_faltas_atrasos_service.dart';

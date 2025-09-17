@@ -1,7 +1,7 @@
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/models/campanha_model.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
 
-import 'package:posto360/models/dashboard_model.dart';
+import 'package:posto360/modules/dash/domain/models/dashboard_model.dart';
 import 'package:posto360/modules/dash/domain/repositories/dashboard_repository.dart';
 import 'package:posto360/modules/campanhas/infra/services/performance_service.dart';
 

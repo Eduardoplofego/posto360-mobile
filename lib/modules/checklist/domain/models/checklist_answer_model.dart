@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:posto360/core/utils/enums/checklist_answer_tipo.dart';
+import 'package:posto360/modules/core/domain/utils/enums/checklist_answer_tipo.dart';
 
 class ChecklistAnswerModel {
   final int id;

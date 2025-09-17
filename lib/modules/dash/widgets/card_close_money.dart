@@ -1,7 +1,7 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
 
 class CardCloseMoney extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/data_formatters.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 
 class SelectDateWidget extends StatelessWidget {
   final Function(DateTime) nextMonthPressed;

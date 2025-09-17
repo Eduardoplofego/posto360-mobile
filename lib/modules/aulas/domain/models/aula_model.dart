@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:posto360/core/utils/enums/aula_status.dart';
+import 'package:posto360/modules/core/domain/utils/enums/aula_status.dart';
 
 class AulaModel {
   final int id;

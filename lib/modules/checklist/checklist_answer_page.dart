@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
-import 'package:posto360/core/ui/widgets/general_checklist_widget.dart';
-import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/general_checklist_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/modules/checklist/widgets/footer_conclude_checklist.dart';
 import 'package:posto360/modules/checklist/widgets/checklist_answer_card.dart';
 import 'package:posto360/modules/checklist/widgets/modals/answer_checklist_modal.dart';

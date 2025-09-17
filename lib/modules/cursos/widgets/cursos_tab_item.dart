@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/cursos/cursos_controller.dart';
 import 'package:posto360/modules/cursos/widgets/curso_card.dart';
 

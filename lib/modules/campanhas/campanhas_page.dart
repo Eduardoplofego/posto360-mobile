@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
-import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
-import 'package:posto360/core/ui/widgets/loading/card_loading_widget.dart';
-import 'package:posto360/core/ui/widgets/select_date_widget.dart';
-import 'package:posto360/models/performance_model.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/select_date_widget.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
 import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
 import 'package:posto360/modules/campanhas/widgets/card_total_bonus_widget.dart';
 import './campanhas_controller.dart';

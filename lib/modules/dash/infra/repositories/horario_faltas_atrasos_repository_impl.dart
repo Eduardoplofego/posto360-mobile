@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/core/rest_client/api_routes/api_routes.dart';
-import 'package:posto360/core/rest_client/posto_rest_client.dart';
-import 'package:posto360/models/horario_faltas_model.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.dart';
+import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
+import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 
 import '../../domain/repositories/horario_faltas_atrasos_repository.dart';
 

@@ -1,5 +1,5 @@
-import 'package:posto360/core/dto/result_action_dto.dart';
-import 'package:posto360/models/performance_model.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
 import 'package:posto360/modules/campanhas/domain/repositories/performance_repository.dart';
 
 import '../infra/services/performance_service.dart';

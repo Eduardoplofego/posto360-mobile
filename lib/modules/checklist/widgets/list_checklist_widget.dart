@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/utils/enums/checklist_status.dart';
+import 'package:posto360/modules/core/domain/utils/enums/checklist_status.dart';
 import 'package:posto360/modules/checklist/checklist_controller.dart';
 import 'package:posto360/modules/checklist/widgets/checklist_card_widget.dart';
 
