@@ -14,6 +14,8 @@ import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
 import 'package:posto360/modules/core/infra/services/user_service.dart';
+import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
+import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caixa_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
@@ -22,6 +24,7 @@ class DashController extends FullLifeCycleController
   late DashboardService _dashboardService;
   late NotificationService _notificationService;
   late UserService _userService;
+  late FechamentoCaixaService _fechamentoCaixaService;
 
   final _loader = false.obs;
   final _message = Rxn<MessagesModel>();
@@ -34,6 +37,7 @@ class DashController extends FullLifeCycleController
     _notificationService = Get.find<NotificationService>();
     _dashboardService = Get.find<DashboardService>();
     _userService = Get.find<UserService>();
+    _fechamentoCaixaService = Get.find<FechamentoCaixaService>();
   }
 
   @override
@@ -45,16 +49,19 @@ class DashController extends FullLifeCycleController
   @override
   void onReady() async {
     GetStorage().write(Constants.CAMPANHAS_CONTROLLER, null);
-    await _initVariables();
+    await _initInfos();
     super.onReady();
   }
 
   // loadings
   final _loadingDashboardModel = false.obs;
   final _loadingWork = false.obs;
+  final _loadingFechamento = false.obs;
   bool get loadingDashboardModel => _loadingDashboardModel.value;
   bool get loadingWork => _loadingWork.value;
+  bool get loadingFechamento => _loadingFechamento.value;
 
+  final _cartoesModel = Rx(CartoesModel.empty());
   final _dashboardModel = Rx(DashboardModel.empty());
   final _hasDashboardModel = false.obs;
   final _authenticatedUser = Rx<UserModel>(UserModel.empty());
@@ -67,6 +74,7 @@ class DashController extends FullLifeCycleController
   final _hasNextMonth = false.obs;
 
   DashboardModel get dashboardModel => _dashboardModel.value;
+  CartoesModel get cartoesModel => _cartoesModel.value;
   bool get hasDashboardModel => _hasDashboardModel.value;
   UserModel get autheticatedUser => _authenticatedUser.value;
   String get nameUser =>
@@ -94,16 +102,20 @@ class DashController extends FullLifeCycleController
   }
 
   Future<void> onRefresh() async {
-    await _initVariables();
+    await _initInfos();
   }
 
-  Future<void> _initVariables() async {
+  Future<void> _initInfos() async {
     _authenticatedUser.value = UserModel.fromMap(
       GetStorage().read(Constants.USER_KEY),
     );
     _loadQuantityDaysInMonth();
     _loader(true);
-    await Future.wait([_loadHorarioFaltaAtraso(), loadDashboardModel()]);
+    await Future.wait([
+      _loadHorarioFaltaAtraso(),
+      loadDashboardModel(),
+      _loadFechamentoCaixa(),
+    ]);
     _loader(false);
   }
 
@@ -144,6 +156,16 @@ class DashController extends FullLifeCycleController
     }
 
     _loadingDashboardModel(false);
+  }
+
+  Future<void> _loadFechamentoCaixa() async {
+    _loadingFechamento(true);
+    final cartoes = await _fechamentoCaixaService.getFechamento(
+      usuarioId: autheticatedUser.id,
+      dataMes: monthSelected,
+    );
+    _cartoesModel(cartoes.data);
+    _loadingFechamento(false);
   }
 
   Future<void> _loadHorarioFaltaAtraso() async {

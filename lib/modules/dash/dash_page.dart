@@ -80,11 +80,14 @@ class DashPage extends GetView<DashController> {
                           height: 190,
                           initDelay: 200,
                           child: CardCloseMoney(
-                            cashClosed: 0,
-                            cardsDeleted: 1,
-                            cardsLinked: 2,
-                            cardsCorrected: 3,
-                            cardsInserted: 4,
+                            cardsDeleted:
+                                controller.cartoesModel.cartoesDeletados,
+                            cardsLinked:
+                                controller.cartoesModel.cartoesVinculados,
+                            cardsCorrected:
+                                controller.cartoesModel.cartoesCorrigidos,
+                            cardsInserted:
+                                controller.cartoesModel.cartoesInseridos,
                             onPressed: () {},
                           ),
                         ),

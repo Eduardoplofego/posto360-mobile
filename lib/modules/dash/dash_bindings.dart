@@ -23,6 +23,10 @@ import 'package:posto360/modules/campanhas/infra/services/performance_service.da
 import 'package:posto360/modules/campanhas/services/performance_service_impl.dart';
 import 'package:posto360/modules/core/infra/services/user_service.dart';
 import 'package:posto360/modules/core/services/user_service_impl.dart';
+import 'package:posto360/modules/fechamento-caixa/domain/repositories/fechamento_caixa_repository.dart';
+import 'package:posto360/modules/fechamento-caixa/infra/repositories/fechamento_caixa_repository_impl.dart';
+import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caixa_service.dart';
+import 'package:posto360/modules/fechamento-caixa/services/fechamento_caixa_service_impl.dart';
 import 'dash_controller.dart';
 
 class DashBindings implements Bindings {
@@ -66,6 +70,12 @@ class DashBindings implements Bindings {
         dashboardRepository: Get.find(),
         performanceService: Get.find(),
       ),
+    );
+    Get.lazyPut<FechamentoCaixaRepository>(
+      () => FechamentoCaixaRepositoryImpl(postoRestClient: Get.find()),
+    );
+    Get.lazyPut<FechamentoCaixaService>(
+      () => FechamentoCaixaServiceImpl(fechamentoCaixaRepository: Get.find()),
     );
     Get.put(DashController());
   }

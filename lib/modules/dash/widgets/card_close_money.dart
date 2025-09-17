@@ -5,7 +5,6 @@ import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart
 import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
 
 class CardCloseMoney extends StatelessWidget {
-  final double cashClosed;
   final int cardsDeleted;
   final int cardsLinked;
   final int cardsCorrected;
@@ -13,7 +12,6 @@ class CardCloseMoney extends StatelessWidget {
   final VoidCallback onPressed;
   const CardCloseMoney({
     super.key,
-    required this.cashClosed,
     required this.cardsDeleted,
     required this.cardsLinked,
     required this.cardsCorrected,
@@ -54,21 +52,11 @@ class CardCloseMoney extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          UtilBrasilFields.obterReal(cashClosed),
+                          'Fechamento caixa',
                           style: TextStyle(
-                            fontSize: 32,
+                            fontSize: 18,
                             fontWeight: FontWeight.w500,
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 7),
-                    Row(
-                      spacing: 7,
-                      children: [
-                        Text(
-                          'Fechamento de Caixa',
-                          style: TextStyle(fontSize: 14),
                         ),
                       ],
                     ),
