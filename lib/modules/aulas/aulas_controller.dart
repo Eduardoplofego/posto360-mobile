@@ -10,8 +10,8 @@ import 'package:posto360/core/utils/enums/aula_status.dart';
 import 'package:posto360/models/aula_model.dart';
 import 'package:posto360/models/curso_model.dart';
 import 'package:posto360/modules/aulas/widgets/timeline_classes_widget.dart';
-import 'package:posto360/modules/cursos/dtos/curso_to_aula_dto.dart';
-import 'package:posto360/services/aulas/aulas_service.dart';
+import 'package:posto360/modules/cursos/domain/dtos/curso_to_aula_dto.dart';
+import 'package:posto360/modules/aulas/infra/services/aulas_service.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:video_player/video_player.dart';
 

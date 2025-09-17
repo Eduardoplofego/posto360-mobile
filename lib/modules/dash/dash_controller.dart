@@ -10,10 +10,10 @@ import 'package:posto360/core/utils/data_formatters.dart';
 import 'package:posto360/models/dashboard_model.dart';
 import 'package:posto360/models/horario_faltas_model.dart';
 import 'package:posto360/models/user_model.dart';
-import 'package:posto360/services/campanhas/campanhas_service.dart';
-import 'package:posto360/services/dashboard/dashboard_service.dart';
-import 'package:posto360/services/horario_faltas_atrasos/horario_faltas_atrasos_service.dart';
-import 'package:posto360/services/user/user_service.dart';
+import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart';
+import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
+import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
+import 'package:posto360/modules/core/infra/services/user_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:posto360/modules/checklist/checklist_bindings.dart';
 import 'package:posto360/modules/checklist/checklist_page.dart';
-import 'package:posto360/modules/checklist_answer/checklist_answer_bindings.dart';
-import 'package:posto360/modules/checklist_answer/checklist_answer_page.dart';
+import 'package:posto360/modules/checklist/checklist_answer_bindings.dart';
+import 'package:posto360/modules/checklist/checklist_answer_page.dart';
 
 class ChecklistsRouters {
   ChecklistsRouters._();

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:posto360/repositories/checklists/checklists_repository.dart';
-import 'package:posto360/repositories/checklists/checklists_repository_impl.dart';
-import 'package:posto360/services/checklists/checklist_service.dart';
-import 'package:posto360/services/checklists/checklist_service_impl.dart';
+import 'package:posto360/modules/checklist/domain/repositories/checklists_repository.dart';
+import 'package:posto360/modules/checklist/infra/repositories/checklists_repository_impl.dart';
+import 'package:posto360/modules/checklist/infra/services/checklist_service.dart';
+import 'package:posto360/modules/checklist/services/checklist_service_impl.dart';
 import './checklist_controller.dart';
 
 class ChecklistBindings implements Bindings {

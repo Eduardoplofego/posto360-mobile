@@ -8,7 +8,7 @@ import 'package:posto360/modules/aulas/widgets/conclude_class_widget.dart';
 import 'package:posto360/modules/aulas/widgets/module_progress.dart';
 import 'package:posto360/modules/aulas/widgets/select_prev_next_class.dart';
 import 'package:posto360/modules/aulas/widgets/video_player_widget.dart';
-import 'package:posto360/modules/cursos/dtos/curso_to_aula_dto.dart';
+import 'package:posto360/modules/cursos/domain/dtos/curso_to_aula_dto.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class AulasPage extends StatefulWidget {

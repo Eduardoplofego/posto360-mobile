@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:posto360/core/mixins/loader_mixin.dart';
 import 'package:posto360/core/mixins/message_mixin.dart';
-import 'package:posto360/services/auth/login/login_service.dart';
+import 'package:posto360/modules/login/infra/services/login_service.dart';
 
 class LoginController extends GetxController with LoaderMixin, MessageMixin {
   final LoginService _loginService;
