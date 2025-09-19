@@ -88,7 +88,9 @@ class DashPage extends GetView<DashController> {
                                 controller.cartoesModel.cartoesCorrigidos,
                             cardsInserted:
                                 controller.cartoesModel.cartoesInseridos,
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.toNamed('/fechamento-caixa');
+                            },
                           ),
                         ),
                         const SizedBox(height: 16),

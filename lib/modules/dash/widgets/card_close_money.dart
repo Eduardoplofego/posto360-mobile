@@ -1,4 +1,3 @@
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
@@ -154,7 +153,7 @@ class CardCloseMoney extends StatelessWidget {
               ),
             ],
           ),
-          ButtonCardWidget(onPressed: () {}),
+          ButtonCardWidget(onPressed: onPressed),
         ],
       ),
     );

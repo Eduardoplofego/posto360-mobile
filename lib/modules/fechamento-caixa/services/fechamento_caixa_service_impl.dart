@@ -1,5 +1,6 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
+import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/repositories/fechamento_caixa_repository.dart';
 import '../infra/services/fechamento_caixa_service.dart';
 
@@ -28,6 +29,24 @@ class FechamentoCaixaServiceImpl extends FechamentoCaixaService {
       usuarioId: usuarioId,
       dataInicial: dataInicial,
       dataFinal: dataFinal,
+    );
+
+    if (result.isError) {
+      return result;
+    }
+
+    return result;
+  }
+
+  @override
+  Future<ResultActionDTO<List<DetalhesCartoesModel>>> getFechamentoDetalhes({
+    required String usuarioId,
+    required DateTime dataMes,
+  }) async {
+    final dataString = '${dataMes.year}-${dataMes.month}-${dataMes.day}';
+    final result = await _fechamentoCaixaRepository.getFechamentoDetalhes(
+      usuarioId: usuarioId,
+      dataMes: dataString,
     );
 
     if (result.isError) {

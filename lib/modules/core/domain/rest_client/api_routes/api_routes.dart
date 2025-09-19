@@ -33,6 +33,8 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/subir-foto-perfil';
   static const _fechamentoCaixa =
       '$_backendBaseUrl/api/mobile/fechamento-caixa';
+  static const _fechamentoCaixaDetalhes =
+      '$_backendBaseUrl/api/mobile/fechamento-caixa/detalhes';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -52,4 +54,5 @@ class ApiRoutes {
   static String subirImagem() => _subirImagem;
   static String subirFotoPerfil() => _subirFotoPerfil;
   static String fechamentoCaixa() => _fechamentoCaixa;
+  static String fechamentoCaixaDetalhes() => _fechamentoCaixaDetalhes;
 }

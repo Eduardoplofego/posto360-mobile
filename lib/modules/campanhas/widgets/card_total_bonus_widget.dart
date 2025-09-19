@@ -55,6 +55,14 @@ class CardTotalBonusWidget extends GetView<CampanhasController> {
                         enableSeparator: false,
                         decimalSeparator: ',',
                         separateSymbol: '.',
+                        valueColors: [
+                          ValueColor(
+                            condition: () {
+                              return true;
+                            },
+                            color: Colors.white,
+                          ),
+                        ],
                       ),
                     ],
                   );

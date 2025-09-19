@@ -210,9 +210,7 @@ class DashController extends FullLifeCycleController
     _monthSelected.value = monthSelected;
     _hasNextMonth.value = true;
     _loadingDashboardModel(true);
-    await _loadHorarioFaltaAtraso();
-    _loadQuantityDaysInMonth();
-    await loadDashboardModel();
+    await _initInfos();
   }
 
   Future<void> nextMonth(DateTime monthSelected) async {
@@ -223,9 +221,7 @@ class DashController extends FullLifeCycleController
 
     _monthSelected.value = monthSelected;
     _loadingDashboardModel(true);
-    await _loadHorarioFaltaAtraso();
-    _loadQuantityDaysInMonth();
-    await loadDashboardModel();
+    await _initInfos();
   }
 
   Future<ResultActionDTO<String>> onSavePhoto(String imagePath) async {
