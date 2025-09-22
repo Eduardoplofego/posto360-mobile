@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/enums/checklist_status.dart';
-import 'package:posto360/models/checklist_model.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/utils/enums/checklist_status.dart';
+import 'package:posto360/modules/checklist/domain/models/checklist_model.dart';
 import 'package:posto360/modules/checklist/widgets/footer_checklist_card.dart';
 import 'package:posto360/modules/checklist/widgets/number_checks_widget.dart';
 
@@ -12,11 +12,8 @@ class ChecklistCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (checklist.status) {
-      // case ChecklistStatus.aFazer:
-      //   return _toDoChecklistCard(checklist);
       case ChecklistStatus.finalizado:
       case ChecklistStatus.emRevisao:
-      // return const SizedBox.shrink();
       case ChecklistStatus.aFazer:
         return _toDoChecklistCard(checklist);
       case ChecklistStatus.emAndamento:

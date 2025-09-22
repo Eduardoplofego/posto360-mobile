@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/enums/aula_status.dart';
-import 'package:posto360/models/aula_model.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/utils/enums/aula_status.dart';
+import 'package:posto360/modules/aulas/domain/models/aula_model.dart';
 
 class TimelineClassItemWidget extends StatelessWidget {
   final bool isCurrent;

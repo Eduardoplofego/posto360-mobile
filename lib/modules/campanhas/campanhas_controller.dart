@@ -1,16 +1,16 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:posto360/core/constants/constants.dart';
-import 'package:posto360/core/mixins/loader_mixin.dart';
-import 'package:posto360/core/mixins/message_mixin.dart';
-import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/utils/data_formatters.dart';
-import 'package:posto360/models/campanha_model.dart';
-import 'package:posto360/models/performance_model.dart';
-import 'package:posto360/modules/campanhas/models/campanha_controller_model.dart';
+import 'package:posto360/modules/core/domain/constants/constants.dart';
+import 'package:posto360/modules/core/domain/mixins/loader_mixin.dart';
+import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
+import 'package:posto360/modules/campanhas/domain/models/campanha_controller_model.dart';
 import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
-import 'package:posto360/services/campanhas/campanhas_service.dart';
-import 'package:posto360/services/performance/performance_service.dart';
+import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart';
+import 'package:posto360/modules/campanhas/infra/services/performance_service.dart';
 
 class CampanhasController extends FullLifeCycleController
     with MessageMixin, LoaderMixin, FullLifeCycleMixin {

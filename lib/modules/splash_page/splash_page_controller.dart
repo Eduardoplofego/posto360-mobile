@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:posto360/core/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
 
 class SplashPageController extends GetxController {
   @override

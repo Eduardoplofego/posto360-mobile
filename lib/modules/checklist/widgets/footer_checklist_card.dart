@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/utils/enums/checklist_status.dart';
-import 'package:posto360/models/checklist_model.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/utils/enums/checklist_status.dart';
+import 'package:posto360/modules/checklist/domain/models/checklist_model.dart';
 
 class FooterChecklistCard extends StatelessWidget {
   final ChecklistModel checklist;
@@ -42,31 +42,6 @@ class FooterChecklistCard extends StatelessWidget {
               ],
             ),
           ),
-          // Spacer(),
-          // SizedBox(
-          //   width: 115,
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       Text(
-          //         'Última interação',
-          //         textAlign: TextAlign.center,
-          //         style: TextStyle(
-          //           color: PostoAppUiConfigurations.darkGreyColor,
-          //           fontSize: 12,
-          //         ),
-          //       ),
-          //       Text(
-          //         DateFormat('dd/MM/yyyy').format(DateTime.now()),
-          //         style: TextStyle(
-          //           color: PostoAppUiConfigurations.textDarkColor,
-          //           fontSize: 12,
-          //           fontWeight: FontWeight.w500,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );

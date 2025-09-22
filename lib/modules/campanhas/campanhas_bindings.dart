@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import 'package:posto360/repositories/campanhas/campanhas_repository.dart';
-import 'package:posto360/repositories/campanhas/campanhas_repository_impl.dart';
-import 'package:posto360/repositories/performance/performance_repository.dart';
-import 'package:posto360/repositories/performance/performance_repository_impl.dart';
-import 'package:posto360/services/campanhas/campanhas_service.dart';
-import 'package:posto360/services/campanhas/campanhas_service_impl.dart';
-import 'package:posto360/services/performance/performance_service.dart';
-import 'package:posto360/services/performance/performance_service_impl.dart';
+import 'package:posto360/modules/campanhas/domain/repositories/campanhas_repository.dart';
+import 'package:posto360/modules/campanhas/infra/repositories/campanhas_repository_impl.dart';
+import 'package:posto360/modules/campanhas/domain/repositories/performance_repository.dart';
+import 'package:posto360/modules/campanhas/infra/repositories/performance_repository_impl.dart';
+import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart';
+import 'package:posto360/modules/campanhas/services/campanhas_service_impl.dart';
+import 'package:posto360/modules/campanhas/infra/services/performance_service.dart';
+import 'package:posto360/modules/campanhas/services/performance_service_impl.dart';
 import './campanhas_controller.dart';
 
 class CampanhasBindings implements Bindings {

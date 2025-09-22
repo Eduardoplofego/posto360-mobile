@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
-import 'package:posto360/core/ui/widgets/drawer/posto_app_drawer.dart';
-import 'package:posto360/core/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
-import 'package:posto360/core/ui/widgets/loading/card_loading_widget.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/drawer/posto_app_drawer.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_close_money.dart';
 import 'package:posto360/modules/dash/widgets/empty_dashboard_model_widget.dart';
 import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
@@ -80,12 +80,17 @@ class DashPage extends GetView<DashController> {
                           height: 190,
                           initDelay: 200,
                           child: CardCloseMoney(
-                            cashClosed: 0,
-                            cardsDeleted: 1,
-                            cardsLinked: 2,
-                            cardsCorrected: 3,
-                            cardsInserted: 4,
-                            onPressed: () {},
+                            cardsDeleted:
+                                controller.cartoesModel.cartoesDeletados,
+                            cardsLinked:
+                                controller.cartoesModel.cartoesVinculados,
+                            cardsCorrected:
+                                controller.cartoesModel.cartoesCorrigidos,
+                            cardsInserted:
+                                controller.cartoesModel.cartoesInseridos,
+                            onPressed: () {
+                              Get.toNamed('/fechamento-caixa');
+                            },
                           ),
                         ),
                         const SizedBox(height: 16),

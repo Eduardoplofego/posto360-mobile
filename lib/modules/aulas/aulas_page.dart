@@ -1,14 +1,14 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/core/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/core/ui/widgets/custom_app_bar.dart';
-import 'package:posto360/core/ui/widgets/icon_buttons/back_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/modules/aulas/aulas_controller.dart';
 import 'package:posto360/modules/aulas/widgets/conclude_class_widget.dart';
 import 'package:posto360/modules/aulas/widgets/module_progress.dart';
 import 'package:posto360/modules/aulas/widgets/select_prev_next_class.dart';
 import 'package:posto360/modules/aulas/widgets/video_player_widget.dart';
-import 'package:posto360/modules/cursos/dtos/curso_to_aula_dto.dart';
+import 'package:posto360/modules/cursos/domain/dtos/curso_to_aula_dto.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class AulasPage extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:posto360/core/utils/environments_variables.dart';
+import 'package:posto360/modules/core/domain/utils/environments_variables.dart';
 import 'package:posto360/posto_app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

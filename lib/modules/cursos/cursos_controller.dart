@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:posto360/core/mixins/loader_mixin.dart';
-import 'package:posto360/core/mixins/message_mixin.dart';
-import 'package:posto360/core/services/auth_service.dart';
-import 'package:posto360/core/utils/enums/curso_status.dart';
-import 'package:posto360/models/curso_model.dart';
-import 'package:posto360/services/cursos/cursos_service.dart';
+import 'package:posto360/modules/core/domain/mixins/loader_mixin.dart';
+import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/utils/enums/curso_status.dart';
+import 'package:posto360/modules/aulas/domain/models/curso_model.dart';
+import 'package:posto360/modules/cursos/infra/services/cursos_service.dart';
 
 class CursosController extends GetxController with LoaderMixin, MessageMixin {
   final CursosService _cursosService;
