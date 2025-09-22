@@ -92,10 +92,9 @@ class DashController extends FullLifeCycleController
   ScrollController get selectPeriodScrollController =>
       _selectPeriodScrollController;
   String get photoUrl {
-    final isToTakeFomrStorage =
-        GetStorage().read(Constants.USER_PHOTO_URL) != null;
-    if (isToTakeFomrStorage) {
-      return GetStorage().read(Constants.USER_PHOTO_URL);
+    final photoStorage = GetStorage().read(Constants.USER_PHOTO_URL);
+    if (photoStorage != null) {
+      return photoStorage;
     } else {
       return autheticatedUser.photoUrl ?? '';
     }

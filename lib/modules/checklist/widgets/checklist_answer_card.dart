@@ -74,18 +74,18 @@ class ChecklistAnswerCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Divider(height: 5, color: Color(0xffECECEC)),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Realizado em: 10/02/2025 às 09h20',
-                      style: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
+                  // Divider(height: 5, color: Color(0xffECECEC)),
+                  // const SizedBox(height: 8),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //   child: Text(
+                  //     'Realizado em: 10/02/2025 às 09h20',
+                  //     style: TextStyle(
+                  //       color: Colors.grey.shade500,
+                  //       fontSize: 12,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

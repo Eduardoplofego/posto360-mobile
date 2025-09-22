@@ -42,31 +42,6 @@ class FooterChecklistCard extends StatelessWidget {
               ],
             ),
           ),
-          // Spacer(),
-          // SizedBox(
-          //   width: 115,
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       Text(
-          //         'Última interação',
-          //         textAlign: TextAlign.center,
-          //         style: TextStyle(
-          //           color: PostoAppUiConfigurations.darkGreyColor,
-          //           fontSize: 12,
-          //         ),
-          //       ),
-          //       Text(
-          //         DateFormat('dd/MM/yyyy').format(DateTime.now()),
-          //         style: TextStyle(
-          //           color: PostoAppUiConfigurations.textDarkColor,
-          //           fontSize: 12,
-          //           fontWeight: FontWeight.w500,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );
