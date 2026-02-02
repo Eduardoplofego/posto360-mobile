@@ -9,14 +9,14 @@ class LoginPage extends GetView<LoginController> {
   LoginPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
-  final _loginEC = TextEditingController();
-  final _passwordEC = TextEditingController();
+  final _loginEC = TextEditingController(text: 'AUGUSTOPEREIRADESOUZA');
+  final _passwordEC = TextEditingController(text: '123456');
 
   Future<void> _onLogin() async {
     final formValid = _formKey.currentState?.validate() ?? false;
 
     if (formValid) {
-      controller.login(email: _loginEC.text, password: _passwordEC.text);
+      controller.login(username: _loginEC.text, password: _passwordEC.text);
     }
   }
 
@@ -97,7 +97,7 @@ class LoginPage extends GetView<LoginController> {
                                     style: PostoAppUiConfigurations.textNormal
                                         .copyWith(
                                           color: Colors.grey,
-                                          fontSize: 18,
+                                          fontSize: 14,
                                         ),
                                   ),
                                   const SizedBox(height: 28),
@@ -110,13 +110,10 @@ class LoginPage extends GetView<LoginController> {
                                       child: Column(
                                         children: [
                                           PostoAppTextFormField(
-                                            label: 'Digite o seu e-mail',
+                                            label: 'Digite o seu username',
                                             obscureText: false,
                                             controller: _loginEC,
                                             validator: Validatorless.multiple([
-                                              Validatorless.email(
-                                                'E-mail incorreto',
-                                              ),
                                               Validatorless.required(
                                                 'E-mail é obrigatório',
                                               ),

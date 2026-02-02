@@ -18,10 +18,16 @@ class LoginController extends GetxController with LoaderMixin, MessageMixin {
     messageListener(_message);
   }
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login({
+    required String username,
+    required String password,
+  }) async {
     _loader.toggle();
 
-    final result = await _loginService.login(email: email, password: password);
+    final result = await _loginService.login(
+      email: username,
+      password: password,
+    );
 
     if (result.isError) {
       _loader.toggle();

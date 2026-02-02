@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:posto360/modules/login/domain/repositories/login_repository.dart';
 import 'package:posto360/modules/login/infra/repositories/login_repository_impl.dart';
 import 'package:posto360/modules/login/infra/services/login_service.dart';
-import 'package:posto360/modules/login/infra/services/login_service_impl.dart';
+import 'package:posto360/modules/login/services/login_service_impl.dart';
 import './login_controller.dart';
 
 class LoginBindings implements Bindings {

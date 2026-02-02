@@ -10,6 +10,7 @@ class UserModel {
   final String tipoUsuario;
   final int? idFilial;
   final int? codigoPDV;
+  final List<int> campanhasIds;
   final String? userName;
   final String? dismissedDate;
   final String? admissionDate;
@@ -23,6 +24,7 @@ class UserModel {
     required this.lastName,
     required this.idEmpresa,
     required this.tipoUsuario,
+    required this.campanhasIds,
     this.idFilial,
     this.codigoPDV,
     this.userName,
@@ -40,6 +42,7 @@ class UserModel {
       lastName: '',
       idEmpresa: 0,
       tipoUsuario: '',
+      campanhasIds: [],
     );
   }
 
@@ -47,13 +50,14 @@ class UserModel {
     return {
       'id': id,
       'created_at': createdAt.toIso8601String(),
-      'FotoPerfil': photoUrl,
-      'Nome': name,
+      'fotoPerfil': photoUrl,
+      'nome': name,
       'Sobrenome': lastName,
-      'EmpresaId': idEmpresa,
-      'TipoUsuario': tipoUsuario,
-      'FilialId': idFilial,
-      'CodigoPdv': codigoPDV,
+      'empresaId': idEmpresa,
+      'tipoUsuario': tipoUsuario,
+      'filialId': idFilial,
+      'idsCampanhas': campanhasIds,
+      'funcionarioCodigo': codigoPDV,
       'Username': userName,
       'Demissao': dismissedDate,
       'Admissao': admissionDate,
@@ -62,16 +66,19 @@ class UserModel {
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
+    final idsCampanhasCast = map['idsCampanhas'] as List;
+    final idsCampanhas = idsCampanhasCast.map((ele) => ele as int).toList();
     return UserModel(
       id: map['id'] ?? '',
-      createdAt: DateTime.tryParse(map['created_at']) ?? DateTime(2000),
-      photoUrl: map['FotoPerfil'] ?? '',
-      name: map['Nome'] ?? '',
+      createdAt: DateTime(2000),
+      photoUrl: map['fotoPerfil'] ?? '',
+      name: map['nome'] ?? '',
       lastName: map['Sobrenome'] ?? '',
-      idEmpresa: map['EmpresaId'] ?? 0,
-      tipoUsuario: map['TipoUsuario'] ?? '',
-      idFilial: map['FilialId'],
-      codigoPDV: map['CodigoPdv'],
+      idEmpresa: map['empresaId'] ?? 0,
+      tipoUsuario: map['tipoUsuario'] ?? '',
+      idFilial: map['filialId'],
+      codigoPDV: map['funcionarioCodigo'],
+      campanhasIds: idsCampanhas,
       userName: map['Username'],
       dismissedDate: map['Demissao'],
       admissionDate: map['Admissao'],

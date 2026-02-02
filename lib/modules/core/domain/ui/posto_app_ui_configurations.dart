@@ -17,11 +17,11 @@ class PostoAppUiConfigurations {
     fontWeight: FontWeight.w400,
   );
   static const TextStyle textNormal = TextStyle(
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: FontWeight.normal,
   );
   static const TextStyle textBold = TextStyle(
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
   );
 }

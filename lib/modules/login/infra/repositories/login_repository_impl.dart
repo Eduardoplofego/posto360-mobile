@@ -19,7 +19,7 @@ class LoginRepositoryImpl extends LoginRepository {
     required String password,
   }) async {
     final response = await _restClient.post(ApiRoutes.login(), {
-      'email': email,
+      'usernameRaw': email,
       'senha': password,
     });
 
@@ -36,7 +36,7 @@ class LoginRepositoryImpl extends LoginRepository {
     }
 
     final token = response.body['token'];
-    final userJson = response.body['user'];
+    final userJson = response.body['userData'];
 
     return LoginDto(token: token, user: UserModel.fromMap(userJson));
   }
