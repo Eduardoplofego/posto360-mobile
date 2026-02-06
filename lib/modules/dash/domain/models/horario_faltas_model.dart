@@ -1,26 +1,42 @@
 import 'dart:convert';
 
 class HorarioFaltasModel {
-  final String horarioPrevisto;
-  final int faltas;
-  final int atrasos;
+  final String? horarioPrevisto;
+  final int faltasInjustificadas;
+  final int faltasPonto;
+  final int atrasosGrave;
+  final int atrasosMedio;
+  final int atrasosLeve;
+  final int penalidade;
 
   HorarioFaltasModel({
     required this.horarioPrevisto,
-    required this.faltas,
-    required this.atrasos,
+    required this.faltasInjustificadas,
+    required this.faltasPonto,
+    required this.atrasosGrave,
+    required this.atrasosMedio,
+    required this.atrasosLeve,
+    required this.penalidade,
   });
 
   factory HorarioFaltasModel.empty() {
-    return HorarioFaltasModel(horarioPrevisto: '', faltas: 0, atrasos: 0);
+    return HorarioFaltasModel(
+      horarioPrevisto: '',
+      faltasInjustificadas: 0,
+      faltasPonto: 0,
+      atrasosGrave: 0,
+      atrasosMedio: 0,
+      atrasosLeve: 0,
+      penalidade: 0,
+    );
   }
 
   String getJornadaTrabalho() {
-    if (horarioPrevisto.isEmpty) {
+    if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
       return '--';
     }
 
-    final turnos = horarioPrevisto.split(' ');
+    final turnos = horarioPrevisto!.split(' ');
 
     final primeiroTurnoSplitted = turnos[0].split('-');
     final segundoTurnosSplitted = turnos[2].split('-');
@@ -41,11 +57,11 @@ class HorarioFaltasModel {
   }
 
   String getStartTime() {
-    if (horarioPrevisto.isEmpty) {
+    if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
       return '';
     }
 
-    final turnos = horarioPrevisto.split(' ');
+    final turnos = horarioPrevisto!.split(' ');
 
     final primeiroTurnoSplitted = turnos[0].split('-');
 
@@ -61,16 +77,24 @@ class HorarioFaltasModel {
   Map<String, dynamic> toMap() {
     return {
       'horarioPrevisto': horarioPrevisto,
-      'faltas': faltas,
-      'atrasos': atrasos,
+      'faltasInjustificadas': faltasInjustificadas,
+      'faltasPonto': faltasPonto,
+      'atrasosGrave': atrasosGrave,
+      'atrasosMedio': atrasosMedio,
+      'atrasosLeve': atrasosLeve,
+      'penalidade': penalidade,
     };
   }
 
   factory HorarioFaltasModel.fromMap(Map<String, dynamic> map) {
     return HorarioFaltasModel(
       horarioPrevisto: map['horarioPrevisto'] ?? '',
-      faltas: map['faltas']?.toInt() ?? 0,
-      atrasos: map['atrasos']?.toInt() ?? 0,
+      faltasInjustificadas: map['Falta injustificado'] ?? 0,
+      faltasPonto: map['Falta de ponto'] ?? 0,
+      atrasosGrave: map['Atraso grave'] ?? 0,
+      atrasosMedio: map['Atraso medio'] ?? 0,
+      atrasosLeve: map['Atraso leve'] ?? 0,
+      penalidade: map['Penalidade'] ?? 0,
     );
   }
 
@@ -78,8 +102,4 @@ class HorarioFaltasModel {
 
   factory HorarioFaltasModel.fromJson(String source) =>
       HorarioFaltasModel.fromMap(json.decode(source));
-
-  @override
-  String toString() =>
-      'HorarioFaltas(horarioPrevisto: $horarioPrevisto, faltas: $faltas, atrasos: $atrasos)';
 }

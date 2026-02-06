@@ -16,13 +16,10 @@ class HorarioFaltasAtrasosServiceImpl extends HorarioFaltasAtrasosService {
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
     required DateTime data,
     required String codigoFuncionario,
-    required DateTime dataMes,
   }) async {
-    final dataMesFormatada = DataFormatters.formatarData(dataMes);
     final dataAtualFormatada = DataFormatters.formatarData(data);
     final result = await _horarioFaltasAtrasosRepository.getHorario(
       dataAtual: dataAtualFormatada,
-      dataMes: dataMesFormatada,
       codigoFuncionario: codigoFuncionario,
     );
     return result;

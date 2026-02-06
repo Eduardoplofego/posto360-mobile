@@ -15,6 +15,15 @@ class ApiRoutes {
   static const _aulaConcluida =
       '$_backendBaseUrl/api/mobile/ead/vendedor/subir-visualizacao';
   static const _dashboard = '$_backendBaseUrl/api/mobile/dashboard';
+  static const _dashboardRH = '$_backendBaseUrl/api/mobile/dashboard/rh';
+  static const _dashboardFinanceiro =
+      '$_backendBaseUrl/api/mobile/dashboard/financeiro';
+  static const _dashboardCampanhas =
+      '$_backendBaseUrl/api/mobile/dashboard/campanhas';
+  static const _dashboardCursos =
+      '$_backendBaseUrl/api/mobile/dashboard/cursos';
+  static const _dashboardChecklists =
+      '$_backendBaseUrl/api/mobile/dashboard/checklist';
   static const _checklists =
       '$_backendBaseUrl/api/mobile/checklists/vendedor/disponiveis';
   static const _checklistFinalizadas =
@@ -45,6 +54,11 @@ class ApiRoutes {
   static String aulas() => _aulas;
   static String aulaConcluida() => _aulaConcluida;
   static String dashboard() => _dashboard;
+  static String dashboardRH() => _dashboardRH;
+  static String dashboardFinanceiro() => _dashboardFinanceiro;
+  static String dashboardCampanhas() => _dashboardCampanhas;
+  static String dashboardCursos() => _dashboardCursos;
+  static String dashboardChecklists() => _dashboardChecklists;
   static String checklists() => _checklists;
   static String checklistsFinalizadas() => _checklistFinalizadas;
   static String checklistAnswers() => _checklistAnswers;

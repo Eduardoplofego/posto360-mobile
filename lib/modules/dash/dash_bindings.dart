@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:posto360/modules/campanhas/domain/repositories/campanhas_repository.dart';
-import 'package:posto360/modules/campanhas/infra/repositories/campanhas_repository_impl.dart';
 import 'package:posto360/modules/cursos/domain/repositories/cursos_repository.dart';
 import 'package:posto360/modules/cursos/infra/repositories/cursos_repository_impl.dart';
+import 'package:posto360/modules/dash/domain/repositories/campanhas_repository.dart';
 import 'package:posto360/modules/dash/domain/repositories/dashboard_repository.dart';
+import 'package:posto360/modules/dash/infra/repositories/campanhas_repository_impl.dart';
 import 'package:posto360/modules/dash/infra/repositories/dashboard_repository_impl.dart';
 import 'package:posto360/modules/dash/domain/repositories/horario_faltas_atrasos_repository.dart';
 import 'package:posto360/modules/dash/infra/repositories/horario_faltas_atrasos_repository_impl.dart';
@@ -11,11 +11,11 @@ import 'package:posto360/modules/campanhas/domain/repositories/performance_repos
 import 'package:posto360/modules/campanhas/infra/repositories/performance_repository_impl.dart';
 import 'package:posto360/modules/core/domain/repositories/user_repository.dart';
 import 'package:posto360/modules/core/infra/repositories/user_repository_impl.dart';
-import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart';
-import 'package:posto360/modules/campanhas/services/campanhas_service_impl.dart';
 import 'package:posto360/modules/cursos/infra/services/cursos_service.dart';
 import 'package:posto360/modules/cursos/services/cursos_service_impl.dart';
+import 'package:posto360/modules/dash/infra/services/campanhas_service.dart';
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
+import 'package:posto360/modules/dash/services/campanhas_service_impl.dart';
 import 'package:posto360/modules/dash/services/dashboard_service_impl.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
 import 'package:posto360/modules/dash/services/horario_faltas_atrasos_service_impl.dart';

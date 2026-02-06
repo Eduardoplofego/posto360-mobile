@@ -20,48 +20,50 @@ class DashboardServiceImpl extends DashboardService {
   @override
   Future<ResultActionDTO<DashboardModel>> getDashboardData({
     required int funcionarioCodigo,
-    required List<CampanhaModel> campanhas,
+    required List<int> campanhasIds,
     required String data,
   }) async {
-    var idsCamapnhas = _getCampanhasIds(campanhas: campanhas);
+    // var idsCamapnhas = _getCampanhasIds(campanhas: campanhas);
 
     final dashResult = await _dashboardRepository.getDashboardData(
       funcionarioCodigo: funcionarioCodigo,
-      idsCamapnhas: idsCamapnhas,
+      idsCamapnhas: campanhasIds,
       data: data,
     );
 
-    if (dashResult.success) {
-      // pegar performances das campanhas e settar no dashboardModel
-      DashboardModel dashModel = dashResult.data!;
+    return dashResult;
 
-      final performances = await _performanceService.getPerformances(
-        codigoFuncionario: funcionarioCodigo,
-        campanhasId: idsCamapnhas,
-        dataMes: data,
-      );
+    // if (dashResult.success) {
+    //   // pegar performances das campanhas e settar no dashboardModel
+    //   DashboardModel dashModel = dashResult.data!;
 
-      var totalAtingido = 0;
-      if (performances.success) {
-        for (var performance in performances.data!) {
-          final campanha = campanhas.firstWhere(
-            (camp) => camp.campanhaId == performance.campanhaId,
-          );
-          if (performance.unidadesVendidas > campanha.volumeBonificacao) {
-            totalAtingido++;
-          }
-        }
-        dashModel.quantidadeCampanhas = performances.data!.length;
-        dashModel.realizadoCampanhas = totalAtingido;
-      }
+    //   final performances = await _performanceService.getPerformances(
+    //     codigoFuncionario: funcionarioCodigo,
+    //     campanhasId: campanhasIds,
+    //     dataMes: data,
+    //   );
 
-      return ResultActionDTO.success(data: dashModel);
-    } else {
-      return ResultActionDTO.failure(
-        'Erro ao buscar performances',
-        DashboardModel.empty(),
-      );
-    }
+    //   var totalAtingido = 0;
+    //   // if (performances.success) {
+    //   //   for (var performance in performances.data!) {
+    //   //     final campanha = campanhas.firstWhere(
+    //   //       (camp) => camp.campanhaId == performance.campanhaId,
+    //   //     );
+    //   //     if (performance.unidadesVendidas > campanha.volumeBonificacao) {
+    //   //       totalAtingido++;
+    //   //     }
+    //   //   }
+    //   //   dashModel.quantidadeCampanhas = performances.data!.length;
+    //   //   dashModel.realizadoCampanhas = totalAtingido;
+    //   // }
+
+    //   return ResultActionDTO.success(data: dashModel);
+    // } else {
+    //   return ResultActionDTO.failure(
+    //     'Erro ao buscar performances',
+    //     DashboardModel.empty(),
+    //   );
+    // }
   }
 
   List<int> _getCampanhasIds({required List<CampanhaModel> campanhas}) {

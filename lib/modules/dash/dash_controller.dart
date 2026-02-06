@@ -10,7 +10,6 @@ import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/dash/domain/models/dashboard_model.dart';
 import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 import 'package:posto360/modules/core/domain/models/user_model.dart';
-import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart';
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
 import 'package:posto360/modules/core/infra/services/user_service.dart';
@@ -19,7 +18,6 @@ import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caix
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
-  late CampanhasService _campanhasService;
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
   late DashboardService _dashboardService;
   late NotificationService _notificationService;
@@ -32,7 +30,6 @@ class DashController extends FullLifeCycleController
   final _selectPeriodScrollController = ScrollController();
 
   DashController() {
-    _campanhasService = Get.find<CampanhasService>();
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
     _notificationService = Get.find<NotificationService>();
     _dashboardService = Get.find<DashboardService>();
@@ -131,25 +128,16 @@ class DashController extends FullLifeCycleController
 
   Future<void> loadDashboardModel() async {
     _loadingDashboardModel(true);
-    final resultCampanhas = await _campanhasService.getAllCampanhas(
-      filialId: autheticatedUser.idFilial!,
-      tipoUsuario: autheticatedUser.tipoUsuario,
-      data: monthSelected,
+
+    final dashboardResult = await _dashboardService.getDashboardData(
+      funcionarioCodigo: autheticatedUser.codigoPDV!,
+      campanhasIds: _authenticatedUser.value.campanhasIds,
+      data: DataFormatters.formatarData(monthSelected),
     );
 
-    if (resultCampanhas.success || resultCampanhas.data!.isNotEmpty) {
-      final dashboardResult = await _dashboardService.getDashboardData(
-        funcionarioCodigo: autheticatedUser.codigoPDV!,
-        campanhas: resultCampanhas.data!,
-        data: DataFormatters.formatarData(monthSelected),
-      );
-
-      if (dashboardResult.success) {
-        _dashboardModel.value = dashboardResult.data!;
-        _hasDashboardModel(true);
-      } else {
-        _hasDashboardModel(false);
-      }
+    if (dashboardResult.success) {
+      _dashboardModel.value = dashboardResult.data!;
+      _hasDashboardModel(true);
     } else {
       _hasDashboardModel(false);
     }
@@ -173,7 +161,6 @@ class DashController extends FullLifeCycleController
     final result = await _horarioFaltasAtrasosService.getHorario(
       data: today,
       codigoFuncionario: autheticatedUser.codigoPDV.toString(),
-      dataMes: monthSelected,
     );
 
     if (result.isError) {

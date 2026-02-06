@@ -6,6 +6,7 @@ import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/drawer/posto_app_drawer.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
+import 'package:posto360/modules/dash/widgets/card_campanhas_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_close_money.dart';
 import 'package:posto360/modules/dash/widgets/empty_dashboard_model_widget.dart';
 import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
@@ -94,39 +95,6 @@ class DashPage extends GetView<DashController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 190,
-                          initDelay: 200,
-                          child: CardDetailedWidget(
-                            icon: Icons.event_busy_outlined,
-                            totalNumber: controller.horarioFaltasAtrasos.faltas,
-                            title: 'Número de faltas',
-                            totalNumberDetailed: controller.daysRegistered,
-                            totalNumberDetailedText: 'dias registrados',
-                            totalTakeNumberDetailedText: 'dias com falta',
-                            trendingUp:
-                                controller.horarioFaltasAtrasos.faltas == 0,
-                          ),
-                        ),
-                        const SizedBox(height: 17),
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 190,
-                          initDelay: 250,
-                          child: CardDetailedWidget(
-                            icon: Icons.timer_off_outlined,
-                            totalNumber:
-                                controller.horarioFaltasAtrasos.atrasos,
-                            title: 'Número de atrasos',
-                            totalNumberDetailed: controller.daysRegistered,
-                            totalNumberDetailedText: 'dias registrados',
-                            totalTakeNumberDetailedText: 'dias com atraso',
-                            trendingUp:
-                                controller.horarioFaltasAtrasos.atrasos == 0,
-                          ),
-                        ),
-                        const SizedBox(height: 17),
                         if (controller.loadingDashboardModel)
                           Padding(
                             padding: const EdgeInsets.only(top: 24),
@@ -147,19 +115,12 @@ class DashPage extends GetView<DashController> {
                             isLoading: controller.loadingDashboardModel,
                             height: 200,
                             initDelay: 300,
-                            child: CardDetailedWidget(
-                              icon: Icons.speed_outlined,
-                              totalNumber:
-                                  controller.dashboardModel.realizadoCampanhas,
-                              title: 'Performance Produtos Incentivados',
-                              totalNumberDetailed:
-                                  controller.dashboardModel.quantidadeCampanhas,
-                              totalNumberDetailedText: 'Meta',
-                              totalTakeNumberDetailedText: 'Realizado',
-                              hideTrendingDetail: true,
-                              onPressed: () {
-                                Get.toNamed('/campanhas');
-                              },
+                            child: CardCampanhasWidget(
+                              onPressed: () {},
+                              campanhasAtivas:
+                                  controller.dashboardModel.campanhasAtivas,
+                              bonificacaoTotal:
+                                  controller.dashboardModel.bonificacaoTotal,
                             ),
                           ),
                           const SizedBox(height: 17),
