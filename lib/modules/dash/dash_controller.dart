@@ -7,14 +7,14 @@ import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/core/domain/services/notification_service.dart';
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/dash/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/dash/domain/models/dashboard_model.dart';
 import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 import 'package:posto360/modules/core/domain/models/user_model.dart';
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
+import 'package:posto360/modules/dash/infra/services/fechamento_caixa_service.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
 import 'package:posto360/modules/core/infra/services/user_service.dart';
-import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
-import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caixa_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
@@ -58,7 +58,7 @@ class DashController extends FullLifeCycleController
   bool get loadingWork => _loadingWork.value;
   bool get loadingFechamento => _loadingFechamento.value;
 
-  final _cartoesModel = Rx(CartoesModel.empty());
+  final _cartoesModel = Rxn();
   final _dashboardModel = Rx(DashboardModel.empty());
   final _hasDashboardModel = false.obs;
   final _authenticatedUser = Rx<UserModel>(UserModel.empty());

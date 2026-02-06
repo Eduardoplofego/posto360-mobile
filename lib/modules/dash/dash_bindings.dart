@@ -3,9 +3,11 @@ import 'package:posto360/modules/cursos/domain/repositories/cursos_repository.da
 import 'package:posto360/modules/cursos/infra/repositories/cursos_repository_impl.dart';
 import 'package:posto360/modules/dash/domain/repositories/campanhas_repository.dart';
 import 'package:posto360/modules/dash/domain/repositories/dashboard_repository.dart';
+import 'package:posto360/modules/dash/domain/repositories/fechamento_caixa_repository.dart';
 import 'package:posto360/modules/dash/infra/repositories/campanhas_repository_impl.dart';
 import 'package:posto360/modules/dash/infra/repositories/dashboard_repository_impl.dart';
 import 'package:posto360/modules/dash/domain/repositories/horario_faltas_atrasos_repository.dart';
+import 'package:posto360/modules/dash/infra/repositories/fechamento_caixa_repository_impl.dart';
 import 'package:posto360/modules/dash/infra/repositories/horario_faltas_atrasos_repository_impl.dart';
 import 'package:posto360/modules/campanhas/domain/repositories/performance_repository.dart';
 import 'package:posto360/modules/campanhas/infra/repositories/performance_repository_impl.dart';
@@ -15,18 +17,16 @@ import 'package:posto360/modules/cursos/infra/services/cursos_service.dart';
 import 'package:posto360/modules/cursos/services/cursos_service_impl.dart';
 import 'package:posto360/modules/dash/infra/services/campanhas_service.dart';
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
+import 'package:posto360/modules/dash/infra/services/fechamento_caixa_service.dart';
 import 'package:posto360/modules/dash/services/campanhas_service_impl.dart';
 import 'package:posto360/modules/dash/services/dashboard_service_impl.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
+import 'package:posto360/modules/dash/services/fechamento_caixa_service_impl.dart';
 import 'package:posto360/modules/dash/services/horario_faltas_atrasos_service_impl.dart';
 import 'package:posto360/modules/campanhas/infra/services/performance_service.dart';
 import 'package:posto360/modules/campanhas/services/performance_service_impl.dart';
 import 'package:posto360/modules/core/infra/services/user_service.dart';
 import 'package:posto360/modules/core/services/user_service_impl.dart';
-import 'package:posto360/modules/fechamento-caixa/domain/repositories/fechamento_caixa_repository.dart';
-import 'package:posto360/modules/fechamento-caixa/infra/repositories/fechamento_caixa_repository_impl.dart';
-import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caixa_service.dart';
-import 'package:posto360/modules/fechamento-caixa/services/fechamento_caixa_service_impl.dart';
 import 'dash_controller.dart';
 
 class DashBindings implements Bindings {
