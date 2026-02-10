@@ -9,17 +9,17 @@ import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
 import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_controller_model.dart';
 import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
-import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart';
+import 'package:posto360/modules/campanhas/infra/services/app_campanhas_service.dart';
 import 'package:posto360/modules/campanhas/infra/services/performance_service.dart';
 
 class CampanhasController extends FullLifeCycleController
     with MessageMixin, LoaderMixin, FullLifeCycleMixin {
-  final CampanhasService _campanhasService;
+  final AppCampanhasService _campanhasService;
   final PerformanceService _performanceService;
   final AuthService _authService;
 
   CampanhasController({
-    required CampanhasService campanhaService,
+    required AppCampanhasService campanhaService,
     required AuthService authService,
     required PerformanceService performanceService,
   }) : _campanhasService = campanhaService,

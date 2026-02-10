@@ -70,6 +70,12 @@ class DashController extends FullLifeCycleController
   final _monthSelected = DateTime.now().obs;
   final _hasNextMonth = false.obs;
 
+  double get penalidadeTotal =>
+      dashboardModel.penalidadeChecklists +
+      dashboardModel.penalidadeCursos +
+      horarioFaltasAtrasos.penalidade +
+      cartoesModel.penalidade;
+
   DashboardModel get dashboardModel => _dashboardModel.value;
   CartoesModel get cartoesModel => _cartoesModel.value;
   bool get hasDashboardModel => _hasDashboardModel.value;

@@ -8,6 +8,8 @@ import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/menu_icon_b
 import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_campanhas_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_close_money.dart';
+import 'package:posto360/modules/dash/widgets/card_resume_widget.dart';
+import 'package:posto360/modules/dash/widgets/card_rh_widget.dart';
 import 'package:posto360/modules/dash/widgets/empty_dashboard_model_widget.dart';
 import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_detailed_widget.dart';
@@ -67,6 +69,14 @@ class DashPage extends GetView<DashController> {
                           child: ProfileCardWidget(),
                         ),
                         const SizedBox(height: 26),
+                        CardResumeWidget(
+                          premioFuncao:
+                              controller.autheticatedUser.premioFuncao,
+                          premioCampanhas:
+                              controller.dashboardModel.bonificacaoTotal,
+                          penalidades: controller.penalidadeTotal,
+                        ),
+                        const SizedBox(height: 26),
                         CardLoadingWidget(
                           isLoading: controller.loadingWork,
                           height: 100,
@@ -75,26 +85,6 @@ class DashPage extends GetView<DashController> {
                         ),
                         const SizedBox(height: 28),
                         DashboardSectionHeaderWidget(),
-                        const SizedBox(height: 16),
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 190,
-                          initDelay: 200,
-                          child: CardCloseMoney(
-                            cardsDeleted:
-                                controller.cartoesModel.cartoesDeletados,
-                            cardsLinked:
-                                controller.cartoesModel.cartoesVinculados,
-                            cardsCorrected:
-                                controller.cartoesModel.cartoesCorrigidos,
-                            cardsInserted:
-                                controller.cartoesModel.cartoesInseridos,
-                            onPressed: () {
-                              Get.toNamed('/fechamento-caixa');
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 16),
                         if (controller.loadingDashboardModel)
                           Padding(
                             padding: const EdgeInsets.only(top: 24),
@@ -116,13 +106,37 @@ class DashPage extends GetView<DashController> {
                             height: 200,
                             initDelay: 300,
                             child: CardCampanhasWidget(
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.toNamed('/campanhas');
+                              },
                               campanhasAtivas:
                                   controller.dashboardModel.campanhasAtivas,
                               bonificacaoTotal:
                                   controller.dashboardModel.bonificacaoTotal,
                             ),
                           ),
+                          const SizedBox(height: 17),
+                          CardLoadingWidget(
+                            isLoading: controller.loadingWork,
+                            height: 190,
+                            initDelay: 200,
+                            child: CardRhWidget(
+                              model: controller.horarioFaltasAtrasos,
+                            ),
+                          ),
+                          const SizedBox(height: 17),
+                          CardLoadingWidget(
+                            isLoading: controller.loadingWork,
+                            height: 190,
+                            initDelay: 200,
+                            child: CardCloseMoney(
+                              model: controller.cartoesModel,
+                              onPressed: () {
+                                Get.toNamed('/fechamento-caixa');
+                              },
+                            ),
+                          ),
+
                           const SizedBox(height: 17),
                           CardLoadingWidget(
                             isLoading: controller.loadingDashboardModel,
@@ -138,7 +152,9 @@ class DashPage extends GetView<DashController> {
                                   controller.dashboardModel.totalCursos.toInt(),
                               totalNumberDetailedText: 'cursos',
                               totalTakeNumberDetailedText: 'concluídos',
-                              trendingUp: true,
+                              penalidade:
+                                  controller.dashboardModel.penalidadeCursos,
+                              hideTrendingDetail: true,
                               onPressed: () {
                                 Get.toNamed('/cursos');
                               },
@@ -160,7 +176,11 @@ class DashPage extends GetView<DashController> {
                                       .toInt(),
                               totalNumberDetailedText: 'checklists',
                               totalTakeNumberDetailedText: 'concluídos',
-                              trendingUp: true,
+                              penalidade:
+                                  controller
+                                      .dashboardModel
+                                      .penalidadeChecklists,
+                              hideTrendingDetail: true,
                               onPressed: () {
                                 Get.toNamed('/checklists');
                               },

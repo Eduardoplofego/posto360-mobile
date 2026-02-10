@@ -11,6 +11,7 @@ class UserModel {
   final int? idFilial;
   final int? codigoPDV;
   final List<int> campanhasIds;
+  final double premioFuncao;
   final String? userName;
   final String? dismissedDate;
   final String? admissionDate;
@@ -25,6 +26,7 @@ class UserModel {
     required this.idEmpresa,
     required this.tipoUsuario,
     required this.campanhasIds,
+    required this.premioFuncao,
     this.idFilial,
     this.codigoPDV,
     this.userName,
@@ -43,6 +45,7 @@ class UserModel {
       idEmpresa: 0,
       tipoUsuario: '',
       campanhasIds: [],
+      premioFuncao: 0.00,
     );
   }
 
@@ -62,12 +65,14 @@ class UserModel {
       'Demissao': dismissedDate,
       'Admissao': admissionDate,
       'Ponto': ponto,
+      'premioFuncao': premioFuncao,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     final idsCampanhasCast = map['idsCampanhas'] as List;
     final idsCampanhas = idsCampanhasCast.map((ele) => ele as int).toList();
+    final premioFuncao = map['premioFuncao'] as num;
     return UserModel(
       id: map['id'] ?? '',
       createdAt: DateTime(2000),
@@ -83,6 +88,7 @@ class UserModel {
       dismissedDate: map['Demissao'],
       admissionDate: map['Admissao'],
       ponto: map['Ponto'],
+      premioFuncao: premioFuncao.toDouble(),
     );
   }
 

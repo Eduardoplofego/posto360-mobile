@@ -1,4 +1,3 @@
-import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -10,6 +9,7 @@ class CardDetailedWidget extends StatelessWidget {
   final int totalNumber;
   final String title;
   final int totalNumberDetailed;
+  final double penalidade;
   final String totalNumberDetailedText;
   final String totalTakeNumberDetailedText;
   final VoidCallback? onPressed;
@@ -22,6 +22,7 @@ class CardDetailedWidget extends StatelessWidget {
     required this.icon,
     required this.totalNumber,
     required this.title,
+    required this.penalidade,
     required this.totalNumberDetailed,
     required this.totalNumberDetailedText,
     required this.totalTakeNumberDetailedText,
@@ -33,12 +34,7 @@ class CardDetailedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentTaked =
-        totalNumberDetailed == 0
-            ? 0.0
-            : (totalNumber / totalNumberDetailed) <= 1.0
-            ? (totalNumber / totalNumberDetailed)
-            : 1.0;
+    final percentTaked = 1 - (penalidade.abs() / 10);
     return Container(
       width: Get.width,
       padding: EdgeInsets.only(
@@ -74,17 +70,16 @@ class CardDetailedWidget extends StatelessWidget {
                             size: 30,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: AnimatedDigitWidget(
-                            value:
-                                !hideNumberDetailed ? totalNumber.toInt() : 0,
-                            textStyle: TextStyle(fontSize: 48),
+                        Text(
+                          totalNumber.toString(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 7),
+                    const SizedBox(height: 17),
                     Row(
                       spacing: 7,
                       children: [
@@ -149,26 +144,23 @@ class CardDetailedWidget extends StatelessWidget {
                     child: CircularPercentIndicator(
                       radius: 50,
                       lineWidth: 10,
-                      percent: percentTaked,
+                      percent: 1 - percentTaked.toDouble(),
                       animation: true,
-                      center: Row(
+                      center: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          AnimatedDigitWidget(
-                            value: (percentTaked * 100),
-                            textStyle: TextStyle(
-                              fontSize: 20,
-                              color: PostoAppUiConfigurations.blueMediumColor,
+                          Text(
+                            penalidade.toString(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: PostoAppUiConfigurations.orangeColor,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Text(
-                              '%',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: PostoAppUiConfigurations.blueMediumColor,
-                              ),
+                          Text(
+                            'Penalidade',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.black38,
                             ),
                           ),
                         ],

@@ -1,14 +1,14 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
-import 'package:posto360/modules/campanhas/domain/repositories/campanhas_repository.dart';
+import 'package:posto360/modules/campanhas/domain/repositories/app_campanhas_repository.dart';
 
-import '../infra/services/campanhas_service.dart';
+import '../infra/services/app_campanhas_service.dart';
 
-class CampanhasServiceImpl extends CampanhasService {
-  final CampanhasRepository _repository;
+class CampanhasServiceImpl extends AppCampanhasService {
+  final AppCampanhasRepository _repository;
 
-  CampanhasServiceImpl({required CampanhasRepository campanhaRepository})
+  CampanhasServiceImpl({required AppCampanhasRepository campanhaRepository})
     : _repository = campanhaRepository;
 
   @override

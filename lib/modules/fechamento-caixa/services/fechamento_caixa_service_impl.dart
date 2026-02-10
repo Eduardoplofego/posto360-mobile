@@ -1,14 +1,14 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes_model.dart';
-import 'package:posto360/modules/fechamento-caixa/domain/repositories/fechamento_caixa_repository.dart';
+import 'package:posto360/modules/fechamento-caixa/domain/repositories/app_fechamento_caixa_repository.dart';
 import '../infra/services/fechamento_caixa_service.dart';
 
-class FechamentoCaixaServiceImpl extends FechamentoCaixaService {
-  final FechamentoCaixaRepository _fechamentoCaixaRepository;
+class FechamentoCaixaServiceImpl extends AppFechamentoCaixaService {
+  final AppFechamentoCaixaRepository _fechamentoCaixaRepository;
 
   FechamentoCaixaServiceImpl({
-    required FechamentoCaixaRepository fechamentoCaixaRepository,
+    required AppFechamentoCaixaRepository fechamentoCaixaRepository,
   }) : _fechamentoCaixaRepository = fechamentoCaixaRepository;
 
   @override

@@ -53,38 +53,42 @@ class CardCampanhasWidget extends StatelessWidget {
                             size: 30,
                           ),
                         ),
-                        Flexible(
-                          child: Text(
-                            'Performance campanhas',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
+                        Text(
+                          campanhasAtivas.toString(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 17),
                     Row(
-                      spacing: 6,
                       children: [
-                        CircleAvatar(radius: 4, backgroundColor: Colors.blue),
-                        Text(
-                          '$campanhasAtivas campanha${campanhasAtivas > 1 ? 's' : ''} ativa${campanhasAtivas > 1 ? 's' : ''}',
-                          style: TextStyle(fontSize: 12, color: Colors.black38),
+                        SizedBox(
+                          width: 140,
+                          child: Text(
+                            'Performance Campanhas',
+                            style: TextStyle(fontSize: 14),
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
-                    Row(
-                      spacing: 6,
-                      children: [
-                        CircleAvatar(radius: 4, backgroundColor: Colors.orange),
-                        Text(
-                          'Bonificação total: ${UtilBrasilFields.obterReal(bonificacaoTotal)}',
-                          style: TextStyle(fontSize: 12, color: Colors.black38),
-                        ),
-                      ],
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      UtilBrasilFields.obterReal(bonificacaoTotal),
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: PostoAppUiConfigurations.blueMediumColor,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),

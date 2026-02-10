@@ -6,11 +6,11 @@ import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes
 import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caixa_service.dart';
 
 class FechamentoCaixaController extends GetxController with MessageMixin {
-  final FechamentoCaixaService _fechamentoCaixaService;
+  final AppFechamentoCaixaService _fechamentoCaixaService;
   final AuthService _authService;
 
   FechamentoCaixaController({
-    required FechamentoCaixaService fechamentoCaixaService,
+    required AppFechamentoCaixaService fechamentoCaixaService,
     required AuthService authService,
   }) : _fechamentoCaixaService = fechamentoCaixaService,
        _authService = authService;

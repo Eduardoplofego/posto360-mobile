@@ -1,23 +1,19 @@
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/modules/dash/domain/models/cartoes_model.dart';
-import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
+import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 
-class CardCloseMoney extends StatelessWidget {
-  final CartoesModel model;
-  final VoidCallback onPressed;
-  const CardCloseMoney({
-    super.key,
-    required this.model,
-    required this.onPressed,
-  });
+class CardRhWidget extends StatelessWidget {
+  final HorarioFaltasModel model;
+  const CardRhWidget({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
     final percentTaked = 1 - (model.penalidade.abs() / 10);
+    final totalFaltas = model.faltasInjustificadas + model.faltasPonto;
+    final totalAtrasos =
+        model.atrasosGrave + model.atrasosMedio + model.atrasosLeve;
     return Container(
       width: Get.width,
       padding: EdgeInsets.only(top: 10, right: 0, left: 16, bottom: 0),
@@ -28,42 +24,39 @@ class CardCloseMoney extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            spacing: 10,
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.person,
+                  color: PostoAppUiConfigurations.blueMediumColor,
+                  size: 30,
+                ),
+              ),
+              Text(
+                'Faltas: $totalFaltas | Atrasos: $totalAtrasos',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+          const SizedBox(height: 17),
+          Row(
             children: [
               Expanded(
                 flex: 2,
                 child: Column(
                   children: [
                     Row(
-                      spacing: 10,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.account_balance_wallet_outlined,
-                            color: PostoAppUiConfigurations.blueMediumColor,
-                            size: 30,
-                          ),
-                        ),
-                        Text(
-                          UtilBrasilFields.obterReal(-model.diferencaTotal),
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 17),
-                    Row(
                       children: [
                         SizedBox(
                           width: 140,
                           child: Text(
-                            'Fechamento Caixa',
+                            'Faltas e atrasos',
                             style: TextStyle(fontSize: 14),
                           ),
                         ),
@@ -85,7 +78,7 @@ class CardCloseMoney extends StatelessWidget {
                                     backgroundColor: Colors.blue,
                                   ),
                                   Text(
-                                    'Cartões deletados: ${model.cartoesDeletados}',
+                                    'Falta injustificada: ${model.faltasInjustificadas}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -102,7 +95,7 @@ class CardCloseMoney extends StatelessWidget {
                                     backgroundColor: Colors.orange,
                                   ),
                                   Text(
-                                    'Cartões vinculados: ${model.cartoesVinculados}',
+                                    'Falta de ponto: ${model.faltasPonto}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -119,7 +112,7 @@ class CardCloseMoney extends StatelessWidget {
                                     backgroundColor: Colors.blue,
                                   ),
                                   Text(
-                                    'Cartões corrigidos: ${model.cartoesCorrigidos}',
+                                    'Atrasos graves: ${model.atrasosGrave}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -136,7 +129,24 @@ class CardCloseMoney extends StatelessWidget {
                                     backgroundColor: Colors.orange,
                                   ),
                                   Text(
-                                    'Cartões inseridos: ${model.cartoesInseridos}',
+                                    'Atrasos médios: ${model.atrasosMedio}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                spacing: 6,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 4,
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                  Text(
+                                    'Atrasos leves: ${model.atrasosLeve}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -194,7 +204,6 @@ class CardCloseMoney extends StatelessWidget {
               ),
             ],
           ),
-          ButtonCardWidget(onPressed: onPressed),
         ],
       ),
     );

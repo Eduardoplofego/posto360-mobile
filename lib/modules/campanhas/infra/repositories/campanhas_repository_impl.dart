@@ -5,9 +5,9 @@ import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.d
 import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
 
-import '../../domain/repositories/campanhas_repository.dart';
+import '../../domain/repositories/app_campanhas_repository.dart';
 
-class CampanhasRepositoryImpl extends CampanhasRepository {
+class CampanhasRepositoryImpl extends AppCampanhasRepository {
   final PostoRestClient _restClient;
 
   CampanhasRepositoryImpl({required PostoRestClient postoRestClient})
