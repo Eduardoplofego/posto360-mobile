@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:posto360/modules/campanhas/domain/models/produto_model.dart';
 import 'package:posto360/modules/core/domain/utils/enums/type_bonificacao.dart';
 
 class CampanhaModel {

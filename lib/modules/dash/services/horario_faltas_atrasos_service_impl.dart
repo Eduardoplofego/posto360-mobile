@@ -1,4 +1,5 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/helpers/date_helper.dart';
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 import 'package:posto360/modules/dash/domain/repositories/horario_faltas_atrasos_repository.dart';
@@ -14,12 +15,17 @@ class HorarioFaltasAtrasosServiceImpl extends HorarioFaltasAtrasosService {
 
   @override
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
-    required DateTime data,
+    required DateTime dataSelecionada,
+    required DateTime dataAtual,
     required String codigoFuncionario,
   }) async {
-    final dataAtualFormatada = DataFormatters.formatarData(data);
+    final (dataInicial, dataFinal) = DateHelper.getInitialAndLastCurrentDate(
+      dataSelecionada,
+    );
     final result = await _horarioFaltasAtrasosRepository.getHorario(
-      dataAtual: dataAtualFormatada,
+      dataInicial: DataFormatters.formatarData(dataInicial),
+      dataFinal: DataFormatters.formatarData(dataFinal),
+      dataAtual: DataFormatters.formatarData(dataAtual),
       codigoFuncionario: codigoFuncionario,
     );
     return result;

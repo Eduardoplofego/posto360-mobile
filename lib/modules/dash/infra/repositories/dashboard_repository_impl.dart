@@ -18,13 +18,15 @@ class DashboardRepositoryImpl extends DashboardRepository {
   Future<ResultActionDTO<DashboardModel>> getDashboardData({
     required int funcionarioCodigo,
     required List<int> idsCamapnhas,
-    required String data,
+    required String dataInicial,
+    required String dataFinal,
   }) async {
     try {
       final resultCampanhas = await _restClient
           .post(ApiRoutes.dashboardCampanhas(), {
             "funcionarioCodigo": funcionarioCodigo,
-            "data": data,
+            "dataInicial": dataInicial,
+            "dataFinal": dataFinal,
             "idsCampanhas": idsCamapnhas,
           });
       if (resultCampanhas.statusCode != null &&
@@ -41,7 +43,8 @@ class DashboardRepositoryImpl extends DashboardRepository {
       }
       final resultCursos = await _restClient.post(ApiRoutes.dashboardCursos(), {
         "funcionarioCodigo": funcionarioCodigo,
-        "data": data,
+        "dataInicial": dataInicial,
+        "dataFinal": dataFinal,
       });
       if (resultCursos.statusCode != null && resultCursos.statusCode! >= 400) {
         log(
@@ -55,10 +58,12 @@ class DashboardRepositoryImpl extends DashboardRepository {
         );
       }
 
-      final resultChecklists = await _restClient.post(
-        ApiRoutes.dashboardChecklists(),
-        {"funcionarioCodigo": funcionarioCodigo, "data": data},
-      );
+      final resultChecklists = await _restClient
+          .post(ApiRoutes.dashboardChecklists(), {
+            "funcionarioCodigo": funcionarioCodigo,
+            "dataInicial": dataInicial,
+            "dataFinal": dataFinal,
+          });
       if (resultChecklists.statusCode != null &&
           resultChecklists.statusCode! >= 400) {
         log(

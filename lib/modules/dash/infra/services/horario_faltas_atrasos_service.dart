@@ -3,7 +3,8 @@ import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 
 abstract class HorarioFaltasAtrasosService {
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
-    required DateTime data,
+    required DateTime dataSelecionada,
+    required DateTime dataAtual,
     required String codigoFuncionario,
   });
 }

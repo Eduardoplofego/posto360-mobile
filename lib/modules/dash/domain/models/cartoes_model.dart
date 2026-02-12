@@ -28,6 +28,17 @@ class CartoesModel {
     };
   }
 
+  factory CartoesModel.empty() {
+    return CartoesModel(
+      diferencaTotal: 0.0,
+      penalidade: 0.0,
+      cartoesDeletados: 0,
+      cartoesVinculados: 0,
+      cartoesCorrigidos: 0,
+      cartoesInseridos: 0,
+    );
+  }
+
   factory CartoesModel.fromMap(Map<String, dynamic> map) {
     return CartoesModel(
       diferencaTotal: map['diferencaTotal']?.toDouble() ?? 0.0,

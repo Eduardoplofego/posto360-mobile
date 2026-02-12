@@ -5,6 +5,7 @@ abstract class DashboardRepository {
   Future<ResultActionDTO<DashboardModel>> getDashboardData({
     required int funcionarioCodigo,
     required List<int> idsCamapnhas,
-    required String data,
+    required String dataInicial,
+    required String dataFinal,
   });
 }

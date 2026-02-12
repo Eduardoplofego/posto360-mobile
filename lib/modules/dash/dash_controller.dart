@@ -6,7 +6,6 @@ import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/core/domain/services/notification_service.dart';
-import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/dash/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/dash/domain/models/dashboard_model.dart';
 import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
@@ -58,7 +57,7 @@ class DashController extends FullLifeCycleController
   bool get loadingWork => _loadingWork.value;
   bool get loadingFechamento => _loadingFechamento.value;
 
-  final _cartoesModel = Rxn();
+  final _cartoesModel = Rx(CartoesModel.empty());
   final _dashboardModel = Rx(DashboardModel.empty());
   final _hasDashboardModel = false.obs;
   final _authenticatedUser = Rx<UserModel>(UserModel.empty());
@@ -138,7 +137,7 @@ class DashController extends FullLifeCycleController
     final dashboardResult = await _dashboardService.getDashboardData(
       funcionarioCodigo: autheticatedUser.codigoPDV!,
       campanhasIds: _authenticatedUser.value.campanhasIds,
-      data: DataFormatters.formatarData(monthSelected),
+      dataAtual: monthSelected,
     );
 
     if (dashboardResult.success) {
@@ -165,7 +164,8 @@ class DashController extends FullLifeCycleController
     _loadingWork(true);
     final today = DateTime.now();
     final result = await _horarioFaltasAtrasosService.getHorario(
-      data: today,
+      dataAtual: today,
+      dataSelecionada: monthSelected,
       codigoFuncionario: autheticatedUser.codigoPDV.toString(),
     );
 

@@ -5,6 +5,6 @@ abstract class DashboardService {
   Future<ResultActionDTO<DashboardModel>> getDashboardData({
     required int funcionarioCodigo,
     required List<int> campanhasIds,
-    required String data,
+    required DateTime dataAtual,
   });
 }
