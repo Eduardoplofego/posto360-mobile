@@ -1,26 +1,33 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_individual_model.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/core/domain/utils/enums/type_bonificacao.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
-import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_equipe_model.dart';
 
 class CampanhaCardWidget extends StatelessWidget {
   final CampanhaModel campanha;
-  final PerformanceModel performace;
+  final PerformanceIndividualModel performaceIndividual;
+  final PerformanceEquipeModel performaceEquipe;
   const CampanhaCardWidget({
     super.key,
     required this.campanha,
-    required this.performace,
+    required this.performaceIndividual,
+    required this.performaceEquipe,
   });
 
   @override
   Widget build(BuildContext context) {
-    final percent = (performace.unidadesVendidas / campanha.volumeBonificacao);
-    final totalHundredCompleted = percent ~/ 1;
-    final percentRemaining = percent - totalHundredCompleted;
+    final totalEquipeCompleted = performaceEquipe.progresso ~/ 100;
+    final remainingEquipeProgress =
+        (performaceEquipe.progresso - totalEquipeCompleted * 100) as num;
+
+    final totalIndividualCompleted = performaceIndividual.progresso ~/ 100;
+    final remainingIndividualProgress =
+        (performaceIndividual.progresso - totalIndividualCompleted * 100)
+            as num;
     return Container(
       width: Get.width,
       padding: EdgeInsets.symmetric(horizontal: 23, vertical: 26),
@@ -29,82 +36,126 @@ class CampanhaCardWidget extends StatelessWidget {
         border: Border.all(color: Color(0xFFECECEC)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text(campanha.nomeCampanha)],
+            children: [
+              Text(
+                campanha.nomeCampanha,
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              ),
+            ],
           ),
+          if (campanha.descricao != '') ...[
+            const SizedBox(height: 6),
+            Row(children: [Text(campanha.descricao)]),
+          ],
           const SizedBox(height: 6),
-          Divider(color: Color(0xFFECECEC)),
-          const SizedBox(height: 11),
-          Text('Campanha de incentivo aos colaboradores.'),
-          const SizedBox(height: 16),
           ItemCampanhaDetail(
             titleItem: 'Tipo de Bonificação',
-            typeBonificacao: campanha.tipoBonificacao,
-            value: Text(campanha.tipoBonificacao.description()),
+            value: Text(campanha.tipoBonificacao.description().toLowerCase()),
           ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Meta Bonificação',
-            typeBonificacao: campanha.tipoBonificacao,
-            value: Text(
-              campanha.tipoBonificacao == TypeBonificacao.unidade
-                  ? '${campanha.volumeBonificacao.toStringAsFixed(0)} unid.'
-                  : UtilBrasilFields.obterReal(
-                    (campanha.volumeBonificacao).toDouble(),
-                  ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Valor bonificação',
-            typeBonificacao: campanha.tipoBonificacao,
-            value: Text(
-              UtilBrasilFields.obterReal(campanha.valorBonificacao.toDouble()),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem:
-                '${campanha.tipoBonificacao == TypeBonificacao.valor ? 'Valor' : 'Qtd.'} Realizad${campanha.tipoBonificacao == TypeBonificacao.valor ? 'o' : 'a'}',
-            typeBonificacao: campanha.tipoBonificacao,
-            value: Text(
-              campanha.tipoBonificacao == TypeBonificacao.unidade
-                  ? '${performace.unidadesVendidas.toStringAsFixed(0)} unid.'
-                  : UtilBrasilFields.obterReal(performace.unidadesVendidas),
-            ),
-          ),
-          const SizedBox(height: 6),
-
           Divider(color: Color(0xFFECECEC)),
-          const SizedBox(height: 11),
-          ItemCamapanhaPercentCompletedWidget(
-            titleItem: 'Realizado',
-            totalPercentCompleted: totalHundredCompleted,
-            value: '${(percentRemaining * 100).toStringAsFixed(0)}%',
-            dotColor: PostoAppUiConfigurations.blueMediumColor,
-          ),
-          const SizedBox(height: 11),
-          LinearPercentIndicator(
-            percent: percentRemaining,
-            lineHeight: 12,
-            progressColor: PostoAppUiConfigurations.blueMediumColor,
-            backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
-            barRadius: Radius.circular(30),
-            padding: EdgeInsets.zero,
-            animation: true,
-          ),
-          const SizedBox(height: 11),
+          const SizedBox(height: 6),
+          Text('Performance Individual'),
+          const SizedBox(height: 8),
           ItemCampanhaDetail(
-            titleItem: 'Valor realizado',
-            dotColor: PostoAppUiConfigurations.blueMediumColor,
-            typeBonificacao: campanha.tipoBonificacao,
+            titleItem: 'Meta Individual',
+            value: Text(
+              campanha.tipoBonificacao == TypeBonificacao.unidade
+                  ? '${campanha.metaIndividual.toStringAsFixed(0)} unid.'
+                  : UtilBrasilFields.obterReal((0).toDouble()),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Valor por Meta',
+            value: Text(
+              UtilBrasilFields.obterReal(campanha.bonificacaoIndividual),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Resultado Individual',
+            value: Text(
+              campanha.tipoBonificacao == TypeBonificacao.unidade
+                  ? '${campanha.resultadoIndividual.toStringAsFixed(0)} unid.'
+                  : UtilBrasilFields.obterReal(campanha.resultadoIndividual),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Premiação Conquistada',
             value: Text(
               UtilBrasilFields.obterReal(
-                totalHundredCompleted * campanha.valorBonificacao.toDouble(),
+                campanha.bonificacaoIndividualConquistada,
               ),
             ),
+          ),
+          const SizedBox(height: 6),
+          ItemCamapanhaPercentCompletedWidget(
+            titleItem: 'Realizado',
+            value: '${remainingIndividualProgress.toInt()}%',
+            totalPercentCompleted: totalIndividualCompleted,
+            dotColor: PostoAppUiConfigurations.blueMediumColor,
+          ),
+          const SizedBox(height: 6),
+          LinearProgressIndicator(
+            value: remainingIndividualProgress.toInt() / 100,
+            backgroundColor: Color(0xFFECECEC),
+            color: PostoAppUiConfigurations.blueMediumColor,
+            minHeight: 11,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          const SizedBox(height: 6),
+          Divider(color: Color(0xFFECECEC)),
+          const SizedBox(height: 6),
+          Text('Performance Equipe'),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Meta Equipe',
+            value: Text(
+              campanha.tipoBonificacao == TypeBonificacao.unidade
+                  ? '${campanha.metaEquipe.toStringAsFixed(0)} unid.'
+                  : UtilBrasilFields.obterReal(campanha.metaEquipe),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Valor por Meta',
+            value: Text(UtilBrasilFields.obterReal(campanha.bonificacaoEquipe)),
+          ),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Resultado Equipe',
+            value: Text(
+              campanha.tipoBonificacao == TypeBonificacao.unidade
+                  ? '${campanha.resultadoEquipe.toStringAsFixed(0)} unid.'
+                  : UtilBrasilFields.obterReal(campanha.resultadoEquipe),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ItemCampanhaDetail(
+            titleItem: 'Premiação Conquistada',
+            value: Text(
+              UtilBrasilFields.obterReal(campanha.bonificacaoEquipeConquistada),
+            ),
+          ),
+          const SizedBox(height: 6),
+          ItemCamapanhaPercentCompletedWidget(
+            titleItem: 'Realizado',
+            value: '${remainingEquipeProgress.toInt()}%',
+            totalPercentCompleted: totalEquipeCompleted,
+            dotColor: PostoAppUiConfigurations.blueMediumColor,
+          ),
+          const SizedBox(height: 6),
+          LinearProgressIndicator(
+            value: remainingEquipeProgress.toInt() / 100,
+            backgroundColor: Color(0xFFECECEC),
+            color: PostoAppUiConfigurations.blueMediumColor,
+            minHeight: 11,
+            borderRadius: BorderRadius.circular(10),
           ),
         ],
       ),
@@ -171,14 +222,12 @@ class ItemCamapanhaPercentCompletedWidget extends StatelessWidget {
 class ItemCampanhaDetail extends StatelessWidget {
   final String titleItem;
   final Widget value;
-  final TypeBonificacao typeBonificacao;
   final Color? dotColor;
   const ItemCampanhaDetail({
     super.key,
     required this.titleItem,
     required this.value,
     this.dotColor,
-    required this.typeBonificacao,
   });
 
   @override

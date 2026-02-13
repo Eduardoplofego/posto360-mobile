@@ -4,7 +4,9 @@ import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
 abstract class AppCampanhasRepository {
   Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhas({
     required int filialId,
-    required String tipoUsuario,
-    required String data,
+    required String usuarioId,
+    required int empresaId,
+    required String dataInicial,
+    required String dataFinal,
   });
 }

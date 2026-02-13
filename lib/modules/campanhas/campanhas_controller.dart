@@ -1,14 +1,14 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_individual_model.dart';
 import 'package:posto360/modules/core/domain/constants/constants.dart';
 import 'package:posto360/modules/core/domain/mixins/loader_mixin.dart';
 import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
-import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
+import 'package:posto360/modules/campanhas/domain/models/performance_equipe_model.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_controller_model.dart';
-import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
 import 'package:posto360/modules/campanhas/infra/services/app_campanhas_service.dart';
 import 'package:posto360/modules/campanhas/infra/services/performance_service.dart';
 
@@ -36,18 +36,31 @@ class CampanhasController extends FullLifeCycleController
   final _currentMonth = DateTime.now().obs;
   final _hasNextMonth = false.obs;
 
+  final List<PerformanceIndividualModel> _individualPerformances = [];
+  final List<PerformanceEquipeModel> _equipePerformances = [];
+
   // Getters
   CampanhaControllerModel get campanhaController => _campanhaController.value;
   List<CampanhaModel> get campanhas => campanhaController.campanhas;
-  List<PerformanceModel> get performances => campanhaController.performances;
+  List<PerformanceIndividualModel> get individualPerformances =>
+      _individualPerformances;
+  List<PerformanceEquipeModel> get equipePerformances => _equipePerformances;
   bool get isLoading => _loader.value;
-  double get valueTotalBonus => campanhaController.totalValueBonus;
   DateTime get monthSelected => _monthSelected.value;
   DateTime get currentMonth => _currentMonth.value;
   bool get hasNextMonth => _hasNextMonth.value;
   List<DateTime> get periodSelected => campanhaController.getPeriodSelected();
   Map<int, dynamic> get performancesListMap =>
       campanhaController.getPerformanceMap();
+  double get valueTotalBonus {
+    double total = 0.0;
+    for (var campanha in campanhas) {
+      total +=
+          campanha
+              .metaIndividual; // TODO: ver como calcular o valor total do bonus, somando os bonus de cada campanha
+    }
+    return total;
+  }
 
   // Actions
   @override
@@ -79,7 +92,8 @@ class CampanhasController extends FullLifeCycleController
   Future<void> _loadCampanhas() async {
     final campanhas = await _campanhasService.getAllCampanhas(
       filialId: _authService.authenticatedUser!.idFilial!,
-      tipoUsuario: _authService.authenticatedUser!.tipoUsuario,
+      usuarioId: _authService.authenticatedUser!.id,
+      empresaId: _authService.authenticatedUser!.idEmpresa,
       data: _monthSelected.value,
     );
     if (campanhas.isError) {
@@ -98,38 +112,65 @@ class CampanhasController extends FullLifeCycleController
   Future<void> _loadPerformances() async {
     var campanhasIds = <int>[];
 
-    if (campanhas.isNotEmpty) {
-      campanhasIds =
-          campanhas.map<int>((campanha) => campanha.campanhaId).toList();
+    if (campanhas.isEmpty) {
+      return;
     }
 
-    final performances = await _performanceService.getPerformances(
-      codigoFuncionario: _authService.authenticatedUser!.codigoPDV!,
-      campanhasId: campanhasIds,
-      dataMes: DataFormatters.formatarData(monthSelected),
-    );
-    if (performances.isError) {
+    campanhasIds =
+        campanhas.map<int>((campanha) => campanha.campanhaId).toList();
+
+    final individualPerformances = await _performanceService
+        .getIndividualPerformances(
+          codigoFuncionario: _authService.authenticatedUser!.codigoPDV!,
+          campanhasId: campanhasIds,
+          dataMes: DataFormatters.formatarData(monthSelected),
+        );
+
+    if (individualPerformances.isError) {
       _message(
         MessagesModel(
           title: 'Erro',
-          message: performances.message,
+          message: individualPerformances.message,
           type: MessageType.error,
         ),
       );
     }
-    campanhaController.performances.assignAll(performances.data!);
+
+    _individualPerformances.assignAll(individualPerformances.data!);
+
+    final equipePerformances = await _performanceService.getEquipePerformances(
+      filialId: _authService.authenticatedUser!.idFilial!,
+      campanhasId: campanhasIds,
+      data: DataFormatters.formatarData(monthSelected),
+    );
+
+    if (individualPerformances.isError) {
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: equipePerformances.message,
+          type: MessageType.error,
+        ),
+      );
+    }
+
+    _equipePerformances.assignAll(equipePerformances.data!);
   }
 
-  List<CampanhaCardWidget> loadCampanhaCards() {
-    if (campanhas.isEmpty) return [];
-    return campanhas.map((campanha) {
-      return CampanhaCardWidget(
-        campanha: campanha,
-        performace:
-            performancesListMap[campanha.campanhaId] ??
-            PerformanceModel.empty(),
-      );
-    }).toList();
+  PerformanceIndividualModel getPerformanceIndividualByCampanhaId(
+    int campanhaId,
+  ) {
+    return individualPerformances.firstWhere(
+      (performance) => performance.campanhaId == campanhaId,
+      orElse: () => PerformanceIndividualModel.empty(),
+    );
+  }
+
+  PerformanceEquipeModel getPerformanceEquipeByCampanhaId(int campanhaId) {
+    return equipePerformances.firstWhere(
+      (performance) => performance.campanhaId == campanhaId,
+      orElse: () => PerformanceEquipeModel.empty(),
+    );
   }
 
   void _defineNewPeriodSelected(DateTime dateSelected) {
@@ -175,12 +216,6 @@ class CampanhasController extends FullLifeCycleController
     _monthSelected.value = monthSelected;
     _defineNewPeriodSelected(monthSelected);
     _loadVariables();
-  }
-
-  Future<void> saveControllerOnBackground() async {
-    final getStorage = GetStorage();
-    final mapToSave = campanhaController.toMap();
-    getStorage.write(Constants.CAMPANHAS_CONTROLLER, mapToSave);
   }
 
   @override

@@ -1,65 +1,94 @@
 import 'dart:convert';
 
 import 'package:posto360/modules/core/domain/utils/enums/type_bonificacao.dart';
-import 'package:posto360/modules/campanhas/domain/models/produto_model.dart';
 
 class CampanhaModel {
   final int campanhaId;
   final String nomeCampanha;
-  final List<ProdutoModel> produtos;
+  final String descricao;
   final TypeBonificacao tipoBonificacao;
-  final double volumeBonificacao;
-  final double valorBonificacao;
-  final DateTime dataDisponibilidade;
+  final double metaEquipe;
+  final double metaIndividual;
+  final double bonificacaoEquipe;
+  final double bonificacaoIndividual;
+  final double progresso;
+  final double resultadoEquipe;
+  final double resultadoIndividual;
+  final double bonificacaoEquipeConquistada;
+  final double bonificacaoIndividualConquistada;
+
   CampanhaModel({
     required this.campanhaId,
     required this.nomeCampanha,
-    required this.produtos,
+    required this.descricao,
     required this.tipoBonificacao,
-    required this.volumeBonificacao,
-    required this.valorBonificacao,
-    required this.dataDisponibilidade,
+    required this.metaEquipe,
+    required this.metaIndividual,
+    required this.bonificacaoEquipe,
+    required this.bonificacaoIndividual,
+    required this.progresso,
+    required this.resultadoEquipe,
+    required this.resultadoIndividual,
+    required this.bonificacaoEquipeConquistada,
+    required this.bonificacaoIndividualConquistada,
   });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'campanhaId': campanhaId,
-      'nomeCampanha': nomeCampanha,
-      'produtos': produtos.map((e) => e.toJson()).toList(),
-      'tipoBonificacao': tipoBonificacao.description(),
-      'volumeBonificacao': volumeBonificacao,
-      'valorBonificacao': valorBonificacao,
-      'dataDisponibilidade': dataDisponibilidade.toIso8601String(),
-    };
-  }
 
   factory CampanhaModel.empty() {
     return CampanhaModel(
       campanhaId: 0,
       nomeCampanha: '',
-      produtos: [],
+      descricao: '',
       tipoBonificacao: TypeBonificacao.unidade,
-      volumeBonificacao: 0,
-      valorBonificacao: 0,
-      dataDisponibilidade: DateTime(2025),
+      metaEquipe: 0.0,
+      metaIndividual: 0.0,
+      bonificacaoEquipe: 0.0,
+      bonificacaoIndividual: 0.0,
+      progresso: 0.0,
+      resultadoEquipe: 0.0,
+      resultadoIndividual: 0.0,
+      bonificacaoEquipeConquistada: 0.0,
+      bonificacaoIndividualConquistada: 0.0,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'campanhaId': campanhaId,
+      'nomeCampanha': nomeCampanha,
+      'descricao': descricao,
+      'tipoBonificacao': tipoBonificacao.description(),
+      'metaEquipe': metaEquipe,
+      'metaIndividual': metaIndividual,
+      'bonificacaoEquipe': bonificacaoEquipe,
+      'bonificacaoIndividual': bonificacaoIndividual,
+      'progresso': progresso,
+      'resultadoEquipe': resultadoEquipe,
+      'resultadoIndividual': resultadoIndividual,
+      'bonificacaoEquipeConquistada': bonificacaoEquipeConquistada,
+      'bonificacaoIndividualConquistada': bonificacaoIndividualConquistada,
+    };
   }
 
   factory CampanhaModel.fromMap(Map<String, dynamic> map) {
     return CampanhaModel(
-      campanhaId: map['campanhaId'] ?? 0,
-      nomeCampanha: map['nomeCampanha'] ?? '',
-      produtos:
-          map['produtos']
-              .map<ProdutoModel>((p) => ProdutoModel.fromMap(p))
-              .toList(),
+      campanhaId: map['id']?.toInt() ?? 0,
+      nomeCampanha: map['nome'] ?? '',
+      descricao: map['descricao'] ?? '',
       tipoBonificacao:
           map['tipoBonificacao'] == 'UNIDADE'
               ? TypeBonificacao.unidade
               : TypeBonificacao.valor,
-      volumeBonificacao: map['volumeBonificacao'].toDouble() ?? 0,
-      valorBonificacao: map['valorBonificacao'].toDouble() ?? 0,
-      dataDisponibilidade: DateTime.parse(map['dataDisponibilidade']),
+      metaEquipe: map['metaEquipe']?.toDouble() ?? 0.0,
+      metaIndividual: map['metaIndividual']?.toDouble() ?? 0.0,
+      bonificacaoEquipe: map['bonificacaoEquipe']?.toDouble() ?? 0.0,
+      bonificacaoIndividual: map['bonificacaoIndividual']?.toDouble() ?? 0.0,
+      progresso: map['progresso']?.toDouble() ?? 0.0,
+      resultadoEquipe: map['resultadoEquipe']?.toDouble() ?? 0.0,
+      resultadoIndividual: map['resultadoIndividual']?.toDouble() ?? 0.0,
+      bonificacaoEquipeConquistada:
+          map['bonificacaoEquipeConquistada']?.toDouble() ?? 0.0,
+      bonificacaoIndividualConquistada:
+          map['bonificacaoIndividualConquistada']?.toDouble() ?? 0.0,
     );
   }
 
@@ -67,9 +96,4 @@ class CampanhaModel {
 
   factory CampanhaModel.fromJson(String source) =>
       CampanhaModel.fromMap(json.decode(source));
-
-  @override
-  String toString() {
-    return 'CampanhaModel(campanhaId: $campanhaId, nomeCampanha: $nomeCampanha, produtos: $produtos, tipoBonificacao: $tipoBonificacao, volumeBonificacao: $volumeBonificacao, valorBonificacao: $valorBonificacao, dataDisponibilidade: $dataDisponibilidade)';
-  }
 }

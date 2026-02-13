@@ -1,13 +1,13 @@
+import 'package:posto360/modules/campanhas/domain/models/performance_individual_model.dart';
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
-import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
 
 class CampanhaControllerModel {
   double _totalValueBonus;
   DateTime firstDateSelected;
   DateTime lastDateSelected;
   List<CampanhaModel> campanhas;
-  List<PerformanceModel> performances;
+  List<PerformanceIndividualModel> performances;
 
   CampanhaControllerModel({
     required this.firstDateSelected,
@@ -42,12 +42,7 @@ class CampanhaControllerModel {
                 (campanhaMap) => CampanhaModel.fromMap(campanhaMap),
               )
               .toList(),
-      performances:
-          map['performances']
-              .map<PerformanceModel>(
-                (performance) => PerformanceModel.fromStorageMap(performance),
-              )
-              .toList(),
+      performances: [],
     );
   }
 
@@ -59,22 +54,11 @@ class CampanhaControllerModel {
     performances.clear();
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'totalValueBonus': _totalValueBonus,
-      'firstDateSelected': firstDateSelected.toIso8601String(),
-      'lastDateSelected': lastDateSelected.toIso8601String(),
-      'campanhas': campanhas.map((campanha) => campanha.toMap()).toList(),
-      'performances':
-          performances.map((performance) => performance.toMapToSave()).toList(),
-    };
-  }
-
   Map<int, dynamic> getPerformanceMap() {
     final mapEntries = <int, dynamic>{};
     for (var performance in performances) {
-      final newEntrie = performance.toMap();
-      mapEntries.addEntries(newEntrie.entries);
+      final newEntrie = performance.toJson();
+      // mapEntries.addEntries(newEntrie.entries);
     }
     return mapEntries;
   }

@@ -4,7 +4,6 @@ import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/select_date_widget.dart';
-import 'package:posto360/modules/campanhas/domain/models/performance_model.dart';
 import 'package:posto360/modules/campanhas/widgets/campanha_card_widget.dart';
 import 'package:posto360/modules/campanhas/widgets/card_total_bonus_widget.dart';
 import './campanhas_controller.dart';
@@ -21,7 +20,6 @@ class CampanhasPage extends GetView<CampanhasController> {
           title: 'Produtos Incentivados',
           leading: BackIconButtonWidget(
             onPressed: () async {
-              await controller.saveControllerOnBackground();
               Get.back();
             },
           ),
@@ -64,13 +62,18 @@ class CampanhasPage extends GetView<CampanhasController> {
                         child: ListView.separated(
                           itemBuilder: (context, index) {
                             final campanhaItem = controller.campanhas[index];
-                            final performanceItem =
-                                controller.performancesListMap[campanhaItem
-                                    .campanhaId] ??
-                                PerformanceModel.empty();
+                            final individualPerformanceItem = controller
+                                .getPerformanceIndividualByCampanhaId(
+                                  campanhaItem.campanhaId,
+                                );
+                            final equipePerformanceItem = controller
+                                .getPerformanceEquipeByCampanhaId(
+                                  campanhaItem.campanhaId,
+                                );
                             return CampanhaCardWidget(
                               campanha: campanhaItem,
-                              performace: performanceItem,
+                              performaceIndividual: individualPerformanceItem,
+                              performaceEquipe: equipePerformanceItem,
                             );
                           },
                           separatorBuilder:
