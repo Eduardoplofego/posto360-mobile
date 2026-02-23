@@ -53,7 +53,7 @@ class CampanhaCardWidget extends StatelessWidget {
           ],
           const SizedBox(height: 6),
           ItemCampanhaDetail(
-            titleItem: 'Tipo de Bonificação',
+            titleItem: 'Tipo de Apuração',
             value: Text(campanha.tipoBonificacao.description().toLowerCase()),
           ),
           Divider(color: Color(0xFFECECEC)),

@@ -55,9 +55,9 @@ class CampanhasController extends FullLifeCycleController
   double get valueTotalBonus {
     double total = 0.0;
     for (var campanha in campanhas) {
-      total +=
-          campanha
-              .metaIndividual; // TODO: ver como calcular o valor total do bonus, somando os bonus de cada campanha
+      final totalMetaIndividual = campanha.bonificacaoIndividualConquistada;
+      final totalMetaEquipe = campanha.bonificacaoEquipeConquistada;
+      total += totalMetaIndividual + totalMetaEquipe;
     }
     return total;
   }
