@@ -50,8 +50,6 @@ class CampanhasController extends FullLifeCycleController
   DateTime get currentMonth => _currentMonth.value;
   bool get hasNextMonth => _hasNextMonth.value;
   List<DateTime> get periodSelected => campanhaController.getPeriodSelected();
-  Map<int, dynamic> get performancesListMap =>
-      campanhaController.getPerformanceMap();
   double get valueTotalBonus {
     double total = 0.0;
     for (var campanha in campanhas) {

@@ -10,6 +10,7 @@ abstract class AppFechamentoCaixaRepository {
   });
   Future<ResultActionDTO<List<DetalhesCartoesModel>>> getFechamentoDetalhes({
     required String usuarioId,
-    required String dataMes,
+    required String dataInicial,
+    required String dataFinal,
   });
 }

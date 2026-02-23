@@ -132,7 +132,9 @@ class DashPage extends GetView<DashController> {
                             child: CardCloseMoney(
                               model: controller.cartoesModel,
                               onPressed: () {
-                                Get.toNamed('/fechamento-caixa');
+                                String month =
+                                    controller.monthSelected.toIso8601String();
+                                Get.toNamed('/fechamento-caixa/$month');
                               },
                             ),
                           ),

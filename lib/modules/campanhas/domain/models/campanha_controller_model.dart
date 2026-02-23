@@ -54,15 +54,6 @@ class CampanhaControllerModel {
     performances.clear();
   }
 
-  Map<int, dynamic> getPerformanceMap() {
-    final mapEntries = <int, dynamic>{};
-    for (var performance in performances) {
-      final newEntrie = performance.toJson();
-      // mapEntries.addEntries(newEntrie.entries);
-    }
-    return mapEntries;
-  }
-
   List<DateTime> getPeriodSelected() {
     return [firstDateSelected, lastDateSelected];
   }

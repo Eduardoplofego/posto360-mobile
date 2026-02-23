@@ -58,12 +58,17 @@ class AppFechamentoCaixaRepositoryImpl extends AppFechamentoCaixaRepository {
   @override
   Future<ResultActionDTO<List<DetalhesCartoesModel>>> getFechamentoDetalhes({
     required String usuarioId,
-    required String dataMes,
+    required String dataInicial,
+    required String dataFinal,
   }) async {
     try {
       final result = await _restClient.post(
         ApiRoutes.fechamentoCaixaDetalhes(),
-        {"usuarioId": usuarioId, "mes": dataMes},
+        {
+          "usuarioId": usuarioId,
+          "dataInicial": dataInicial,
+          "dataFinal": dataFinal,
+        },
       );
 
       if (result.statusCode == null || result.statusCode! > 300) {

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
-import 'package:posto360/modules/core/domain/ui/widgets/select_date_widget.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/widgets/details_card_widget.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/widgets/resume_monthly_cards_widget.dart';
 import 'package:posto360/modules/fechamento-caixa/fechamento_caixa_controller.dart';
@@ -44,15 +43,6 @@ class FechamentoCaixaScreen extends GetView<FechamentoCaixaController> {
                       mesReferencia: controller.monthSelectedText,
                     );
                   }),
-                  Obx(() {
-                    return SelectDateWidget(
-                      hideBackground: false,
-                      nextMonthPressed: controller.selectNextMonth,
-                      period: controller.monthSelected,
-                      hasNextMonth: controller.hasNextMonth,
-                      prevMonthPressed: controller.selectPreviusMonth,
-                    );
-                  }),
                   const SizedBox(height: 16),
                   Obx(() {
                     if (controller.loadingCards) {
@@ -68,7 +58,7 @@ class FechamentoCaixaScreen extends GetView<FechamentoCaixaController> {
                         children: [
                           Icon(Icons.point_of_sale, color: Colors.grey),
                           const SizedBox(width: 6),
-                          Text('Nenhum registro para esse mês'),
+                          Text('Nenhum dado para apresentar'),
                         ],
                       );
                     }

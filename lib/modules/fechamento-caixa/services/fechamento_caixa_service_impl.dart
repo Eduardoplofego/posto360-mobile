@@ -43,10 +43,18 @@ class FechamentoCaixaServiceImpl extends AppFechamentoCaixaService {
     required String usuarioId,
     required DateTime dataMes,
   }) async {
-    final dataString = '${dataMes.year}-${dataMes.month}-${dataMes.day}';
+    final dataInicial = '${dataMes.year}-${dataMes.month}-${01}';
+    final lastDayMonth =
+        DateTime(
+          dataMes.year,
+          dataMes.month + 1,
+          1,
+        ).subtract(Duration(days: 1)).day;
+    final dataFinal = '${dataMes.year}-${dataMes.month}-$lastDayMonth';
     final result = await _fechamentoCaixaRepository.getFechamentoDetalhes(
       usuarioId: usuarioId,
-      dataMes: dataString,
+      dataFinal: dataFinal,
+      dataInicial: dataInicial,
     );
 
     if (result.isError) {
