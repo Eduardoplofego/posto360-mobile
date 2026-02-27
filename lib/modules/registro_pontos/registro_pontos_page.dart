@@ -8,7 +8,7 @@ import 'package:posto360/modules/registro_pontos/widgets/resume_card_widget.dart
 import 'registro_pontos_controller.dart';
 
 class RegistroPontosPage extends GetView<RegistroPontosController> {
-  const RegistroPontosPage({Key? key}) : super(key: key);
+  const RegistroPontosPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +49,9 @@ class RegistroPontosPage extends GetView<RegistroPontosController> {
                         ),
                       );
                     }
+                    if (controller.pontosList.isEmpty) {
+                      return Text('Nenhum registro encontrado');
+                    }
                     return Expanded(
                       child: ListView.separated(
                         separatorBuilder:
@@ -61,46 +64,6 @@ class RegistroPontosPage extends GetView<RegistroPontosController> {
                       ),
                     );
                   }),
-                  // Obx(() {
-                  //   return ResumeMonthlyCardsWidget(
-                  //     totalCartoesDeletados: controller.totalCartoesDeletados,
-                  //     totalCartoesVinculados: controller.totalCartoesVinculados,
-                  //     totalCartoesCorrigidos: controller.totalCartoesCorrigidos,
-                  //     diferencaTotal: controller.diferencaTotal,
-                  //     mesReferencia: controller.monthSelectedText,
-                  //   );
-                  // }),
-                  // const SizedBox(height: 16),
-                  // Obx(() {
-                  //   if (controller.loadingCards) {
-                  //     return Center(
-                  //       child: CircularProgressIndicator(
-                  //         color: PostoAppUiConfigurations.blueMediumColor,
-                  //       ),
-                  //     );
-                  //   }
-                  //   if (controller.cardList.isEmpty) {
-                  //     return Row(
-                  //       mainAxisAlignment: MainAxisAlignment.center,
-                  //       children: [
-                  //         Icon(Icons.point_of_sale, color: Colors.grey),
-                  //         const SizedBox(width: 6),
-                  //         Text('Nenhum dado para apresentar'),
-                  //       ],
-                  //     );
-                  //   }
-                  //   return Expanded(
-                  //     child: ListView.separated(
-                  //       itemCount: controller.cardList.length,
-                  //       itemBuilder: (context, index) {
-                  //         final card = controller.cardList[index];
-                  //         return DetailsCardWidget(card: card);
-                  //       },
-                  //       separatorBuilder:
-                  //           (context, index) => const SizedBox(height: 12),
-                  //     ),
-                  //   );
-                  // }),
                 ],
               ),
             ),

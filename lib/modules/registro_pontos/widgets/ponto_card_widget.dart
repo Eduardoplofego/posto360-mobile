@@ -11,9 +11,8 @@ class PontoCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = DateTime.parse(model.data);
-    final dayMonth = DateFormat('dd/MM', 'pt_BR').format(date);
-    final weekDay = DateFormat('EEEE', 'pt_BR').format(date);
+    final dayMonth = DateFormat('dd/MM', 'pt_BR').format(model.data);
+    final weekDay = DateFormat('EEEE', 'pt_BR').format(model.data);
     final isCompleted =
         model.pontos[0].isNotEmpty && model.pontos[2].isNotEmpty;
 
@@ -22,16 +21,19 @@ class PontoCardWidget extends StatelessWidget {
           final index = entry.key;
           final ele = entry.value;
 
-          final timeParts = ele.split(':');
-          final hour = int.parse(timeParts[0]);
-          final minute = int.parse(timeParts[1]);
+          final sanitizedEle = ele.replaceAll(RegExp(r'[^\d:]'), '');
+
+          final timeParts = sanitizedEle.split(':');
+
+          final hour = int.tryParse(timeParts[0]);
+          final minute = int.tryParse(timeParts[1]);
 
           final pontoDateTime = DateTime(
-            date.year,
-            date.month,
-            date.day,
-            hour,
-            minute,
+            model.data.year,
+            model.data.month,
+            model.data.day,
+            hour ?? 0,
+            minute ?? 0,
           );
 
           return PontoBadgeWidget(

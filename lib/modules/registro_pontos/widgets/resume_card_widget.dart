@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
-import 'package:posto360/modules/registro_pontos/domain/models/registro_pontos_model.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/faltas_atrasos_model.dart';
 
 class ResumeCardWidget extends StatelessWidget {
-  final RegistroPontoModel model;
+  final FaltasAtrasosModel model;
   final String mesReferencia;
   const ResumeCardWidget({
     super.key,

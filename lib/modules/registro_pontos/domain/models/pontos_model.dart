@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 class PontosModel {
-  final String data;
+  final DateTime data;
   final List<String> pontos;
 
   PontosModel({required this.data, required this.pontos});
@@ -9,7 +11,8 @@ class PontosModel {
       return '00:00';
     }
     Duration parseTime(String time) {
-      final parts = time.split(':').map(int.parse).toList();
+      final sanitizedEle = time.replaceAll(RegExp(r'[^\d:]'), '');
+      final parts = sanitizedEle.split(':').map(int.parse).toList();
       return Duration(hours: parts[0], minutes: parts[1]);
     }
 
@@ -25,4 +28,24 @@ class PontosModel {
 
     return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
   }
+
+  Map<String, dynamic> toMap() {
+    return {'data': data, 'pontos': pontos};
+  }
+
+  factory PontosModel.fromMap(Map<String, dynamic> map) {
+    final entrada1 = map['entrada1Batida'];
+    final entrada2 = map['entrada2Batida'];
+    final saida1 = map['saida1Batida'];
+    final saida2 = map['saida2Batida'];
+    return PontosModel(
+      data: DateTime.tryParse(map['data']) ?? DateTime.now(),
+      pontos: [entrada1, saida1, entrada2, saida2],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory PontosModel.fromJson(String source) =>
+      PontosModel.fromMap(json.decode(source));
 }

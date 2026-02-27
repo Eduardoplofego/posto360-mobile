@@ -1,11 +1,20 @@
 import 'package:get/get.dart';
+import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/registro_pontos/domain/adapters/month_adapter.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/faltas_atrasos_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
-import 'package:posto360/modules/registro_pontos/domain/models/registro_pontos_model.dart';
+import 'package:posto360/modules/registro_pontos/infra/services/registro_pontos_services.dart';
 
-class RegistroPontosController extends GetxController {
+class RegistroPontosController extends GetxController with MessageMixin {
+  final RegistroPontosServices _registroPontosServices;
+  final AuthService _authService;
+
+  RegistroPontosController(this._registroPontosServices, this._authService);
+
   @override
   void onInit() {
+    messageListener(_message);
     super.onInit();
     _selectMonthByParameter();
   }
@@ -19,13 +28,15 @@ class RegistroPontosController extends GetxController {
   // Observables
   final _loadingData = false.obs;
   final _monthSelected = DateTime.now().obs;
-  final _registroPontoModel = Rx(RegistroPontoModel.empty());
+  final _registroPontoModel = Rx(FaltasAtrasosModel.empty());
   final _pontosList = <PontosModel>[].obs;
+
+  final _message = Rxn<MessagesModel>();
 
   // Getters
   bool get loadingData => _loadingData.value;
   DateTime get monthSelected => _monthSelected.value;
-  RegistroPontoModel get registroPontoModel => _registroPontoModel.value;
+  FaltasAtrasosModel get registroPontoModel => _registroPontoModel.value;
   String get monthSelectedText =>
       '${getMonthText(monthSelected.month)} ${monthSelected.year}';
   List<PontosModel> get pontosList => _pontosList;
@@ -44,33 +55,44 @@ class RegistroPontosController extends GetxController {
   Future<void> _loadData() async {
     _loadingData.value = true;
     await _loadPontos();
+    await _loadFaltasAtrasos();
     _loadingData.value = false;
   }
 
   Future<void> _loadPontos() async {
-    await Future.delayed(Duration(seconds: 2));
-    final pontos = [
-      PontosModel(
-        data: '2026-02-05',
-        pontos: ['08:00', '11:00', '12:00', '21:00'],
-      ),
-      PontosModel(
-        data: '2026-02-04',
-        pontos: ['09:00', '12:00', '13:00', '18:00'],
-      ),
-      PontosModel(
-        data: '2026-02-03',
-        pontos: ['08:30', '11:30', '12:30', '19:00'],
-      ),
-      PontosModel(
-        data: '2026-02-02',
-        pontos: ['07:45', '10:45', '11:45', '17:30'],
-      ),
-      PontosModel(
-        data: '2026-02-01',
-        pontos: ['08:15', '12:15', '13:15', '20:00'],
-      ),
-    ];
-    _pontosList.assignAll(pontos.reversed);
+    final results = await _registroPontosServices.getAllRegisters(
+      usuarioId: _authService.authenticatedUser!.id,
+      monthSelected: monthSelected,
+    );
+    if (results.isError) {
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: results.message,
+          type: MessageType.error,
+        ),
+      );
+      return;
+    }
+
+    _pontosList.assignAll(results.data!.reversed);
+  }
+
+  Future<void> _loadFaltasAtrasos() async {
+    final results = await _registroPontosServices.getFaltasAtrasos(
+      codigoFuncionario: _authService.authenticatedUser!.codigoPDV!,
+      monthSelected: monthSelected,
+    );
+    if (results.isError) {
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: results.message,
+          type: MessageType.error,
+        ),
+      );
+      return;
+    }
+    _registroPontoModel(results.data);
   }
 }
