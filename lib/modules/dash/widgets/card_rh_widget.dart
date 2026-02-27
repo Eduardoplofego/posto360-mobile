@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
+import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
 
 class CardRhWidget extends StatelessWidget {
   final HorarioFaltasModel model;
-  const CardRhWidget({super.key, required this.model});
+  final VoidCallback onPressed;
+  const CardRhWidget({super.key, required this.model, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -204,6 +206,7 @@ class CardRhWidget extends StatelessWidget {
               ),
             ],
           ),
+          ButtonCardWidget(onPressed: onPressed),
         ],
       ),
     );

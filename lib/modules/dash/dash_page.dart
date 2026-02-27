@@ -122,6 +122,11 @@ class DashPage extends GetView<DashController> {
                             initDelay: 200,
                             child: CardRhWidget(
                               model: controller.horarioFaltasAtrasos,
+                              onPressed: () {
+                                Get.toNamed(
+                                  '/registro-pontos/${controller.monthSelected.toIso8601String()}',
+                                );
+                              },
                             ),
                           ),
                           const SizedBox(height: 17),

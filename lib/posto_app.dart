@@ -12,6 +12,7 @@ import 'package:posto360/modules/dash/dashboard_routers.dart';
 import 'package:posto360/modules/fechamento-caixa/fechamento_caixa_routers.dart';
 import 'package:posto360/modules/login/login_routers.dart';
 import 'package:posto360/modules/core/routers/splash_routers.dart';
+import 'package:posto360/modules/registro_pontos/registro_pontos_routers.dart';
 
 class PostoApp extends StatelessWidget {
   const PostoApp({super.key});
@@ -38,6 +39,7 @@ class PostoApp extends StatelessWidget {
         ...CursosRouters.routes,
         ...ChecklistsRouters.routes,
         ...FechamentoCaixaRouters.routes,
+        ...RegistroPontosRouters.routes,
       ],
     );
   }
