@@ -130,7 +130,7 @@ class ChecklistAnswerController extends GetxController
   }
 
   Future<void> _saveImagePathA(String imagePath) async {
-    File imageFile = File(imagePath); // TODO: ver formato de imagem
+    File imageFile = File(imagePath);
 
     final imageName = _getImageName(imageFile.path);
     final mimeType = lookupMimeType(imagePath);
@@ -206,6 +206,8 @@ class ChecklistAnswerController extends GetxController
         type: MessageType.info,
       ),
     );
+    _imageAnswerDto.value = null;
+    _hasSelectedImage(false);
   }
 
   Future<void> concludeChecklistAnswer({
