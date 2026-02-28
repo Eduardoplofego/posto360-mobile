@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class PontoTimelineModel {
-  final DateTime ponto;
+  final String ponto;
   final IconData icon;
   final String text;
 

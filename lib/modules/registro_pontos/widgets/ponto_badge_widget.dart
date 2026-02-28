@@ -8,9 +8,9 @@ class PontoBadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hour = model.ponto.hour.toString().padLeft(2, '0');
-    final minute = model.ponto.minute.toString().padLeft(2, '0');
-    final pontoText = '$hour:$minute';
+    // final hour = model.ponto.hour.toString().padLeft(2, '0');
+    // final minute = model.ponto.minute.toString().padLeft(2, '0');
+    // final pontoText = '$hour:$minute';
     return Column(
       children: [
         Container(
@@ -23,7 +23,7 @@ class PontoBadgeWidget extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          pontoText,
+          model.ponto,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         Text(

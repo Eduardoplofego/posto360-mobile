@@ -16,44 +16,41 @@ class PontoCardWidget extends StatelessWidget {
     final isCompleted =
         model.pontos[0].isNotEmpty && model.pontos[2].isNotEmpty;
 
-    final pontoItems =
-        model.pontos.asMap().entries.map((entry) {
-          final index = entry.key;
-          final ele = entry.value;
+    final ponto1 = model.pontos[0];
+    final ponto2 = model.pontos[1];
+    final ponto3 = model.pontos[2];
+    final ponto4 = model.pontos[3];
 
-          final sanitizedEle = ele.replaceAll(RegExp(r'[^\d:]'), '');
-
-          final timeParts = sanitizedEle.split(':');
-
-          final hour = int.tryParse(timeParts[0]);
-          final minute = int.tryParse(timeParts[1]);
-
-          final pontoDateTime = DateTime(
-            model.data.year,
-            model.data.month,
-            model.data.day,
-            hour ?? 0,
-            minute ?? 0,
-          );
-
-          return PontoBadgeWidget(
-            model: PontoTimelineModel(
-              ponto: pontoDateTime,
-              icon: switch (index) {
-                0 => Icons.login,
-                1 => Icons.coffee,
-                2 => Icons.start,
-                _ => Icons.logout,
-              },
-              text: switch (index) {
-                0 => 'Entrada 1',
-                1 => 'Saída 1',
-                2 => 'Entrada 2',
-                _ => 'Saída 2',
-              },
-            ),
-          );
-        }).toList();
+    final pontoItems = [
+      PontoBadgeWidget(
+        model: PontoTimelineModel(
+          ponto: ponto1,
+          icon: Icons.login,
+          text: 'Entrada 1',
+        ),
+      ),
+      PontoBadgeWidget(
+        model: PontoTimelineModel(
+          ponto: ponto2,
+          icon: Icons.coffee,
+          text: 'Saída 2',
+        ),
+      ),
+      PontoBadgeWidget(
+        model: PontoTimelineModel(
+          ponto: ponto3,
+          icon: Icons.start,
+          text: 'Entrada 2',
+        ),
+      ),
+      PontoBadgeWidget(
+        model: PontoTimelineModel(
+          ponto: ponto4,
+          icon: Icons.logout,
+          text: 'Saída 2',
+        ),
+      ),
+    ];
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 23, vertical: 16),

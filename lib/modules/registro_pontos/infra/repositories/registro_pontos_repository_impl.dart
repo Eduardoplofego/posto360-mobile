@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
+import 'package:posto360/modules/registro_pontos/domain/helpers/pontos_model_helper.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/faltas_atrasos_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
 import '../../domain/repositories/registro_pontos_repository.dart';
@@ -37,7 +38,7 @@ class RegistroPontosRepositoryImpl extends RegistroPontosRepository {
               .whereType<Map<String, dynamic>>()
               .toList();
 
-      final pontos = body.map((ele) => PontosModel.fromMap(ele)).toList();
+      final pontos = body.map((ele) => getFromMap(ele)).toList();
       return ResultActionDTO.success(data: pontos);
     } catch (e, s) {
       log('Erro get registro pontos', error: e, stackTrace: s);
