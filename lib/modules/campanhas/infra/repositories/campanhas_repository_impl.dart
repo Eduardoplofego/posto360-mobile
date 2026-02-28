@@ -5,9 +5,9 @@ import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.d
 import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
 
-import '../../domain/repositories/campanhas_repository.dart';
+import '../../domain/repositories/app_campanhas_repository.dart';
 
-class CampanhasRepositoryImpl extends CampanhasRepository {
+class CampanhasRepositoryImpl extends AppCampanhasRepository {
   final PostoRestClient _restClient;
 
   CampanhasRepositoryImpl({required PostoRestClient postoRestClient})
@@ -16,14 +16,18 @@ class CampanhasRepositoryImpl extends CampanhasRepository {
   @override
   Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhas({
     required int filialId,
-    required String tipoUsuario,
-    required String data,
+    required String usuarioId,
+    required int empresaId,
+    required String dataInicial,
+    required String dataFinal,
   }) async {
     try {
       final result = await _restClient.post(ApiRoutes.campanhas(), {
-        'filialId': filialId,
-        'data': data,
-        'tipoUsuario': tipoUsuario,
+        "dataInicial": dataInicial,
+        "dataFinal": dataFinal,
+        "filialId": filialId,
+        "usuarioId": usuarioId,
+        "empresaId": empresaId,
       });
       final campanhas =
           result.body

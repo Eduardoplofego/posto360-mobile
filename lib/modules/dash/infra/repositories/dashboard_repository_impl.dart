@@ -18,18 +18,22 @@ class DashboardRepositoryImpl extends DashboardRepository {
   Future<ResultActionDTO<DashboardModel>> getDashboardData({
     required int funcionarioCodigo,
     required List<int> idsCamapnhas,
-    required String data,
+    required String dataInicial,
+    required String dataFinal,
   }) async {
     try {
-      final result = await _restClient.post(ApiRoutes.dashboard(), {
-        "funcionarioCodigo": funcionarioCodigo,
-        "idsCampanhas": idsCamapnhas,
-        "data": data,
-      });
-      if (result.statusCode != null && result.statusCode! >= 400) {
+      final resultCampanhas = await _restClient
+          .post(ApiRoutes.dashboardCampanhas(), {
+            "funcionarioCodigo": funcionarioCodigo,
+            "dataInicial": dataInicial,
+            "dataFinal": dataFinal,
+            "idsCampanhas": idsCamapnhas,
+          });
+      if (resultCampanhas.statusCode != null &&
+          resultCampanhas.statusCode! >= 400) {
         log(
           'Erro get dashboardData',
-          error: result.bodyString,
+          error: resultCampanhas.bodyString,
           stackTrace: StackTrace.current,
         );
         return ResultActionDTO.failure(
@@ -37,8 +41,50 @@ class DashboardRepositoryImpl extends DashboardRepository {
           DashboardModel.empty(),
         );
       }
-      final resultMap = result.body as Map<String, dynamic>;
-      final dashboardModel = DashboardModel.fromMap(resultMap);
+      final resultCursos = await _restClient.post(ApiRoutes.dashboardCursos(), {
+        "funcionarioCodigo": funcionarioCodigo,
+        "dataInicial": dataInicial,
+        "dataFinal": dataFinal,
+      });
+      if (resultCursos.statusCode != null && resultCursos.statusCode! >= 400) {
+        log(
+          'Erro get dashboardData',
+          error: resultCursos.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure(
+          'Erro ao buscar dados',
+          DashboardModel.empty(),
+        );
+      }
+
+      final resultChecklists = await _restClient
+          .post(ApiRoutes.dashboardChecklists(), {
+            "funcionarioCodigo": funcionarioCodigo,
+            "dataInicial": dataInicial,
+            "dataFinal": dataFinal,
+          });
+      if (resultChecklists.statusCode != null &&
+          resultChecklists.statusCode! >= 400) {
+        log(
+          'Erro get dashboardData',
+          error: resultChecklists.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure(
+          'Erro ao buscar dados',
+          DashboardModel.empty(),
+        );
+      }
+
+      final campanhasMap = resultCampanhas.body as Map<String, dynamic>;
+      final cursosMap = resultCursos.body as Map<String, dynamic>;
+      final checklistsMap = resultChecklists.body as Map<String, dynamic>;
+      final dashboardModel = DashboardModel.fromMap({
+        ...campanhasMap,
+        ...cursosMap,
+        ...checklistsMap,
+      });
       return ResultActionDTO.success(data: dashboardModel);
     } catch (e, s) {
       log('Erro get dashboardData', error: e, stackTrace: s);

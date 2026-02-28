@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/modules/core/domain/constants/constants.dart';
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
@@ -6,7 +7,7 @@ import 'package:posto360/modules/core/domain/exceptions/user_not_found_exception
 import 'package:posto360/modules/core/domain/exceptions/wrong_credentials_exception.dart';
 import 'package:posto360/modules/login/domain/repositories/login_repository.dart';
 
-import 'login_service.dart';
+import '../infra/services/login_service.dart';
 
 class LoginServiceImpl extends LoginService {
   final LoginRepository _loginRepository;
@@ -29,7 +30,7 @@ class LoginServiceImpl extends LoginService {
 
       storage.write(Constants.JWT_TOKEN, response.token);
       storage.write(Constants.USER_KEY, response.user.toMap());
-      storage.write(Constants.USER_PHOTO_URL, null);
+      storage.write(Constants.USER_PHOTO_URL, response.user.photoUrl);
       return ResultActionDTO.success();
     } on UserNotFoundException catch (_) {
       return ResultActionDTO.failure('Usuário não encontrado', null);
@@ -37,7 +38,8 @@ class LoginServiceImpl extends LoginService {
       return ResultActionDTO.failure(e.message, null);
     } on WrongCredentialsException catch (_) {
       return ResultActionDTO.failure('Credenciais inválidas', null);
-    } catch (_) {
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
       return ResultActionDTO.failure('Erro ao realizar login}', null);
     }
   }

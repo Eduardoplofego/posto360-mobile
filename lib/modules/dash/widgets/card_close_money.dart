@@ -1,25 +1,23 @@
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/dash/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
 
 class CardCloseMoney extends StatelessWidget {
-  final int cardsDeleted;
-  final int cardsLinked;
-  final int cardsCorrected;
-  final int cardsInserted;
+  final CartoesModel model;
   final VoidCallback onPressed;
   const CardCloseMoney({
     super.key,
-    required this.cardsDeleted,
-    required this.cardsLinked,
-    required this.cardsCorrected,
-    required this.cardsInserted,
+    required this.model,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final percentTaked = 1 - (model.penalidade.abs() / 10);
     return Container(
       width: Get.width,
       padding: EdgeInsets.only(top: 10, right: 0, left: 16, bottom: 0),
@@ -51,10 +49,22 @@ class CardCloseMoney extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Fechamento caixa',
+                          UtilBrasilFields.obterReal(-model.diferencaTotal),
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 24,
                             fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 17),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 140,
+                          child: Text(
+                            'Fechamento Caixa',
+                            style: TextStyle(fontSize: 14),
                           ),
                         ),
                       ],
@@ -75,8 +85,7 @@ class CardCloseMoney extends StatelessWidget {
                                     backgroundColor: Colors.blue,
                                   ),
                                   Text(
-                                    // '${!hideNumberDetailed ? totalNumberDetailed : ''} $totalNumberDetailedText',
-                                    'Cartões deletados: $cardsDeleted',
+                                    'Cartões deletados: ${model.cartoesDeletados}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -93,8 +102,41 @@ class CardCloseMoney extends StatelessWidget {
                                     backgroundColor: Colors.orange,
                                   ),
                                   Text(
-                                    // '${!hideNumberDetailed ? totalNumber : ''} $totalTakeNumberDetailedText',
-                                    'Cartões vinculados: $cardsLinked',
+                                    'Cartões vinculados: ${model.cartoesVinculados}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                spacing: 6,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 4,
+                                    backgroundColor: Colors.blue,
+                                  ),
+                                  Text(
+                                    'Cartões corrigidos: ${model.cartoesCorrigidos}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                spacing: 6,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 4,
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                  Text(
+                                    'Cartões inseridos: ${model.cartoesInseridos}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -107,48 +149,47 @@ class CardCloseMoney extends StatelessWidget {
                           Spacer(),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                spacing: 6,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 4,
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                  Text(
-                                    // '${!hideNumberDetailed ? totalNumberDetailed : ''} $totalNumberDetailedText',
-                                    'Cartões corrigidos: $cardsCorrected',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              Row(
-                                spacing: 6,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 4,
-                                    backgroundColor: Colors.orange,
-                                  ),
-                                  Text(
-                                    // '${!hideNumberDetailed ? totalNumber : ''} $totalTakeNumberDetailedText',
-                                    'Cartões inseridos: $cardsInserted',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                            children: [],
                           ),
                         ],
                       ),
                     ),
                   ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: Center(
+                    child: CircularPercentIndicator(
+                      radius: 50,
+                      lineWidth: 10,
+                      percent: 1 - percentTaked.toDouble(),
+                      animation: true,
+                      center: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            model.penalidade.toString(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: PostoAppUiConfigurations.orangeColor,
+                            ),
+                          ),
+                          Text(
+                            'Penalidade',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.black38,
+                            ),
+                          ),
+                        ],
+                      ),
+                      progressColor: PostoAppUiConfigurations.orangeColor,
+                      backgroundColor: PostoAppUiConfigurations.blueMediumColor,
+                      circularStrokeCap: CircularStrokeCap.round,
+                    ),
+                  ),
                 ),
               ),
             ],

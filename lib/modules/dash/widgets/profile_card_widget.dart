@@ -60,7 +60,7 @@ class ProfileCardWidget extends GetView<DashController> {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 color: PostoAppUiConfigurations.textDarkColor,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -73,7 +73,7 @@ class ProfileCardWidget extends GetView<DashController> {
                       return Text(
                         controller.autheticatedUser.tipoUsuario,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 12,
                           color: PostoAppUiConfigurations.darkGreyColor,
                         ),
                       );

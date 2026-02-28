@@ -6,11 +6,11 @@ import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes
 import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caixa_service.dart';
 
 class FechamentoCaixaController extends GetxController with MessageMixin {
-  final FechamentoCaixaService _fechamentoCaixaService;
+  final AppFechamentoCaixaService _fechamentoCaixaService;
   final AuthService _authService;
 
   FechamentoCaixaController({
-    required FechamentoCaixaService fechamentoCaixaService,
+    required AppFechamentoCaixaService fechamentoCaixaService,
     required AuthService authService,
   }) : _fechamentoCaixaService = fechamentoCaixaService,
        _authService = authService;
@@ -44,8 +44,18 @@ class FechamentoCaixaController extends GetxController with MessageMixin {
   @override
   void onInit() {
     messageListener(_message);
-    _monthSelected(DateTime.now());
+    _selectMonthByParameter();
     super.onInit();
+  }
+
+  void _selectMonthByParameter() {
+    String? monthArgument = Get.parameters['month'];
+    if (monthArgument == null) {
+      _monthSelected(DateTime.now());
+      return;
+    }
+    final monthFormated = DateTime.parse(monthArgument);
+    _monthSelected(monthFormated);
   }
 
   @override
@@ -71,24 +81,6 @@ class FechamentoCaixaController extends GetxController with MessageMixin {
       _cardList.assignAll([]);
       return;
     }
-    // final cards = await Future.delayed(Duration(seconds: 2), () {
-    //   return [
-    //     DetalhesCartoesModel(
-    //       data: '18/09/2025',
-    //       cartoesCorrigidos: 2,
-    //       cartoesDeletados: 3,
-    //       cartoesVinculados: 2,
-    //       diferenca: 25.0,
-    //     ),
-    //     DetalhesCartoesModel(
-    //       data: '17/09/2025',
-    //       cartoesCorrigidos: 1,
-    //       cartoesDeletados: 5,
-    //       cartoesVinculados: 3,
-    //       diferenca: 34.0,
-    //     ),
-    //   ];
-    // });
     _cardList.assignAll(result.data!);
     _countCardsInfos();
     _loadingCards(false);
@@ -101,24 +93,5 @@ class FechamentoCaixaController extends GetxController with MessageMixin {
       _totalCartoesVinculados.value += card.cartoesVinculados;
       _diferencaTotal.value += card.diferenca;
     }
-  }
-
-  void _resetValues() {
-    _totalCartoesDeletados.value = 0;
-    _totalCartoesCorrigidos.value = 0;
-    _totalCartoesVinculados.value = 0;
-    _diferencaTotal.value = 0.0;
-  }
-
-  Future<void> selectPreviusMonth(DateTime date) async {
-    _monthSelected.value = date;
-    _resetValues();
-    await _loadMonthCards();
-  }
-
-  Future<void> selectNextMonth(DateTime date) async {
-    _monthSelected.value = date;
-    _resetValues();
-    await _loadMonthCards();
   }
 }

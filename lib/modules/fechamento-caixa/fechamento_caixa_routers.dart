@@ -7,7 +7,7 @@ class FechamentoCaixaRouters {
 
   static final routes = <GetPage>[
     GetPage(
-      name: '/fechamento-caixa',
+      name: '/fechamento-caixa/:month',
       page: () => FechamentoCaixaScreen(),
       binding: FechamentoCaixaBindings(),
     ),

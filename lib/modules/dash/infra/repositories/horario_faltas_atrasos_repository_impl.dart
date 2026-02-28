@@ -16,14 +16,16 @@ class HorarioFaltasAtrasosRepositoryImpl
 
   @override
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
+    required String dataInicial,
+    required String dataFinal,
     required String dataAtual,
-    required String dataMes,
     required String codigoFuncionario,
   }) async {
     try {
-      final result = await _restClient.post(ApiRoutes.honorario(), {
+      final result = await _restClient.post(ApiRoutes.dashboardRH(), {
+        'dataInicial': dataInicial,
+        'dataFinal': dataFinal,
         'dataAtual': dataAtual,
-        'dataMes': dataMes,
         'funcionarioCodigo': codigoFuncionario,
       });
       return ResultActionDTO.success(

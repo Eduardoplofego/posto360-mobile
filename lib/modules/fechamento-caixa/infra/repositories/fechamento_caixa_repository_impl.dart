@@ -5,12 +5,12 @@ import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.d
 import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes_model.dart';
-import '../../domain/repositories/fechamento_caixa_repository.dart';
+import '../../domain/repositories/app_fechamento_caixa_repository.dart';
 
-class FechamentoCaixaRepositoryImpl extends FechamentoCaixaRepository {
+class AppFechamentoCaixaRepositoryImpl extends AppFechamentoCaixaRepository {
   final PostoRestClient _restClient;
 
-  FechamentoCaixaRepositoryImpl({required PostoRestClient postoRestClient})
+  AppFechamentoCaixaRepositoryImpl({required PostoRestClient postoRestClient})
     : _restClient = postoRestClient;
 
   @override
@@ -58,12 +58,17 @@ class FechamentoCaixaRepositoryImpl extends FechamentoCaixaRepository {
   @override
   Future<ResultActionDTO<List<DetalhesCartoesModel>>> getFechamentoDetalhes({
     required String usuarioId,
-    required String dataMes,
+    required String dataInicial,
+    required String dataFinal,
   }) async {
     try {
       final result = await _restClient.post(
         ApiRoutes.fechamentoCaixaDetalhes(),
-        {"usuarioId": usuarioId, "mes": dataMes},
+        {
+          "usuarioId": usuarioId,
+          "dataInicial": dataInicial,
+          "dataFinal": dataFinal,
+        },
       );
 
       if (result.statusCode == null || result.statusCode! > 300) {

@@ -3,8 +3,9 @@ import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 
 abstract class HorarioFaltasAtrasosRepository {
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
+    required String dataInicial,
+    required String dataFinal,
     required String dataAtual,
-    required String dataMes,
     required String codigoFuncionario,
   });
 }

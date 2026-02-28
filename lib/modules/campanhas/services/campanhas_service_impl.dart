@@ -1,27 +1,33 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/core/domain/helpers/date_helper.dart';
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/campanhas/domain/models/campanha_model.dart';
-import 'package:posto360/modules/campanhas/domain/repositories/campanhas_repository.dart';
+import 'package:posto360/modules/campanhas/domain/repositories/app_campanhas_repository.dart';
 
-import '../infra/services/campanhas_service.dart';
+import '../infra/services/app_campanhas_service.dart';
 
-class CampanhasServiceImpl extends CampanhasService {
-  final CampanhasRepository _repository;
+class CampanhasServiceImpl extends AppCampanhasService {
+  final AppCampanhasRepository _repository;
 
-  CampanhasServiceImpl({required CampanhasRepository campanhaRepository})
+  CampanhasServiceImpl({required AppCampanhasRepository campanhaRepository})
     : _repository = campanhaRepository;
 
   @override
   Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhas({
     required int filialId,
-    required String tipoUsuario,
+    required String usuarioId,
+    required int empresaId,
     required DateTime data,
   }) async {
-    final dataFormatada = DataFormatters.formatarData(data);
+    final (dataInicial, dataFinal) = DateHelper.getInitialAndLastCurrentDate(
+      data,
+    );
     final result = await _repository.getAllCampanhas(
       filialId: filialId,
-      tipoUsuario: tipoUsuario,
-      data: dataFormatada,
+      usuarioId: usuarioId,
+      empresaId: empresaId,
+      dataInicial: DataFormatters.formatarData(dataInicial),
+      dataFinal: DataFormatters.formatarData(dataFinal),
     );
     return result;
   }

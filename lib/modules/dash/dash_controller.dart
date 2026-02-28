@@ -6,20 +6,17 @@ import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/core/domain/services/notification_service.dart';
-import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/dash/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/dash/domain/models/dashboard_model.dart';
 import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 import 'package:posto360/modules/core/domain/models/user_model.dart';
-import 'package:posto360/modules/campanhas/infra/services/campanhas_service.dart';
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
+import 'package:posto360/modules/dash/infra/services/fechamento_caixa_service.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
 import 'package:posto360/modules/core/infra/services/user_service.dart';
-import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
-import 'package:posto360/modules/fechamento-caixa/infra/services/fechamento_caixa_service.dart';
 
 class DashController extends FullLifeCycleController
     with MessageMixin, FullLifeCycleMixin {
-  late CampanhasService _campanhasService;
   late HorarioFaltasAtrasosService _horarioFaltasAtrasosService;
   late DashboardService _dashboardService;
   late NotificationService _notificationService;
@@ -32,7 +29,6 @@ class DashController extends FullLifeCycleController
   final _selectPeriodScrollController = ScrollController();
 
   DashController() {
-    _campanhasService = Get.find<CampanhasService>();
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
     _notificationService = Get.find<NotificationService>();
     _dashboardService = Get.find<DashboardService>();
@@ -72,6 +68,12 @@ class DashController extends FullLifeCycleController
   final _daysRegistered = 0.obs;
   final _monthSelected = DateTime.now().obs;
   final _hasNextMonth = false.obs;
+
+  double get penalidadeTotal =>
+      dashboardModel.penalidadeChecklists +
+      dashboardModel.penalidadeCursos +
+      horarioFaltasAtrasos.penalidade +
+      cartoesModel.penalidade;
 
   DashboardModel get dashboardModel => _dashboardModel.value;
   CartoesModel get cartoesModel => _cartoesModel.value;
@@ -131,25 +133,16 @@ class DashController extends FullLifeCycleController
 
   Future<void> loadDashboardModel() async {
     _loadingDashboardModel(true);
-    final resultCampanhas = await _campanhasService.getAllCampanhas(
-      filialId: autheticatedUser.idFilial!,
-      tipoUsuario: autheticatedUser.tipoUsuario,
-      data: monthSelected,
+
+    final dashboardResult = await _dashboardService.getDashboardData(
+      funcionarioCodigo: autheticatedUser.codigoPDV!,
+      campanhasIds: _authenticatedUser.value.campanhasIds,
+      dataAtual: monthSelected,
     );
 
-    if (resultCampanhas.success || resultCampanhas.data!.isNotEmpty) {
-      final dashboardResult = await _dashboardService.getDashboardData(
-        funcionarioCodigo: autheticatedUser.codigoPDV!,
-        campanhas: resultCampanhas.data!,
-        data: DataFormatters.formatarData(monthSelected),
-      );
-
-      if (dashboardResult.success) {
-        _dashboardModel.value = dashboardResult.data!;
-        _hasDashboardModel(true);
-      } else {
-        _hasDashboardModel(false);
-      }
+    if (dashboardResult.success) {
+      _dashboardModel.value = dashboardResult.data!;
+      _hasDashboardModel(true);
     } else {
       _hasDashboardModel(false);
     }
@@ -171,9 +164,9 @@ class DashController extends FullLifeCycleController
     _loadingWork(true);
     final today = DateTime.now();
     final result = await _horarioFaltasAtrasosService.getHorario(
-      data: today,
+      dataAtual: today,
+      dataSelecionada: monthSelected,
       codigoFuncionario: autheticatedUser.codigoPDV.toString(),
-      dataMes: monthSelected,
     );
 
     if (result.isError) {

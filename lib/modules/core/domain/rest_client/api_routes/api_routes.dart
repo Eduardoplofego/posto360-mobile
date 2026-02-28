@@ -5,9 +5,12 @@ class ApiRoutes {
 
   static const _login = '$_backendBaseUrl/api/mobile/login';
   static const _honorary = '$_backendBaseUrl/api/mobile/horario-faltas-atrasos';
-  static const _campanhas = '$_backendBaseUrl/api/mobile/produtos-incentivados';
-  static const _performance =
-      '$_backendBaseUrl/api/mobile/calcular-performance';
+  static const _campanhas =
+      '$_backendBaseUrl/api/mobile/produtos-incentivados/detalhes';
+  static const _performanceIndividual =
+      '$_backendBaseUrl/api/mobile/produtos-incentivados/performance-individual';
+  static const _performanceEquipe =
+      '$_backendBaseUrl/api/mobile/produtos-incentivados/performance-coletiva';
   static const _cursos = '$_backendBaseUrl/api/mobile/ead/vendedor/cursos';
   static const _iniciarCurso =
       '$_backendBaseUrl/api/mobile/ead/vendedor/iniciar-curso';
@@ -15,6 +18,15 @@ class ApiRoutes {
   static const _aulaConcluida =
       '$_backendBaseUrl/api/mobile/ead/vendedor/subir-visualizacao';
   static const _dashboard = '$_backendBaseUrl/api/mobile/dashboard';
+  static const _dashboardRH = '$_backendBaseUrl/api/mobile/dashboard/rh';
+  static const _dashboardFinanceiro =
+      '$_backendBaseUrl/api/mobile/dashboard/financeiro';
+  static const _dashboardCampanhas =
+      '$_backendBaseUrl/api/mobile/dashboard/campanhas';
+  static const _dashboardCursos =
+      '$_backendBaseUrl/api/mobile/dashboard/cursos';
+  static const _dashboardChecklists =
+      '$_backendBaseUrl/api/mobile/dashboard/checklist';
   static const _checklists =
       '$_backendBaseUrl/api/mobile/checklists/vendedor/disponiveis';
   static const _checklistFinalizadas =
@@ -35,16 +47,24 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/fechamento-caixa';
   static const _fechamentoCaixaDetalhes =
       '$_backendBaseUrl/api/mobile/fechamento-caixa/detalhes';
+  static const _registroPontosDetalhes =
+      '$_backendBaseUrl/api/mobile/pontos/detalhes';
 
   static String login() => _login;
   static String honorario() => _honorary;
   static String campanhas() => _campanhas;
-  static String performance() => _performance;
+  static String performanceIndividual() => _performanceIndividual;
+  static String performanceEquipe() => _performanceEquipe;
   static String cursos() => _cursos;
   static String iniciarCurso() => _iniciarCurso;
   static String aulas() => _aulas;
   static String aulaConcluida() => _aulaConcluida;
   static String dashboard() => _dashboard;
+  static String dashboardRH() => _dashboardRH;
+  static String dashboardFinanceiro() => _dashboardFinanceiro;
+  static String dashboardCampanhas() => _dashboardCampanhas;
+  static String dashboardCursos() => _dashboardCursos;
+  static String dashboardChecklists() => _dashboardChecklists;
   static String checklists() => _checklists;
   static String checklistsFinalizadas() => _checklistFinalizadas;
   static String checklistAnswers() => _checklistAnswers;
@@ -55,4 +75,5 @@ class ApiRoutes {
   static String subirFotoPerfil() => _subirFotoPerfil;
   static String fechamentoCaixa() => _fechamentoCaixa;
   static String fechamentoCaixaDetalhes() => _fechamentoCaixaDetalhes;
+  static String registroPontosDetalhes() => _registroPontosDetalhes;
 }
