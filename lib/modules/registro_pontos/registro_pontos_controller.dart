@@ -40,6 +40,9 @@ class RegistroPontosController extends GetxController with MessageMixin {
   String get monthSelectedText =>
       '${getMonthText(monthSelected.month)} ${monthSelected.year}';
   List<PontosModel> get pontosList => _pontosList;
+  bool get hasNextMonth =>
+      !(monthSelected.month == DateTime.now().month &&
+          monthSelected.year == DateTime.now().year);
 
   // Actions
   void _selectMonthByParameter() {
@@ -50,6 +53,16 @@ class RegistroPontosController extends GetxController with MessageMixin {
     }
     final monthFormated = DateTime.parse(monthArgument);
     _monthSelected(monthFormated);
+  }
+
+  void prevMonth(DateTime monthSelected) {
+    _monthSelected.value = monthSelected;
+    _loadData();
+  }
+
+  void nextMonth(DateTime monthSelected) async {
+    _monthSelected.value = monthSelected;
+    _loadData();
   }
 
   Future<void> _loadData() async {

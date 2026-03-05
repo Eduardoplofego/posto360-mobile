@@ -19,7 +19,7 @@ class DetalhesCartoesModel {
       cartoesCorrigidos: map['cartoesCorrigidos'] as int,
       cartoesDeletados: map['cartoesDeletados'] as int,
       cartoesVinculados: map['cartoesVinculados'] as int,
-      diferenca: map['diferenca'] as double,
+      diferenca: (map['diferenca'] as num).toDouble(),
     );
   }
 }

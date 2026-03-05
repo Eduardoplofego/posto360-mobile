@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/select_date_widget.dart';
 import 'package:posto360/modules/registro_pontos/widgets/ponto_card_widget.dart';
 import 'package:posto360/modules/registro_pontos/widgets/resume_card_widget.dart';
 import 'registro_pontos_controller.dart';
@@ -40,7 +41,16 @@ class RegistroPontosPage extends GetView<RegistroPontosController> {
                       mesReferencia: controller.monthSelectedText,
                     );
                   }),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
+                  Obx(() {
+                    return SelectDateWidget(
+                      nextMonthPressed: controller.nextMonth,
+                      period: controller.monthSelected,
+                      hasNextMonth: controller.hasNextMonth,
+                      prevMonthPressed: controller.prevMonth,
+                    );
+                  }),
+                  const SizedBox(height: 8),
                   Obx(() {
                     if (controller.loadingData) {
                       return Center(

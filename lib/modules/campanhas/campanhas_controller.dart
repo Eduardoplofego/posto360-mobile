@@ -34,7 +34,6 @@ class CampanhasController extends FullLifeCycleController
   );
   final _monthSelected = DateTime.now().obs;
   final _currentMonth = DateTime.now().obs;
-  final _hasNextMonth = false.obs;
 
   final List<PerformanceIndividualModel> _individualPerformances = [];
   final List<PerformanceEquipeModel> _equipePerformances = [];
@@ -48,7 +47,9 @@ class CampanhasController extends FullLifeCycleController
   bool get isLoading => _loader.value;
   DateTime get monthSelected => _monthSelected.value;
   DateTime get currentMonth => _currentMonth.value;
-  bool get hasNextMonth => _hasNextMonth.value;
+  bool get hasNextMonth =>
+      !(monthSelected.month == DateTime.now().month &&
+          monthSelected.year == DateTime.now().year);
   List<DateTime> get periodSelected => campanhaController.getPeriodSelected();
   double get valueTotalBonus {
     double total = 0.0;
@@ -65,6 +66,7 @@ class CampanhasController extends FullLifeCycleController
   void onInit() {
     messageListener(_message);
     loaderListener(_loader);
+    _selectMonthByParameter();
     super.onInit();
   }
 
@@ -72,6 +74,16 @@ class CampanhasController extends FullLifeCycleController
   Future<void> onReady() async {
     super.onReady();
     _loadVariables();
+  }
+
+  void _selectMonthByParameter() {
+    String? monthArgument = Get.parameters['month'];
+    if (monthArgument == null) {
+      _monthSelected(DateTime.now());
+      return;
+    }
+    final monthFormated = DateTime.parse(monthArgument);
+    _monthSelected(monthFormated);
   }
 
   Future<void> _loadVariables() async {
@@ -199,18 +211,12 @@ class CampanhasController extends FullLifeCycleController
   void prevMonth(DateTime monthSelected) {
     campanhaController.resetController();
     _monthSelected.value = monthSelected;
-    _hasNextMonth.value = true;
     _defineNewPeriodSelected(monthSelected);
     _loadVariables();
   }
 
   void nextMonth(DateTime monthSelected) async {
     campanhaController.resetController();
-    final now = DateTime.now();
-
-    _hasNextMonth.value =
-        !(monthSelected.year == now.year && monthSelected.month == now.month);
-
     _monthSelected.value = monthSelected;
     _defineNewPeriodSelected(monthSelected);
     _loadVariables();

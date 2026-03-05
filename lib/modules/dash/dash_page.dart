@@ -107,7 +107,9 @@ class DashPage extends GetView<DashController> {
                             initDelay: 300,
                             child: CardCampanhasWidget(
                               onPressed: () {
-                                Get.toNamed('/campanhas');
+                                Get.toNamed(
+                                  '/campanhas/${controller.monthSelected.toIso8601String()}',
+                                );
                               },
                               campanhasAtivas:
                                   controller.dashboardModel.campanhasAtivas,

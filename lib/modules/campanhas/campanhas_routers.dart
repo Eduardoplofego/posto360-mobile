@@ -7,7 +7,7 @@ class CampanhasRouters {
 
   static final routes = <GetPage>[
     GetPage(
-      name: '/campanhas',
+      name: '/campanhas/:month',
       page: () => CampanhasPage(),
       binding: CampanhasBindings(),
     ),

@@ -82,7 +82,7 @@ class AppFechamentoCaixaRepositoryImpl extends AppFechamentoCaixaRepository {
 
       if (body.isEmpty) {
         return ResultActionDTO.success(
-          message: 'Erro ao buscar fechamento de caixa',
+          message: 'Sucesso ao buscar fechamento de caixa',
           data: [],
         );
       }

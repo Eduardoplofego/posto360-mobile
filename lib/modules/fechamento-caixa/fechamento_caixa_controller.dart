@@ -31,8 +31,8 @@ class FechamentoCaixaController extends GetxController with MessageMixin {
   String get monthSelectedText =>
       '${getMonthText(monthSelected.month)} ${monthSelected.year}';
   bool get hasNextMonth =>
-      monthSelected.month != DateTime.now().month &&
-      monthSelected.year == DateTime.now().year;
+      !(monthSelected.month == DateTime.now().month &&
+          monthSelected.year == DateTime.now().year);
   bool get loadingCards => _loadingCards.value;
   List<DetalhesCartoesModel> get cardList => _cardList;
 
@@ -93,5 +93,24 @@ class FechamentoCaixaController extends GetxController with MessageMixin {
       _totalCartoesVinculados.value += card.cartoesVinculados;
       _diferencaTotal.value += card.diferenca;
     }
+  }
+
+  getNextMonth(DateTime p1) {
+    _monthSelected(p1);
+    _refreshValues();
+    _loadMonthCards();
+  }
+
+  getPrevMonth(DateTime p1) {
+    _monthSelected(p1);
+    _refreshValues();
+    _loadMonthCards();
+  }
+
+  void _refreshValues() {
+    _totalCartoesCorrigidos(0);
+    _totalCartoesDeletados(0);
+    _totalCartoesVinculados(0);
+    _diferencaTotal(0.0);
   }
 }
