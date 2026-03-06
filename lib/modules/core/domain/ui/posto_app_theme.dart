@@ -4,7 +4,7 @@ class PostoAppTheme {
   PostoAppTheme._();
 
   static final ThemeData theme = ThemeData(
-    scaffoldBackgroundColor: Color(0xFFFFFFFF),
+    scaffoldBackgroundColor: Color(0xFFd5d9dd),
     primaryColor: const Color(0xFF2051E5),
     hintColor: Colors.white,
     fontFamily: 'poppins',
