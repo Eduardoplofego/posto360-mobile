@@ -49,7 +49,7 @@ class CardCloseMoney extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          UtilBrasilFields.obterReal(-model.diferencaTotal),
+                          UtilBrasilFields.obterReal(model.diferencaTotal),
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w500,
