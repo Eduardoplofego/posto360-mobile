@@ -6,10 +6,12 @@ import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/core/domain/services/notification_service.dart';
+import 'package:posto360/modules/dash/domain/models/avaliacao_model.dart';
 import 'package:posto360/modules/dash/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/dash/domain/models/dashboard_model.dart';
 import 'package:posto360/modules/dash/domain/models/horario_faltas_model.dart';
 import 'package:posto360/modules/core/domain/models/user_model.dart';
+import 'package:posto360/modules/dash/infra/services/avaliacoes_service.dart';
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
 import 'package:posto360/modules/dash/infra/services/fechamento_caixa_service.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
@@ -22,6 +24,7 @@ class DashController extends FullLifeCycleController
   late NotificationService _notificationService;
   late UserService _userService;
   late FechamentoCaixaService _fechamentoCaixaService;
+  late AvaliacoesService _avaliacoesService;
 
   final _loader = false.obs;
   final _message = Rxn<MessagesModel>();
@@ -34,6 +37,7 @@ class DashController extends FullLifeCycleController
     _dashboardService = Get.find<DashboardService>();
     _userService = Get.find<UserService>();
     _fechamentoCaixaService = Get.find<FechamentoCaixaService>();
+    _avaliacoesService = Get.find<AvaliacoesService>();
   }
 
   @override
@@ -59,12 +63,12 @@ class DashController extends FullLifeCycleController
 
   final _cartoesModel = Rx(CartoesModel.empty());
   final _dashboardModel = Rx(DashboardModel.empty());
+  final _avaliacoesModel = Rx(AvaliacaoModel.empty());
   final _hasDashboardModel = false.obs;
   final _authenticatedUser = Rx<UserModel>(UserModel.empty());
   final _horarioFaltasAtrasos = Rx<HorarioFaltasModel>(
     HorarioFaltasModel.empty(),
   );
-  final _hasData = false.obs;
   final _daysRegistered = 0.obs;
   final _monthSelected = DateTime.now().obs;
   final _hasNextMonth = false.obs;
@@ -79,6 +83,7 @@ class DashController extends FullLifeCycleController
   CartoesModel get cartoesModel => _cartoesModel.value;
   bool get hasDashboardModel => _hasDashboardModel.value;
   UserModel get autheticatedUser => _authenticatedUser.value;
+  AvaliacaoModel get avaliacoesModel => _avaliacoesModel.value;
   String get nameUser =>
       autheticatedUser.name + (autheticatedUser.lastName ?? '');
   bool get hasPhotoUrl =>
@@ -86,7 +91,6 @@ class DashController extends FullLifeCycleController
       autheticatedUser.photoUrl != null && autheticatedUser.photoUrl != '';
   bool get hasNotification => _notificationService.hasNotification;
   HorarioFaltasModel get horarioFaltasAtrasos => _horarioFaltasAtrasos.value;
-  bool get hasData => _hasData.value;
   DateTime get monthSelected => _monthSelected.value;
   bool get hasNextMonth => _hasNextMonth.value;
   bool get isLoading => _loader.value;
@@ -116,6 +120,7 @@ class DashController extends FullLifeCycleController
       _loadHorarioFaltaAtraso(),
       loadDashboardModel(),
       _loadFechamentoCaixa(),
+      _loadAvaliacoes(),
     ]);
     _loader(false);
   }
@@ -160,13 +165,23 @@ class DashController extends FullLifeCycleController
     _loadingFechamento(false);
   }
 
+  Future<void> _loadAvaliacoes() async {
+    _loadingWork(true);
+    final avaliacoes = await _avaliacoesService.getAvaliacoes(
+      funcionarioId: autheticatedUser.id,
+      dataMes: monthSelected,
+    );
+    _avaliacoesModel(avaliacoes.data);
+    _loadingWork(false);
+  }
+
   Future<void> _loadHorarioFaltaAtraso() async {
     _loadingWork(true);
     final today = DateTime.now();
     final result = await _horarioFaltasAtrasosService.getHorario(
       dataAtual: today,
       dataSelecionada: monthSelected,
-      codigoFuncionario: autheticatedUser.codigoPDV.toString(),
+      codigoFuncionario: autheticatedUser.codigoPDV?.toInt() ?? 0,
     );
 
     if (result.isError) {
@@ -179,7 +194,6 @@ class DashController extends FullLifeCycleController
           type: MessageType.error,
         ),
       );
-      _hasData(false);
     } else {
       if (result.success && result.message.isNotEmpty) {
         _horarioFaltasAtrasos.value = HorarioFaltasModel.empty();
@@ -190,10 +204,8 @@ class DashController extends FullLifeCycleController
             type: MessageType.info,
           ),
         );
-        _hasData(false);
       }
       _horarioFaltasAtrasos.value = result.data!;
-      _hasData(true);
     }
     _loadingWork(false);
   }

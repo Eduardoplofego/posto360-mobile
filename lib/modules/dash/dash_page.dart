@@ -6,6 +6,7 @@ import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/drawer/posto_app_drawer.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
+import 'package:posto360/modules/dash/widgets/card_avaliacoes_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_campanhas_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_close_money.dart';
 import 'package:posto360/modules/dash/widgets/card_resume_widget.dart';
@@ -129,6 +130,22 @@ class DashPage extends GetView<DashController> {
                                   '/registro-pontos/${controller.monthSelected.toIso8601String()}',
                                 );
                               },
+                            ),
+                          ),
+                          const SizedBox(height: 17),
+                          CardLoadingWidget(
+                            isLoading: controller.loadingDashboardModel,
+                            height: 200,
+                            initDelay: 300,
+                            child: CardAvaliacoesWidget(
+                              onPressed: () {
+                                Get.toNamed(
+                                  '/avaliacoes/${controller.monthSelected.toIso8601String()}',
+                                );
+                              },
+                              total: controller.avaliacoesModel.total,
+                              feitas: controller.avaliacoesModel.feitas,
+                              penalidade: controller.avaliacoesModel.penalidade,
                             ),
                           ),
                           const SizedBox(height: 17),

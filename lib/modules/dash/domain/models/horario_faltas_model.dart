@@ -2,12 +2,12 @@ import 'dart:convert';
 
 class HorarioFaltasModel {
   final String? horarioPrevisto;
-  final int faltasInjustificadas;
-  final int faltasPonto;
-  final int atrasosGrave;
-  final int atrasosMedio;
-  final int atrasosLeve;
-  final int penalidade;
+  final double faltasInjustificadas;
+  final double faltasPonto;
+  final double atrasosGrave;
+  final double atrasosMedio;
+  final double atrasosLeve;
+  final double penalidade;
 
   HorarioFaltasModel({
     required this.horarioPrevisto,
@@ -89,12 +89,13 @@ class HorarioFaltasModel {
   factory HorarioFaltasModel.fromMap(Map<String, dynamic> map) {
     return HorarioFaltasModel(
       horarioPrevisto: map['horarioPrevisto'] ?? '',
-      faltasInjustificadas: map['Falta injustificado'] ?? 0,
-      faltasPonto: map['Falta de ponto'] ?? 0,
-      atrasosGrave: map['Atraso grave'] ?? 0,
-      atrasosMedio: map['Atraso medio'] ?? 0,
-      atrasosLeve: map['Atraso leve'] ?? 0,
-      penalidade: map['Penalidade'] ?? 0,
+      faltasInjustificadas:
+          (map['Falta injustificado'] as num?)?.toDouble() ?? 0,
+      faltasPonto: (map['Falta de ponto'] as num?)?.toDouble() ?? 0,
+      atrasosGrave: (map['Atraso grave'] as num?)?.toDouble() ?? 0,
+      atrasosMedio: (map['Atraso medio'] as num?)?.toDouble() ?? 0,
+      atrasosLeve: (map['Atraso leve'] as num?)?.toDouble() ?? 0,
+      penalidade: (map['Penalidade'] as num?)?.toDouble() ?? 0,
     );
   }
 

@@ -22,10 +22,23 @@ class PostoAppDrawer extends StatefulWidget {
 }
 
 class _PostoAppDrawerState extends State<PostoAppDrawer> {
+  bool _isLoading = false;
   Future<void> _onLogout() async {
+    setState(() {
+      _isLoading = true;
+    });
     final shouldLogout = await _requestLogout();
 
-    if (!shouldLogout) return;
+    if (!shouldLogout) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
 
     Get.find<AuthService>().logout();
   }
@@ -83,6 +96,8 @@ class _PostoAppDrawerState extends State<PostoAppDrawer> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
+      top: false,
       child: LayoutBuilder(
         builder: (context, constraints) {
           return ConstrainedBox(
@@ -100,17 +115,26 @@ class _PostoAppDrawerState extends State<PostoAppDrawer> {
                       onTap: _takePhotoAndSave,
                       title: Text(
                         'Alterar foto de perfil',
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade700,
+                        ),
                       ),
                       dense: true,
+                      leading: Icon(
+                        Icons.photo_library,
+                        color: Colors.grey.shade700,
+                        size: 20,
+                      ),
                       trailing: Icon(
                         Icons.edit,
-                        color: PostoAppUiConfigurations.darkGreyColor,
+                        color: Colors.grey.shade700,
                         size: 20,
                       ),
                     ),
                     Spacer(),
                     _logout(),
+                    const SizedBox(height: 48),
                   ],
                 ),
               ),
@@ -122,23 +146,27 @@ class _PostoAppDrawerState extends State<PostoAppDrawer> {
   }
 
   Widget _logout() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: SizedBox(
-        width: Get.width,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ElevatedButton(
-            onPressed: _onLogout,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.logout, color: Colors.white),
-                const SizedBox(width: 6),
-                Text('Logout', style: TextStyle(color: Colors.white)),
-              ],
-            ),
-          ),
+    return SizedBox(
+      width: Get.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: ElevatedButton(
+          onPressed: _onLogout,
+          child:
+              _isLoading
+                  ? SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: CircularProgressIndicator(color: Colors.white),
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout, color: Colors.white),
+                      const SizedBox(width: 6),
+                      Text('Logout', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
         ),
       ),
     );
@@ -156,17 +184,12 @@ class _PostoAppDrawerState extends State<PostoAppDrawer> {
     }
     return Container(
       width: Get.width,
-      padding: EdgeInsets.only(top: 32, bottom: 16, left: 16, right: 16),
+      padding: EdgeInsets.only(top: 48, bottom: 16, left: 16, right: 16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            PostoAppUiConfigurations.blueLightColor,
-            PostoAppUiConfigurations.blueMediumColor,
-          ],
-          stops: [0.0, 1.0],
-          begin: FractionalOffset.topCenter,
-          end: FractionalOffset.bottomCenter,
-          tileMode: TileMode.repeated,
+        color: PostoAppUiConfigurations.blueMediumColor,
+        image: DecorationImage(
+          image: AssetImage('assets/images/waves.png'),
+          fit: BoxFit.cover,
         ),
       ),
       child: Column(

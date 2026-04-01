@@ -19,7 +19,7 @@ class HorarioFaltasAtrasosRepositoryImpl
     required String dataInicial,
     required String dataFinal,
     required String dataAtual,
-    required String codigoFuncionario,
+    required int codigoFuncionario,
   }) async {
     try {
       final result = await _restClient.post(ApiRoutes.dashboardRH(), {
