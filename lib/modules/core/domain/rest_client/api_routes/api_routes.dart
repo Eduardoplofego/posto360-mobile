@@ -18,6 +18,8 @@ class ApiRoutes {
   static const _aulaConcluida =
       '$_backendBaseUrl/api/mobile/ead/vendedor/subir-visualizacao';
   static const _dashboard = '$_backendBaseUrl/api/mobile/dashboard';
+  static const _dashboardAvaliacoes =
+      '$_backendBaseUrl/api/mobile/dashboard/avaliacoes';
   static const _dashboardRH = '$_backendBaseUrl/api/mobile/dashboard/rh';
   static const _dashboardFinanceiro =
       '$_backendBaseUrl/api/mobile/dashboard/financeiro';
@@ -49,6 +51,10 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/fechamento-caixa/detalhes';
   static const _registroPontosDetalhes =
       '$_backendBaseUrl/api/mobile/pontos/detalhes';
+  static const _avaliacoesFeitas =
+      '$_backendBaseUrl/api/mobile/avaliacoes/avaliado/avaliacoes-feitas';
+  static const _avaliacoesCriterios =
+      '$_backendBaseUrl/api/mobile/avaliacoes/avaliado/criterios';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -60,6 +66,7 @@ class ApiRoutes {
   static String aulas() => _aulas;
   static String aulaConcluida() => _aulaConcluida;
   static String dashboard() => _dashboard;
+  static String dashboardAvaliacoes() => _dashboardAvaliacoes;
   static String dashboardRH() => _dashboardRH;
   static String dashboardFinanceiro() => _dashboardFinanceiro;
   static String dashboardCampanhas() => _dashboardCampanhas;
@@ -76,4 +83,6 @@ class ApiRoutes {
   static String fechamentoCaixa() => _fechamentoCaixa;
   static String fechamentoCaixaDetalhes() => _fechamentoCaixaDetalhes;
   static String registroPontosDetalhes() => _registroPontosDetalhes;
+  static String avaliacoesAvaliadoFeitas() => _avaliacoesFeitas;
+  static String avaliacoesCriterios() => _avaliacoesCriterios;
 }

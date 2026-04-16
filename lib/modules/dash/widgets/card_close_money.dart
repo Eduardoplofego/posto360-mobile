@@ -170,7 +170,7 @@ class CardCloseMoney extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            model.penalidade.toString(),
+                            model.penalidade.toStringAsFixed(2),
                             style: TextStyle(
                               fontSize: 18,
                               color: PostoAppUiConfigurations.orangeColor,

@@ -14,15 +14,6 @@ class AvaliacoesServiceImpl implements AvaliacoesService {
     required String funcionarioId,
     required DateTime dataMes,
   }) async {
-    // final dataInicial =
-    //     '${dataMes..year}-${dataMes.month.toString().padLeft(2, '0')}-01';
-    // final lastDayMonth =
-    //     DateTime(
-    //       dataMes.year,
-    //       dataMes.month + 1,
-    //       1,
-    //     ).subtract(Duration(days: 1)).day;
-    // final dataFinal = '${dataMes.year}-${dataMes.month}-$lastDayMonth';
     final (dataInicial, dataFinal) = DateHelper.getInitialAndLastCurrentDate(
       dataMes,
     );

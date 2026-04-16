@@ -144,7 +144,7 @@ class CardAvaliacoesWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            (penalidade).toString(),
+                            (penalidade).toStringAsFixed(2),
                             style: TextStyle(
                               fontSize: 18,
                               color: PostoAppUiConfigurations.orangeColor,

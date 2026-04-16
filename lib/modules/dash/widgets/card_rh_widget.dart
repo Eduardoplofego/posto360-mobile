@@ -41,7 +41,7 @@ class CardRhWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                'Faltas: $totalFaltas | Atrasos: $totalAtrasos',
+                'Faltas: $totalFaltas | Atrasos: ${totalAtrasos.toStringAsFixed(2)}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
             ],
@@ -114,7 +114,7 @@ class CardRhWidget extends StatelessWidget {
                                     backgroundColor: Colors.blue,
                                   ),
                                   Text(
-                                    'Atrasos graves: ${model.atrasosGrave}',
+                                    'Atrasos graves: ${model.atrasosGrave.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -131,7 +131,7 @@ class CardRhWidget extends StatelessWidget {
                                     backgroundColor: Colors.orange,
                                   ),
                                   Text(
-                                    'Atrasos médios: ${model.atrasosMedio}',
+                                    'Atrasos médios: ${model.atrasosMedio.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -148,7 +148,7 @@ class CardRhWidget extends StatelessWidget {
                                     backgroundColor: Colors.orange,
                                   ),
                                   Text(
-                                    'Atrasos leves: ${model.atrasosLeve}',
+                                    'Atrasos leves: ${model.atrasosLeve.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.black54,
@@ -182,7 +182,7 @@ class CardRhWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            model.penalidade.toString(),
+                            model.penalidade.toStringAsFixed(2),
                             style: TextStyle(
                               fontSize: 18,
                               color: PostoAppUiConfigurations.orangeColor,

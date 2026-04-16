@@ -161,6 +161,7 @@ class DashController extends FullLifeCycleController
       usuarioId: autheticatedUser.id,
       dataMes: monthSelected,
     );
+    if (cartoes.isError) return;
     _cartoesModel(cartoes.data);
     _loadingFechamento(false);
   }
@@ -171,6 +172,7 @@ class DashController extends FullLifeCycleController
       funcionarioId: autheticatedUser.id,
       dataMes: monthSelected,
     );
+    if (avaliacoes.isError) return;
     _avaliacoesModel(avaliacoes.data);
     _loadingWork(false);
   }
