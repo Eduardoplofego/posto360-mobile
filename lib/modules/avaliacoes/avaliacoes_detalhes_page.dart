@@ -73,33 +73,58 @@ class AvaliacoesCriteriosPage extends GetView<AvaliacoesCriteriosController> {
             )
             : Column(
               children: [
-                DetalhesAvaliacaoHeader(
-                  totalDiscretions: controller.totalCriterios,
-                  concludedDiscretions: controller.totalCriteriosCumpridos,
-                  penality: controller.penalidade,
-                  comment: controller.comentario,
-                ),
-                Divider(height: 0, color: Colors.grey.shade300),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        height: constraints.maxHeight,
-                        child: ListView.separated(
-                          itemBuilder: (context, index) {
-                            final item = controller.criterios[index];
-                            return DiscretionsCard(model: item);
-                          },
-                          separatorBuilder:
-                              (context, index) => const SizedBox(height: 12),
-                          itemCount: controller.criterios.length,
-                        ),
-                      );
-                    },
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 1,
+                        spreadRadius: 1,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      DetalhesAvaliacaoHeader(
+                        totalDiscretions: controller.totalCriterios,
+                        concludedDiscretions:
+                            controller.totalCriteriosCumpridos,
+                        penality: controller.penalidade,
+                        comment: controller.comentario,
+                      ),
+                    ],
                   ),
                 ),
+                const SizedBox(height: 12),
+                if (controller.criterios.isEmpty)
+                  Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      Center(child: Text('Nenhum critério encontrado')),
+                    ],
+                  ),
+                if (controller.criterios.isNotEmpty)
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          height: constraints.maxHeight,
+                          child: ListView.separated(
+                            itemBuilder: (context, index) {
+                              final item = controller.criterios[index];
+                              return DiscretionsCard(model: item);
+                            },
+                            separatorBuilder:
+                                (context, index) => const SizedBox(height: 12),
+                            itemCount: controller.criterios.length,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
               ],
             );
       }),

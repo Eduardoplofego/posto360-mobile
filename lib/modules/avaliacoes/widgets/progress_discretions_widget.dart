@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:posto360/modules/avaliacoes/domain/adapters/color_adapter.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 
 class ProgressDiscretionsWidget extends StatelessWidget {
   final int totaldiscretions;
   final int concludedsDiscretions;
+  final Color defaultColor;
   const ProgressDiscretionsWidget({
     super.key,
     required this.totaldiscretions,
     required this.concludedsDiscretions,
+    required this.defaultColor,
   });
 
   @override
@@ -25,7 +26,7 @@ class ProgressDiscretionsWidget extends StatelessWidget {
             Text(
               '${progress.toStringAsFixed(0)}%',
               style: TextStyle(
-                color: ColorAdapter.colorByProgressLevel(progress),
+                color: defaultColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -36,7 +37,7 @@ class ProgressDiscretionsWidget extends StatelessWidget {
           height: 5,
           child: LinearProgressIndicator(
             value: progress / 100,
-            color: ColorAdapter.colorByProgressLevel(progress),
+            color: defaultColor,
             backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
             borderRadius: BorderRadius.circular(20),
           ),

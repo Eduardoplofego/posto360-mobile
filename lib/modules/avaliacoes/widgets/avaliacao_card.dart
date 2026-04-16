@@ -1,6 +1,7 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:posto360/modules/avaliacoes/domain/adapters/color_adapter.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_model.dart';
 import 'package:posto360/modules/avaliacoes/widgets/avaliator_widget.dart';
 import 'package:posto360/modules/avaliacoes/widgets/penality_presentation_widget.dart';
@@ -12,6 +13,9 @@ class AvaliacaoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final progress = (model.criteriosCumpridos / model.numeroCriterios) * 100;
+    final defaultColor = ColorAdapter.colorByProgressLevel(progress);
+    final lighColor = ColorAdapter.lightColorByProgressLevel(progress);
     return Container(
       width: Get.width,
       padding: EdgeInsets.all(16),
@@ -50,9 +54,14 @@ class AvaliacaoCard extends StatelessWidget {
           ProgressDiscretionsWidget(
             totaldiscretions: model.numeroCriterios,
             concludedsDiscretions: model.criteriosCumpridos,
+            defaultColor: defaultColor,
           ),
           const SizedBox(height: 12),
-          PenalityPresentationWidget(penality: model.penalidade),
+          PenalityPresentationWidget(
+            penality: model.penalidade,
+            defaultColor: defaultColor,
+            lightColor: lighColor,
+          ),
           const SizedBox(height: 12),
           const Divider(height: 0),
           const SizedBox(height: 12),
