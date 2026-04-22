@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+
+class ButtonCardWidget extends StatelessWidget {
+  final VoidCallback onPressed;
+  const ButtonCardWidget({super.key, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            bottomRight: Radius.circular(15),
+          ),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(25),
+                bottomRight: Radius.circular(15),
+              ),
+              color: Colors.white70,
+            ),
+            child: Icon(
+              Icons.arrow_forward_rounded,
+              size: 26,
+              color: PostoAppUiConfigurations.blueMediumColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
