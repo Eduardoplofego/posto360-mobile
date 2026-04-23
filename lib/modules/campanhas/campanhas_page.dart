@@ -20,7 +20,7 @@ class CampanhasPage extends GetView<CampanhasController> {
           title: 'Produtos Incentivados',
           leading: BackIconButtonWidget(
             onPressed: () async {
-              Get.back();
+              Get.back(closeOverlays: true);
             },
           ),
           actions: [],

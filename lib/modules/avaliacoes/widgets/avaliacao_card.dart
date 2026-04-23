@@ -67,6 +67,7 @@ class AvaliacaoCard extends StatelessWidget {
           const SizedBox(height: 12),
           AvaliatorWidget(
             name: model.avaliador,
+            leadingText: 'Avaliador',
             createdAt:
                 model.dataConclusao != null
                     ? UtilData.obterDataDDMMAAAA(model.dataConclusao!)

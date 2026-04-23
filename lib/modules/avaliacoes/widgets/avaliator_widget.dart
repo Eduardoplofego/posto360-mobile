@@ -3,11 +3,13 @@ import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart
 
 class AvaliatorWidget extends StatelessWidget {
   final String name;
+  final String leadingText;
   final String createdAt;
   const AvaliatorWidget({
     super.key,
     required this.name,
     required this.createdAt,
+    required this.leadingText,
   });
 
   String _initialNames(String name) {
@@ -40,7 +42,22 @@ class AvaliatorWidget extends StatelessWidget {
         ),
         const SizedBox(width: 6),
         Expanded(
-          child: Text('Avaliador: $name', style: TextStyle(fontSize: 12)),
+          child: RichText(
+            text: TextSpan(
+              text: '$leadingText ',
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+              children: [
+                TextSpan(
+                  text: name,
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         Text(createdAt, style: TextStyle(fontSize: 12)),
       ],

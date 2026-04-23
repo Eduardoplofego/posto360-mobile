@@ -21,7 +21,7 @@ class CursosPage extends GetView<CursosController> {
           title: 'Cursos',
           leading: BackIconButtonWidget(
             onPressed: () async {
-              Get.back();
+              Get.back(closeOverlays: true);
             },
           ),
           actions: [],

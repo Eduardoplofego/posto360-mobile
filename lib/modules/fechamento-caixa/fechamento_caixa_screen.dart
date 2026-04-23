@@ -20,7 +20,7 @@ class FechamentoCaixaScreen extends GetView<FechamentoCaixaController> {
           title: 'Fechamento Caixa',
           leading: BackIconButtonWidget(
             onPressed: () async {
-              Get.back();
+              Get.back(closeOverlays: true);
             },
           ),
           actions: [],

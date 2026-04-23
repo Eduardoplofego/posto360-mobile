@@ -32,28 +32,44 @@ class HorarioFaltasModel {
   }
 
   String getJornadaTrabalho() {
-    if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
-      return '--';
+    try {
+      if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
+        return '--';
+      }
+
+      final turnos = horarioPrevisto!.split(' ');
+
+      if (turnos.length == 1) return getMidPeriod(turnos[0]);
+
+      final primeiroTurnoSplitted = turnos[0].split('-');
+      final segundoTurnosSplitted = turnos[1].split('-');
+
+      final tempoInicio = primeiroTurnoSplitted[0];
+      final tempoFim = segundoTurnosSplitted[1];
+
+      final horaTempoInicio = int.tryParse(tempoInicio.split(':')[0]) ?? 0;
+      final minutoTempoInicio = int.tryParse(tempoInicio.split(':')[1]) ?? 0;
+      final horaTempoFim = int.tryParse(tempoFim.split(':')[0]) ?? 0;
+      final minutoTempoFim = int.tryParse(tempoFim.split(':')[1]) ?? 0;
+
+      final inicio =
+          '${horaTempoInicio}h${minutoTempoInicio > 0 ? '$minutoTempoInicio' : ''}';
+      final fim =
+          '${horaTempoFim}h${minutoTempoFim > 0 ? '$minutoTempoFim' : ''}';
+      return '$inicio às $fim';
+    } catch (_) {
+      return "--";
     }
+  }
 
-    final turnos = horarioPrevisto!.split(' ');
+  String getMidPeriod(String period) {
+    final firstTime = period.split('-')[0];
+    final secondTime = period.split('-')[1];
 
-    final primeiroTurnoSplitted = turnos[0].split('-');
-    final segundoTurnosSplitted = turnos[2].split('-');
+    final firstHour = firstTime.split(':')[0];
+    final lastHour = secondTime.split(':')[0];
 
-    final tempoInicio = primeiroTurnoSplitted[0];
-    final tempoFim = segundoTurnosSplitted[1];
-
-    final horaTempoInicio = int.tryParse(tempoInicio.split(':')[0]) ?? 0;
-    final minutoTempoInicio = int.tryParse(tempoInicio.split(':')[1]) ?? 0;
-    final horaTempoFim = int.tryParse(tempoFim.split(':')[0]) ?? 0;
-    final minutoTempoFim = int.tryParse(tempoFim.split(':')[1]) ?? 0;
-
-    final inicio =
-        '${horaTempoInicio}h${minutoTempoInicio > 0 ? '$minutoTempoInicio' : ''}';
-    final fim =
-        '${horaTempoFim}h${minutoTempoFim > 0 ? '$minutoTempoFim' : ''}';
-    return '$inicio às $fim';
+    return '${firstHour}h às ${lastHour}h';
   }
 
   String getStartTime() {

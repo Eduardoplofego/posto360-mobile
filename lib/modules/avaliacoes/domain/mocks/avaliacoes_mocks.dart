@@ -88,3 +88,132 @@ final List<Map<String, dynamic>> avaliacoesMock = [
     "penalidade": 0.0,
   },
 ];
+
+final List<Map<String, dynamic>> avaliadorPendentesMocks = [
+  {
+    "id": 11,
+    "nome": "Checklist Operacional",
+    "descricao": "Validação das operações diárias",
+    "numeroCriterios": 6,
+    "numModelo": "101",
+    "prazo": "2026-04-17",
+  },
+  {
+    "id": 12,
+    "nome": "Inspeção de Segurança",
+    "descricao": "Verificação de normas de segurança no posto",
+    "numeroCriterios": 8,
+    "numModelo": "202",
+    "prazo": "2026-04-18",
+  },
+  {
+    "id": 13,
+    "nome": "Auditoria de Limpeza",
+    "descricao": "Avaliação das condições de limpeza e organização",
+    "numeroCriterios": 5,
+    "numModelo": "303",
+    "prazo": "2026-04-25",
+  },
+  {
+    "id": 14,
+    "nome": "Checklist de Equipamentos",
+    "descricao": "Verificação do funcionamento dos equipamentos",
+    "numeroCriterios": 7,
+    "numModelo": "404",
+    "prazo": "2026-04-22",
+  },
+];
+
+final List<Map<String, dynamic>> avaliadorFinalizadasMocks = [
+  {
+    "id": 21,
+    "nome": "Checklist Operacional",
+    "descricao": "Validação das operações diárias",
+    "numeroCriterios": 6,
+    "criteriosCumpridos": 6,
+    "penalidade": 0.0,
+    "avaliador": "Carlos Souza",
+    "dataAvaliacao": "2026-04-02",
+  },
+  {
+    "id": 22,
+    "nome": "Inspeção de Segurança",
+    "descricao": "Verificação de normas de segurança no posto",
+    "numeroCriterios": 8,
+    "criteriosCumpridos": 7,
+    "penalidade": -0.5,
+    "avaliador": "Ana Pereira",
+    "dataAvaliacao": "2026-04-05",
+  },
+  {
+    "id": 23,
+    "nome": "Auditoria de Limpeza",
+    "descricao": "Avaliação das condições de limpeza e organização",
+    "numeroCriterios": 5,
+    "criteriosCumpridos": 4,
+    "penalidade": -1.0,
+    "avaliador": "Mariana Lima",
+    "dataAvaliacao": "2026-04-07",
+  },
+  {
+    "id": 24,
+    "nome": "Checklist de Equipamentos",
+    "descricao": "Verificação do funcionamento dos equipamentos",
+    "numeroCriterios": 7,
+    "criteriosCumpridos": 7,
+    "penalidade": 0.0,
+    "avaliador": "João Santos",
+    "dataAvaliacao": "2026-04-10",
+  },
+];
+
+final List<Map<String, dynamic>> mockUserMaps = [
+  {
+    'id': '1',
+    'nome': 'João Silva',
+    'funcao': 'Desenvolvedor',
+    'isAvaliated': true,
+  },
+  {
+    'id': '2',
+    'nome': 'Maria Souza',
+    'funcao': 'Designer',
+    'isAvaliated': false,
+  },
+  {
+    'id': '3',
+    'nome': 'Carlos Pereira',
+    'funcao': 'Gerente de Projetos',
+    'isAvaliated': true,
+  },
+  {
+    'id': '4',
+    'nome': 'Bruno Almeida',
+    'funcao': 'Analista de Sistemas',
+    'isAvaliated': true,
+  },
+  {
+    'id': '5',
+    'nome': 'Patrícia Lima',
+    'funcao': 'Scrum Master',
+    'isAvaliated': false,
+  },
+  {
+    'id': '6',
+    'nome': 'Rafael Gomes',
+    'funcao': 'UX Designer',
+    'isAvaliated': true,
+  },
+  {
+    'id': '7',
+    'nome': 'Juliana Rocha',
+    'funcao': 'Desenvolvedora Mobile',
+    'isAvaliated': false,
+  },
+  {
+    'id': '8',
+    'nome': 'Eduardo Martins',
+    'funcao': 'Tech Lead',
+    'isAvaliated': true,
+  },
+];

@@ -57,7 +57,7 @@ class AvaliacoesCriteriosController extends GetxController {
     _getRouterArguments();
 
     if (_gestaoAvaliacaoId.value == null || _modeloAvaliacaoId.value == null) {
-      Get.back<bool>();
+      Get.back(closeOverlays: true, result: null);
     }
 
     final result = await _avaliacoesService.getCriterios(
