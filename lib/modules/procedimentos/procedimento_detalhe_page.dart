@@ -35,6 +35,13 @@ class ProcedimentoDetalhePage extends GetView<ProcedimentoDetalheController> {
             );
           }
 
+          if (controller.hasError) {
+            return _ErrorState(
+              message: controller.errorMessage,
+              onRetry: controller.onRefresh,
+            );
+          }
+
           final procedimento = controller.procedimento;
           if (procedimento == null) {
             return const _NotFoundState();
@@ -160,6 +167,60 @@ class _NotFoundState extends StatelessWidget {
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: PostoAppUiConfigurations.textDarkColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  final String message;
+  final Future<void> Function() onRetry;
+
+  const _ErrorState({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.cloud_off_rounded,
+              size: 56,
+              color: PostoAppUiConfigurations.darkGreyColor,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Não foi possível carregar',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: PostoAppUiConfigurations.textDarkColor,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: PostoAppUiConfigurations.greyColor,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: const Text('Tentar novamente'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: PostoAppUiConfigurations.blueMediumColor,
               ),
             ),
           ],

@@ -1,17 +1,25 @@
 import 'package:get/get.dart';
+import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/procedimentos/domain/models/procedimento_model.dart';
-import 'package:posto360/modules/procedimentos/infra/mock/procedimentos_mock.dart';
+import 'package:posto360/modules/procedimentos/infra/services/procedimentos_service.dart';
 
 class ProcedimentoDetalheController extends GetxController {
   final int procedimentoId;
+  final ProcedimentosService _procedimentosService;
 
-  ProcedimentoDetalheController({required this.procedimentoId});
+  ProcedimentoDetalheController({
+    required this.procedimentoId,
+    required ProcedimentosService procedimentosService,
+  }) : _procedimentosService = procedimentosService;
 
   final _loading = false.obs;
+  final _errorMessage = ''.obs;
   final _procedimento = Rxn<ProcedimentoModel>();
   final _expanded = <int>{}.obs;
 
   bool get isLoading => _loading.value;
+  String get errorMessage => _errorMessage.value;
+  bool get hasError => _errorMessage.value.isNotEmpty;
   ProcedimentoModel? get procedimento => _procedimento.value;
   Set<int> get expandedEtapas => _expanded;
 
@@ -27,17 +35,26 @@ class ProcedimentoDetalheController extends GetxController {
 
   Future<void> _loadDetalhe() async {
     _loading.value = true;
-    await Future.delayed(const Duration(milliseconds: 300));
-    final data = ProcedimentosMock.detalhes();
-    final match = (data['procedimentos'] as List).cast<Map<String, dynamic>>()
-        .firstWhereOrNull((e) => (e['id']?.toInt() ?? -1) == procedimentoId);
-    if (match != null) {
-      final model = ProcedimentoModel.fromMap(match);
+    _errorMessage.value = '';
+    final user = Get.find<AuthService>().authenticatedUser;
+    if (user == null) {
+      _errorMessage.value = 'Usuário não autenticado.';
+      _loading.value = false;
+      return;
+    }
+    final result = await _procedimentosService.getProcedimentoDetalhe(
+      userId: user.id,
+      procedimentoId: procedimentoId,
+    );
+    if (result.success) {
+      final model = result.data;
       _procedimento.value = model;
-      if (model.etapas.isNotEmpty) {
+      _expanded.clear();
+      if (model != null && model.etapas.isNotEmpty) {
         _expanded.add(model.etapas.first.id);
       }
     } else {
+      _errorMessage.value = result.message;
       _procedimento.value = null;
     }
     _loading.value = false;
