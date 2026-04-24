@@ -41,6 +41,7 @@ class CardResumeWidget extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Column(
@@ -70,24 +71,13 @@ class CardResumeWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 14),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: notaColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: notaColor.withValues(alpha: 0.25)),
-                ),
-                child: Text(
-                  finalNote.toStringAsFixed(2),
-                  style: TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.w700,
-                    color: notaColor,
-                    height: 1,
-                  ),
+              Text(
+                finalNote.toStringAsFixed(2),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: notaColor,
+                  height: 1,
                 ),
               ),
             ],
@@ -128,7 +118,7 @@ class CardResumeWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: PostoAppUiConfigurations.blueMediumColor,
+                  color: PostoAppUiConfigurations.textDarkColor,
                 ),
               ),
             ],
