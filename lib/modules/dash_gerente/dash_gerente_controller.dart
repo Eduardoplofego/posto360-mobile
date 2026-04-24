@@ -18,6 +18,10 @@ class DashGerenteController extends DashController {
   bool get hasResumoEquipe => _hasResumoEquipe.value;
 
   @override
+  double get penalidadeTotal =>
+      super.penalidadeTotal + resumoEquipe.penalidade;
+
+  @override
   void onReady() async {
     super.onReady();
     await loadResumoEquipe();

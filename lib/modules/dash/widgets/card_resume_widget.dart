@@ -13,92 +13,151 @@ class CardResumeWidget extends StatelessWidget {
     required this.penalidades,
   });
 
+  Color _notaColor(double nota) {
+    if (nota >= 8) return Colors.green.shade700;
+    if (nota >= 6) return PostoAppUiConfigurations.orangeColor;
+    return Colors.red.shade700;
+  }
+
   @override
   Widget build(BuildContext context) {
     final finalNote = 10 - penalidades.abs();
     final maxBonus = premioFuncao + premioCampanhas;
+    final premioFinal = maxBonus * (finalNote / 10);
+    final notaColor = _notaColor(finalNote);
+
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       decoration: BoxDecoration(
         color: PostoAppUiConfigurations.lightPurpleColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Row(
-              children: [
-                Text(
-                  'Resumo de performance',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
+          const Text(
+            'Resumo de performance',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 7),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  spacing: 6,
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(radius: 4, backgroundColor: Colors.blue),
                     Text(
-                      'Prêmio máximo por função: ${UtilBrasilFields.obterReal(premioFuncao)}',
+                      'Nota final',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: PostoAppUiConfigurations.greyColor,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Penalidades: -${penalidades.abs().toStringAsFixed(2)}',
                       style: TextStyle(fontSize: 12, color: Colors.black54),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  spacing: 6,
-                  children: [
-                    CircleAvatar(radius: 4, backgroundColor: Colors.orange),
-                    Text(
-                      'Prêmio máximo campanha: ${UtilBrasilFields.obterReal(premioCampanhas)}',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
-                    ),
-                  ],
+              ),
+              const SizedBox(width: 14),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  spacing: 6,
-                  children: [
-                    CircleAvatar(radius: 4, backgroundColor: Colors.blue),
-                    Text(
-                      'Prêmio máximo total: ${UtilBrasilFields.obterReal(maxBonus)}',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
-                    ),
-                  ],
+                decoration: BoxDecoration(
+                  color: notaColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: notaColor.withValues(alpha: 0.25)),
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  spacing: 6,
-                  children: [
-                    CircleAvatar(radius: 4, backgroundColor: Colors.blue),
-                    Text(
-                      'Nota final: $finalNote',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
-                    ),
-                  ],
+                child: Text(
+                  finalNote.toStringAsFixed(2),
+                  style: TextStyle(
+                    fontSize: 34,
+                    fontWeight: FontWeight.w700,
+                    color: notaColor,
+                    height: 1,
+                  ),
                 ),
-                const SizedBox(height: 6),
-                Divider(),
-                Row(
-                  children: [
-                    Text(
-                      'Prêmio final: ${UtilBrasilFields.obterReal(maxBonus * (finalNote / 10))}',
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
-                    ),
-                  ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Divider(height: 1, color: Colors.black12),
+          const SizedBox(height: 12),
+          _LinhaInfo(
+            label: 'Prêmio máximo por função',
+            valor: UtilBrasilFields.obterReal(premioFuncao),
+          ),
+          const SizedBox(height: 6),
+          _LinhaInfo(
+            label: 'Prêmio máximo campanha',
+            valor: UtilBrasilFields.obterReal(premioCampanhas),
+          ),
+          const SizedBox(height: 6),
+          _LinhaInfo(
+            label: 'Prêmio máximo total',
+            valor: UtilBrasilFields.obterReal(maxBonus),
+          ),
+          const SizedBox(height: 12),
+          Divider(height: 1, color: Colors.black12),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Text(
+                'Prêmio final',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: PostoAppUiConfigurations.textDarkColor,
                 ),
-              ],
-            ),
+              ),
+              const Spacer(),
+              Text(
+                UtilBrasilFields.obterReal(premioFinal),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: PostoAppUiConfigurations.blueMediumColor,
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+}
+
+class _LinhaInfo extends StatelessWidget {
+  final String label;
+  final String valor;
+
+  const _LinhaInfo({required this.label, required this.valor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        ),
+        Text(
+          valor,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.black87,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
