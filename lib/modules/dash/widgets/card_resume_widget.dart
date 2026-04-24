@@ -29,7 +29,7 @@ class CardResumeWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       decoration: BoxDecoration(
-        color: PostoAppUiConfigurations.lightPurpleColor,
+        color: PostoAppUiConfigurations.lightGreyBgColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -57,8 +57,14 @@ class CardResumeWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Penalidades: -${penalidades.abs().toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                      'Penalidades: ${penalidades.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: penalidades < 0
+                            ? Colors.red.shade700
+                            : Colors.black54,
+                      ),
                     ),
                   ],
                 ),

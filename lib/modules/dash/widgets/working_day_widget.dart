@@ -18,7 +18,7 @@ class WorkingDayWidget extends GetView<DashController> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 6),
       decoration: BoxDecoration(
-        color: PostoAppUiConfigurations.lightPurpleColor,
+        color: PostoAppUiConfigurations.lightGreyBgColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: LayoutBuilder(

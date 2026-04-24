@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
 
@@ -34,151 +33,158 @@ class CardDetailedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentTaked = 1 - (penalidade.abs() / 10);
+    final hasButton = onPressed != null;
     return Container(
       width: Get.width,
-      padding: EdgeInsets.only(
-        top: 10,
-        right: onPressed != null ? 0 : 16,
-        left: 16,
-        bottom: onPressed != null ? 0 : 20,
-      ),
+      padding: EdgeInsets.fromLTRB(16, 12, hasButton ? 0 : 16, hasButton ? 0 : 16),
       decoration: BoxDecoration(
-        color: PostoAppUiConfigurations.lightPurpleColor,
+        color: PostoAppUiConfigurations.lightGreyBgColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
+          Padding(
+            padding: EdgeInsets.only(right: hasButton ? 16 : 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  spacing: 10,
                   children: [
-                    Row(
-                      spacing: 10,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            icon,
-                            color: PostoAppUiConfigurations.blueMediumColor,
-                            size: 30,
-                          ),
-                        ),
-                        Text(
-                          totalNumber.toString(),
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        icon,
+                        color: PostoAppUiConfigurations.blueMediumColor,
+                        size: 30,
+                      ),
                     ),
-                    const SizedBox(height: 17),
-                    Row(
-                      spacing: 7,
-                      children: [
-                        SizedBox(
-                          width: 140,
-                          child: Text(title, style: TextStyle(fontSize: 14)),
-                        ),
-                        !hideTrendingDetail
-                            ? Container(
-                              padding: EdgeInsets.all(3),
-                              decoration: BoxDecoration(
-                                color:
-                                    !trendingUp
-                                        ? Color.fromARGB(255, 195, 153, 153)
-                                        : Color(0xFF97CE71),
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.transparent),
-                              ),
-                              child: Icon(
-                                !trendingUp
-                                    ? Icons.trending_down_outlined
-                                    : Icons.trending_up_outlined,
-                                size: 12,
-                                color:
-                                    !trendingUp
-                                        ? Color(0xFF900C0C)
-                                        : Color(0xFF43900C),
-                              ),
-                            )
-                            : const SizedBox.shrink(),
-                      ],
-                    ),
-                    const SizedBox(height: 17),
-                    Row(
-                      spacing: 6,
-                      children: [
-                        CircleAvatar(radius: 4, backgroundColor: Colors.blue),
-                        Text(
-                          '${!hideNumberDetailed ? totalNumberDetailed : ''} $totalNumberDetailedText',
-                          style: TextStyle(fontSize: 12, color: Colors.black38),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      spacing: 6,
-                      children: [
-                        CircleAvatar(radius: 4, backgroundColor: Colors.orange),
-                        Text(
-                          '${!hideNumberDetailed ? totalNumber : ''} $totalTakeNumberDetailedText',
-                          style: TextStyle(fontSize: 12, color: Colors.black38),
-                        ),
-                      ],
+                    Text(
+                      totalNumber.toString(),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: onPressed != null ? 16 : 0),
-                  child: Center(
-                    child: CircularPercentIndicator(
-                      radius: 50,
-                      lineWidth: 10,
-                      percent: 1 - percentTaked.toDouble(),
-                      animation: true,
-                      center: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            penalidade.toString(),
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: PostoAppUiConfigurations.orangeColor,
-                            ),
-                          ),
-                          Text(
-                            'Penalidade',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black38,
-                            ),
-                          ),
-                        ],
+                const SizedBox(height: 16),
+                Row(
+                  spacing: 7,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: PostoAppUiConfigurations.textDarkColor,
                       ),
-                      progressColor: PostoAppUiConfigurations.orangeColor,
-                      backgroundColor: PostoAppUiConfigurations.blueMediumColor,
-                      circularStrokeCap: CircularStrokeCap.round,
                     ),
-                  ),
+                    if (!hideTrendingDetail)
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: !trendingUp
+                              ? const Color.fromARGB(255, 195, 153, 153)
+                              : const Color(0xFF97CE71),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          !trendingUp
+                              ? Icons.trending_down_outlined
+                              : Icons.trending_up_outlined,
+                          size: 12,
+                          color: !trendingUp
+                              ? const Color(0xFF900C0C)
+                              : const Color(0xFF43900C),
+                        ),
+                      ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                _BulletItem(
+                  color: Colors.blue,
+                  label:
+                      '${!hideNumberDetailed ? totalNumberDetailed : ''} $totalNumberDetailedText',
+                ),
+                const SizedBox(height: 6),
+                _BulletItem(
+                  color: Colors.orange,
+                  label:
+                      '${!hideNumberDetailed ? totalNumber : ''} $totalTakeNumberDetailedText',
+                ),
+                const SizedBox(height: 12),
+                Divider(height: 1, color: Colors.black12),
+                const SizedBox(height: 10),
+                _PenalidadeRow(valor: penalidade),
+              ],
+            ),
           ),
-          onPressed != null
-              ? ButtonCardWidget(onPressed: onPressed!)
-              : const SizedBox.shrink(),
+          if (hasButton) ...[
+            const SizedBox(height: 12),
+            ButtonCardWidget(onPressed: onPressed!),
+          ],
         ],
       ),
+    );
+  }
+}
+
+class _BulletItem extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _BulletItem({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      spacing: 6,
+      children: [
+        CircleAvatar(radius: 4, backgroundColor: color),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: Colors.black54),
+        ),
+      ],
+    );
+  }
+}
+
+class _PenalidadeRow extends StatelessWidget {
+  final double valor;
+
+  const _PenalidadeRow({required this.valor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Text(
+          'Penalidade',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: Colors.black54,
+          ),
+        ),
+        const Spacer(),
+        Text(
+          valor.toStringAsFixed(2),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: valor < 0
+                ? Colors.red.shade700
+                : PostoAppUiConfigurations.textDarkColor,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -8,6 +8,7 @@ class PostoAppUiConfigurations {
   static Color blueMediumColor = const Color(0xFF1C47C7);
   static Color purpleColor = const Color(0xFF544F77);
   static Color lightPurpleColor = const Color(0xFFEEF2FF);
+  static Color lightGreyBgColor = const Color(0xFFF3F4F6);
   static Color textDarkColor = const Color(0xFF0D1829);
   static Color orangeColor = const Color(0xFFF77307);
 

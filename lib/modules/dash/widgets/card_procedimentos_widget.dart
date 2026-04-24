@@ -19,7 +19,7 @@ class CardProcedimentosWidget extends StatelessWidget {
         bottom: onPressed != null ? 0 : 20,
       ),
       decoration: BoxDecoration(
-        color: PostoAppUiConfigurations.lightPurpleColor,
+        color: PostoAppUiConfigurations.lightGreyBgColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
