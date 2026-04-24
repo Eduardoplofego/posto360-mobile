@@ -19,19 +19,42 @@ class HorarioFaltasAtrasosRepositoryImpl
     required String dataInicial,
     required String dataFinal,
     required String dataAtual,
-    required String codigoFuncionario,
+    required int funcionarioCodigo,
   }) async {
     try {
       final result = await _restClient.post(ApiRoutes.dashboardRH(), {
+        'funcionarioCodigo': funcionarioCodigo,
+        'dataAtual': dataAtual,
         'dataInicial': dataInicial,
         'dataFinal': dataFinal,
-        'dataAtual': dataAtual,
-        'funcionarioCodigo': codigoFuncionario,
       });
+      if (result.statusCode != null && result.statusCode! >= 400) {
+        log(
+          'Erro get horas_faltas_atraso [${result.statusCode}]',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure(
+          'Erro ao carregar jornada de trabalho',
+          HorarioFaltasModel.empty(),
+        );
+      }
+      final body = result.body;
+      if (body is! Map<String, dynamic>) {
+        log(
+          'Resposta inesperada dashboard/rh',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure(
+          'Resposta inesperada do servidor',
+          HorarioFaltasModel.empty(),
+        );
+      }
+      log('dashboard/rh response: ${result.bodyString}');
       return ResultActionDTO.success(
-        data: HorarioFaltasModel.fromMap(result.body),
-        message:
-            result.body.containsKey('message') ? result.body['message'] : null,
+        data: HorarioFaltasModel.fromMap(body),
+        message: body.containsKey('message') ? body['message'] : null,
       );
     } catch (e, s) {
       log('Erro get horas_faltas_atraso', error: e, stackTrace: s);

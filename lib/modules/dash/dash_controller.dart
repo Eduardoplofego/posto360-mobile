@@ -72,7 +72,7 @@ class DashController extends FullLifeCycleController
   double get penalidadeTotal =>
       dashboardModel.penalidadeChecklists +
       dashboardModel.penalidadeCursos +
-      horarioFaltasAtrasos.penalidade +
+      horarioFaltasAtrasos.penalidade.toDouble() +
       cartoesModel.penalidade;
 
   DashboardModel get dashboardModel => _dashboardModel.value;
@@ -166,7 +166,7 @@ class DashController extends FullLifeCycleController
     final result = await _horarioFaltasAtrasosService.getHorario(
       dataAtual: today,
       dataSelecionada: monthSelected,
-      codigoFuncionario: autheticatedUser.codigoPDV.toString(),
+      funcionarioCodigo: autheticatedUser.codigoPDV!,
     );
 
     if (result.isError) {
