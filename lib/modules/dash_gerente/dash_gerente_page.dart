@@ -70,20 +70,33 @@ class DashGerentePage extends GetView<DashGerenteController> {
                           initDelay: 50,
                           child: ProfileCardWidget(),
                         ),
-                        const SizedBox(height: 26),
+                        const SizedBox(height: 20),
+                        DashboardSectionHeaderWidget(),
+                        const SizedBox(height: 14),
+                        CardLoadingWidget(
+                          isLoading: controller.loadingWork,
+                          height: 100,
+                          initDelay: 150,
+                          child: WorkingDayWidget(),
+                        ),
+                        const SizedBox(height: 17),
+                        CardLoadingWidget(
+                          isLoading: controller.loadingWork,
+                          height: 160,
+                          initDelay: 180,
+                          child: CardProcedimentosWidget(
+                            onPressed: () {
+                              Get.toNamed('/procedimentos');
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 17),
                         CardResumeWidget(
                           premioFuncao:
                               controller.autheticatedUser.premioFuncao,
                           premioCampanhas:
                               controller.dashboardModel.bonificacaoTotal,
                           penalidades: controller.penalidadeTotal,
-                        ),
-                        const SizedBox(height: 26),
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 100,
-                          initDelay: 150,
-                          child: WorkingDayWidget(),
                         ),
                         const SizedBox(height: 17),
                         if (controller.loadingResumoEquipe ||
@@ -103,18 +116,7 @@ class DashGerentePage extends GetView<DashGerenteController> {
                           ),
                           const SizedBox(height: 17),
                         ],
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 160,
-                          initDelay: 180,
-                          child: CardProcedimentosWidget(
-                            onPressed: () {
-                              Get.toNamed('/procedimentos');
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 28),
-                        DashboardSectionHeaderWidget(),
+                        const SizedBox(height: 11),
                         if (controller.loadingDashboardModel)
                           Padding(
                             padding: const EdgeInsets.only(top: 24),
