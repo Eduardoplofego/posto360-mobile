@@ -53,6 +53,12 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/procedimentos/vendedor';
   static const _procedimentosDetalhes =
       '$_backendBaseUrl/api/mobile/procedimentos/vendedor/detalhes';
+  static const _gerentesDashboardEquipe =
+      '$_backendBaseUrl/api/mobile/gerentes/dashboard/equipe';
+  static const _gerentesEquipeDetalhes =
+      '$_backendBaseUrl/api/mobile/gerentes/equipe/detalhes';
+  static const _gerentesEquipeColaborador =
+      '$_backendBaseUrl/api/mobile/gerentes/equipe/colaborador';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -82,4 +88,7 @@ class ApiRoutes {
   static String registroPontosDetalhes() => _registroPontosDetalhes;
   static String procedimentos() => _procedimentos;
   static String procedimentosDetalhes() => _procedimentosDetalhes;
+  static String gerentesDashboardEquipe() => _gerentesDashboardEquipe;
+  static String gerentesEquipeDetalhes() => _gerentesEquipeDetalhes;
+  static String gerentesEquipeColaborador() => _gerentesEquipeColaborador;
 }

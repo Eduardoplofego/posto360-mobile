@@ -9,6 +9,8 @@ import 'package:posto360/modules/campanhas/campanhas_routers.dart';
 import 'package:posto360/modules/checklist/checklists_routers.dart';
 import 'package:posto360/modules/aulas/cursos_routers.dart';
 import 'package:posto360/modules/dash/dashboard_routers.dart';
+import 'package:posto360/modules/dash_gerente/dash_gerente_routers.dart';
+import 'package:posto360/modules/equipe/equipe_routers.dart';
 import 'package:posto360/modules/fechamento-caixa/fechamento_caixa_routers.dart';
 import 'package:posto360/modules/login/login_routers.dart';
 import 'package:posto360/modules/core/routers/splash_routers.dart';
@@ -36,6 +38,8 @@ class PostoApp extends StatelessWidget {
         ...SplashRouters.routes,
         ...LoginRouters.routes,
         ...DashboardRouters.routes,
+        ...DashGerenteRouters.routes,
+        ...EquipeRouters.routes,
         ...CampanhasRouters.routes,
         ...CursosRouters.routes,
         ...ChecklistsRouters.routes,

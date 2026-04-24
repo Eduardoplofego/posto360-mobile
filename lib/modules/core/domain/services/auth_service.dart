@@ -23,7 +23,12 @@ class AuthService extends GetxService {
       if (isLogged == null || !isLogged) {
         Get.offAllNamed('/login');
       } else {
-        Get.offAllNamed('/dashboard');
+        final user = getUser();
+        if (user?.tipoUsuario == 'GERENTE') {
+          Get.offAllNamed('/dashboard-gerente');
+        } else {
+          Get.offAllNamed('/dashboard');
+        }
       }
     });
 
