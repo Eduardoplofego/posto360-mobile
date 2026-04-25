@@ -21,7 +21,7 @@ class CardResumeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final finalNote = 10 - penalidades.abs();
+    final finalNote = (10 - penalidades.abs()).clamp(0.0, 10.0);
     final maxBonus = premioFuncao + premioCampanhas;
     final premioFinal = maxBonus * (finalNote / 10);
     final notaColor = _notaColor(finalNote);
@@ -44,41 +44,41 @@ class CardResumeWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Nota final',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: PostoAppUiConfigurations.greyColor,
-                        letterSpacing: 0.4,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Penalidades: ${penalidades.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: penalidades < 0
-                            ? Colors.red.shade700
-                            : Colors.black54,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  'Penalidades: ${penalidades.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: penalidades < 0
+                        ? Colors.red.shade700
+                        : Colors.black54,
+                  ),
                 ),
               ),
               const SizedBox(width: 14),
-              Text(
-                finalNote.toStringAsFixed(2),
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: notaColor,
-                  height: 1,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Nota final',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: PostoAppUiConfigurations.greyColor,
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    finalNote.toStringAsFixed(2),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: notaColor,
+                      height: 1,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
