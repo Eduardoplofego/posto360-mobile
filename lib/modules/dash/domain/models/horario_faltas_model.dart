@@ -31,47 +31,50 @@ class HorarioFaltasModel {
     );
   }
 
+  List<String> _turnos() {
+    final raw = horarioPrevisto;
+    if (raw == null || raw.isEmpty) return const [];
+    return raw.split(RegExp(r'\s+')).where((t) => t.isNotEmpty).toList();
+  }
+
+  ({int hora, int minuto})? _parseHorario(String s) {
+    final partes = s.split(':');
+    if (partes.isEmpty) return null;
+    final hora = int.tryParse(partes[0]) ?? 0;
+    final minuto = partes.length > 1 ? int.tryParse(partes[1]) ?? 0 : 0;
+    return (hora: hora, minuto: minuto);
+  }
+
   String getJornadaTrabalho() {
-    if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
-      return '--';
-    }
+    final turnos = _turnos();
+    if (turnos.isEmpty) return '--';
 
-    final turnos = horarioPrevisto!.split(' ');
+    final primeiroTurno = turnos.first.split('-');
+    final ultimoTurno = turnos.last.split('-');
+    if (primeiroTurno.length < 2 || ultimoTurno.length < 2) return '--';
 
-    final primeiroTurnoSplitted = turnos[0].split('-');
-    final segundoTurnosSplitted = turnos[2].split('-');
+    final inicio = _parseHorario(primeiroTurno.first);
+    final fim = _parseHorario(ultimoTurno.last);
+    if (inicio == null || fim == null) return '--';
 
-    final tempoInicio = primeiroTurnoSplitted[0];
-    final tempoFim = segundoTurnosSplitted[1];
-
-    final horaTempoInicio = int.tryParse(tempoInicio.split(':')[0]) ?? 0;
-    final minutoTempoInicio = int.tryParse(tempoInicio.split(':')[1]) ?? 0;
-    final horaTempoFim = int.tryParse(tempoFim.split(':')[0]) ?? 0;
-    final minutoTempoFim = int.tryParse(tempoFim.split(':')[1]) ?? 0;
-
-    final inicio =
-        '${horaTempoInicio}h${minutoTempoInicio > 0 ? '$minutoTempoInicio' : ''}';
-    final fim =
-        '${horaTempoFim}h${minutoTempoFim > 0 ? '$minutoTempoFim' : ''}';
-    return '$inicio às $fim';
+    final inicioStr =
+        '${inicio.hora}h${inicio.minuto > 0 ? '${inicio.minuto}' : ''}';
+    final fimStr = '${fim.hora}h${fim.minuto > 0 ? '${fim.minuto}' : ''}';
+    return '$inicioStr às $fimStr';
   }
 
   String getStartTime() {
-    if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
-      return '';
-    }
+    final turnos = _turnos();
+    if (turnos.isEmpty) return '';
 
-    final turnos = horarioPrevisto!.split(' ');
+    final primeiroTurno = turnos.first.split('-');
+    if (primeiroTurno.isEmpty) return '';
 
-    final primeiroTurnoSplitted = turnos[0].split('-');
+    final inicio = _parseHorario(primeiroTurno.first);
+    if (inicio == null) return '';
 
-    final tempoInicio = primeiroTurnoSplitted[0];
-
-    final horaTempoInicio = tempoInicio.split(':')[0];
-    final minutoTempoInicio = tempoInicio.split(':')[1];
-
-    final inicio = '${horaTempoInicio}h$minutoTempoInicio';
-    return inicio;
+    final minutoStr = inicio.minuto.toString().padLeft(2, '0');
+    return '${inicio.hora}h$minutoStr';
   }
 
   Map<String, dynamic> toMap() {
