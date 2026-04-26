@@ -7,18 +7,19 @@ import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
 
 class CardCloseMoney extends StatelessWidget {
   final CartoesModel model;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   const CardCloseMoney({
     super.key,
     required this.model,
-    required this.onPressed,
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final hasButton = onPressed != null;
     return Container(
       width: Get.width,
-      padding: const EdgeInsets.fromLTRB(16, 12, 0, 0),
+      padding: EdgeInsets.fromLTRB(16, 12, hasButton ? 0 : 16, hasButton ? 0 : 16),
       decoration: BoxDecoration(
         color: PostoAppUiConfigurations.lightGreyBgColor,
         borderRadius: BorderRadius.circular(15),
@@ -27,7 +28,7 @@ class CardCloseMoney extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: EdgeInsets.only(right: hasButton ? 16 : 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -91,8 +92,10 @@ class CardCloseMoney extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          ButtonCardWidget(onPressed: onPressed),
+          if (hasButton) ...[
+            const SizedBox(height: 12),
+            ButtonCardWidget(onPressed: onPressed!),
+          ],
         ],
       ),
     );

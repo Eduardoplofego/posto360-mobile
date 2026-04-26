@@ -63,7 +63,7 @@ class EquipePage extends GetView<EquipeController> {
                   child: MembroEquipeCardWidget(
                     membro: m,
                     onPressed: () {
-                      // Fase 2: disparar view-as pra esse colaborador.
+                      Get.toNamed('/equipe/colaborador/${m.id}');
                     },
                   ),
                 ),

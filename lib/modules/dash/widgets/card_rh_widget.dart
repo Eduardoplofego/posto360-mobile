@@ -6,17 +6,18 @@ import 'package:posto360/modules/dash/widgets/button_card_widget.dart';
 
 class CardRhWidget extends StatelessWidget {
   final HorarioFaltasModel model;
-  final VoidCallback onPressed;
-  const CardRhWidget({super.key, required this.model, required this.onPressed});
+  final VoidCallback? onPressed;
+  const CardRhWidget({super.key, required this.model, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     final totalFaltas = model.faltasInjustificadas + model.faltasPonto;
     final totalAtrasos =
         model.atrasosGrave + model.atrasosMedio + model.atrasosLeve;
+    final hasButton = onPressed != null;
     return Container(
       width: Get.width,
-      padding: const EdgeInsets.fromLTRB(16, 12, 0, 0),
+      padding: EdgeInsets.fromLTRB(16, 12, hasButton ? 0 : 16, hasButton ? 0 : 16),
       decoration: BoxDecoration(
         color: PostoAppUiConfigurations.lightGreyBgColor,
         borderRadius: BorderRadius.circular(15),
@@ -25,7 +26,7 @@ class CardRhWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: EdgeInsets.only(right: hasButton ? 16 : 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -54,13 +55,37 @@ class CardRhWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Faltas e atrasos',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: PostoAppUiConfigurations.textDarkColor,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Faltas e atrasos',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: PostoAppUiConfigurations.textDarkColor,
+                        ),
+                      ),
+                    ),
+                    if (model.getJornadaTrabalho() != '--')
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.schedule_outlined,
+                            size: 14,
+                            color: PostoAppUiConfigurations.greyColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            model.getJornadaTrabalho(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: PostoAppUiConfigurations.greyColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 _BulletItem(
@@ -94,8 +119,10 @@ class CardRhWidget extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          ButtonCardWidget(onPressed: onPressed),
+          if (hasButton) ...[
+            const SizedBox(height: 12),
+            ButtonCardWidget(onPressed: onPressed!),
+          ],
         ],
       ),
     );
