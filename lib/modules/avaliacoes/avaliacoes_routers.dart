@@ -21,7 +21,7 @@ class AvaliacoesRouters {
       binding: AvaliacoesBindings(),
     ),
     GetPage(
-      name: '/avaliacoes/realizar_avaliacao',
+      name: '/avaliacoes/realizar_avaliacao/:avaliacaoId/:modeloId',
       page: () => RealizarAvaliacaoPage(),
       binding: RealizarAvaliacaoBindings(),
     ),

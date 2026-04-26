@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:posto360/modules/avaliacoes/domain/enums/avaliation_status_enum.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_avaliador_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/user_model.dart';
@@ -138,17 +139,19 @@ class AvaliacoesController extends GetxController with MessageMixin {
       return;
     }
 
-    await _avaliacoesService.getUsers(avaliacaoId: 1);
-
     _avaliacoesAvaliador.assignAll(avaliacoes.data!);
     _avaliacoesAvaliadorLoaded = true;
     _loading(false);
   }
 
-  Future<void> navigateToDiscretionsPage(AvaliacaoPendente avaliation) async {
+  Future<void> checkUserAndNavigateToDiscretionsPage(
+    AvaliacaoPendente avaliation,
+  ) async {
     if (avaliation.avaliadoId != null) {
-      // ir para pagina de criterios
-      // return;
+      if (avaliation.status == AvaliationStatusEnum.aFazer.status) {
+        return await _startAndNavigateToDiscretionsPage(avaliation);
+      }
+      return await _navigateToDiscretionsPage(avaliation);
     }
 
     final userSelected = await _getUserToAvaliation(avaliation.id);
@@ -166,6 +169,10 @@ class AvaliacoesController extends GetxController with MessageMixin {
         ),
       );
     }
+    if (avaliation.status == AvaliationStatusEnum.aFazer.status) {
+      return await _startAndNavigateToDiscretionsPage(avaliation);
+    }
+    await _navigateToDiscretionsPage(avaliation);
   }
 
   Future<UserAvaliationModel?> _getUserToAvaliation(int avaliacaoId) async {
@@ -189,5 +196,42 @@ class AvaliacoesController extends GetxController with MessageMixin {
     if (result.isError) return 'Ocorreu um erro ao definir usuário';
 
     return null;
+  }
+
+  Future<void> _startAndNavigateToDiscretionsPage(
+    AvaliacaoPendente avaliation,
+  ) async {
+    final resultStarting = await _avaliacoesService.startAvaliation(
+      avaliacaoId: avaliation.id,
+    );
+
+    if (resultStarting.isError) {
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: resultStarting.message,
+          type: MessageType.error,
+        ),
+      );
+      return;
+    }
+
+    await _navigateToDiscretionsPage(avaliation);
+  }
+
+  Future<void> _navigateToDiscretionsPage(AvaliacaoPendente avaliation) async {
+    final result = await Get.toNamed(
+      '/avaliacoes/realizar_avaliacao/${avaliation.id}/${avaliation.numModelo}',
+    );
+    if (result != null && result == true) {
+      _message(
+        MessagesModel(
+          title: 'Sucesso',
+          message: 'Avaliação conluída com sucesso',
+          type: MessageType.info,
+        ),
+      );
+      loadAvaliacoesAvaliador();
+    }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:posto360/modules/avaliacoes/controllers/avaliacoes_criterios_controller.dart';
+import 'package:posto360/modules/avaliacoes/pages/controllers/avaliacoes_criterios_controller.dart';
 import 'package:posto360/modules/avaliacoes/widgets/detalhes_avaliacao_header.dart';
 import 'package:posto360/modules/avaliacoes/widgets/discretions_card.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';

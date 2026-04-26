@@ -1,6 +1,8 @@
+import 'package:posto360/modules/avaliacoes/domain/dto/confirm_discretions_dto.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacao_details_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_avaliador_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_model.dart';
+import 'package:posto360/modules/avaliacoes/domain/models/avaliator_dicretions_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/user_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/repositories/avaliacoes_module_repository.dart';
 import 'package:posto360/modules/avaliacoes/infra/services/avaliacoes_module_service.dart';
@@ -92,5 +94,43 @@ class AvaliacoesModuleServiceImpl extends AvaliacoesModuleService {
     required String usuarioId,
   }) async {
     return _repository.setUser(avaliacaoId: avaliacaoId, usuarioId: usuarioId);
+  }
+
+  @override
+  Future<ResultActionDTO<String>> startAvaliation({
+    required int avaliacaoId,
+  }) async {
+    return await _repository.startAvaliation(avaliacaoId: avaliacaoId);
+  }
+
+  @override
+  Future<ResultActionDTO<List<AvaliatorDicretionsModel>>>
+  getAvaliadorCriterios({
+    required int gestaoAvaliacaoId,
+    required int modeloAvaliacaoId,
+  }) async {
+    final discretions = await _repository.getAvaliadorCriterios(
+      gestaoAvaliacaoId: gestaoAvaliacaoId,
+      modeloAvaliacaoId: modeloAvaliacaoId,
+    );
+    discretions.data!.sort((a, b) {
+      if (a.cumprido == b.cumprido) return 0;
+      return a.cumprido != null ? -1 : 1;
+    });
+    return ResultActionDTO.success(data: discretions.data);
+  }
+
+  @override
+  Future<ResultActionDTO<String>> confirmDiscretion({
+    required ConfirmDiscretionsDto dto,
+  }) async {
+    return await _repository.confirmDiscretion(dto: dto);
+  }
+
+  @override
+  Future<ResultActionDTO<List<UserAvaliationModel>>> concludeAvaliation({
+    required int avaliacaoId,
+  }) async {
+    return await _repository.concludeAvaliation(avaliacaoId: avaliacaoId);
   }
 }

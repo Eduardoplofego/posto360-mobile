@@ -63,6 +63,14 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/avaliacoes/avaliador/usuarios';
   static const _avaliacoesDefinirUsuario =
       '$_backendBaseUrl/api/mobile/avaliacoes/avaliador/definir-usuario';
+  static const _avaliacoesIniciar =
+      '$_backendBaseUrl/api/mobile/avaliacoes/avaliador/iniciar';
+  static const _avaliacoesAvaliadorCriterios =
+      '$_backendBaseUrl/api/mobile/avaliacoes/avaliador/criterios';
+  static const _avaliacoesConfirmarCriterio =
+      '$_backendBaseUrl/api/mobile/avaliacoes/avaliador/atualizar-criterio';
+  static const _avaliacoesConcluirAvaliation =
+      '$_backendBaseUrl/api/mobile/avaliacoes/avaliador/finalizar';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -98,4 +106,8 @@ class ApiRoutes {
   static String avaliacoesAvaliadorPendentes() => _avaliacoesAvaliadorPendentes;
   static String avaliacoesAvaliadorUsuarios() => _avaliacoesAvaliadorUsuarios;
   static String avaliacoesDefinirUsuario() => _avaliacoesDefinirUsuario;
+  static String avaliacoesIniciar() => _avaliacoesIniciar;
+  static String avaliacoesAvaliadorCriterios() => _avaliacoesAvaliadorCriterios;
+  static String avaliacoesConfirmarCriterio() => _avaliacoesConfirmarCriterio;
+  static String avaliacoesConcluirAvaliation() => _avaliacoesConcluirAvaliation;
 }

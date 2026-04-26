@@ -9,6 +9,7 @@ class PostoAppTextFormField extends StatelessWidget {
   final bool obscureText;
   final ValueNotifier<bool> _obscureTextVN;
   final ValueChanged<String>? onChanged;
+  final int? maxLines;
 
   PostoAppTextFormField({
     super.key,
@@ -17,6 +18,7 @@ class PostoAppTextFormField extends StatelessWidget {
     this.validator,
     required this.obscureText,
     this.onChanged,
+    this.maxLines,
   }) : _obscureTextVN = ValueNotifier<bool>(obscureText);
 
   @override
@@ -29,6 +31,7 @@ class PostoAppTextFormField extends StatelessWidget {
           obscureText: value,
           validator: validator,
           onChanged: onChanged,
+          maxLines: maxLines,
           cursorColor: context.theme.primaryColor,
           decoration: InputDecoration(
             isDense: true,

@@ -5,7 +5,7 @@ import 'package:posto360/modules/avaliacoes/widgets/avaliacao_avaliador_card.dar
 import 'package:posto360/modules/avaliacoes/widgets/avaliacao_card.dart';
 import 'package:posto360/modules/avaliacoes/widgets/tabbar_widget.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
-import '../controllers/avaliacoes_controller.dart';
+import 'controllers/avaliacoes_controller.dart';
 
 class AvaliacoesPage extends GetView<AvaliacoesController> {
   const AvaliacoesPage({super.key});
@@ -252,7 +252,9 @@ class AvaliacoesPage extends GetView<AvaliacoesController> {
                                   as AvaliacaoPendente;
                           return AvaliacaoAvaliadorCard(
                             model: item,
-                            onPressed: controller.navigateToDiscretionsPage,
+                            onPressed:
+                                controller
+                                    .checkUserAndNavigateToDiscretionsPage,
                           );
                         },
                         separatorBuilder:

@@ -1,8 +1,9 @@
 import 'dart:developer';
-import 'package:posto360/modules/avaliacoes/domain/mocks/avaliacoes_mocks.dart';
+import 'package:posto360/modules/avaliacoes/domain/dto/confirm_discretions_dto.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacao_details_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_avaliador_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_model.dart';
+import 'package:posto360/modules/avaliacoes/domain/models/avaliator_dicretions_model.dart';
 import 'package:posto360/modules/avaliacoes/domain/models/user_model.dart';
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.dart';
@@ -94,33 +95,33 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
     required String usuarioId,
   }) async {
     try {
-      // final result = await _restClient.post(
-      //   ApiRoutes.avaliacoesAvaliadorFinalizadas(),
-      //   {
-      //     "dataInicial": dataInicial,
-      //     "dataFinal": dataFinal,
-      //     "usuarioId": usuarioId,
-      //   },
-      // );
+      final result = await _restClient.post(
+        ApiRoutes.avaliacoesAvaliadorFinalizadas(),
+        {
+          "dataInicial": dataInicial,
+          "dataFinal": dataFinal,
+          "usuarioId": usuarioId,
+        },
+      );
 
-      // if (result.statusCode != null && result.statusCode! >= 400) {
-      //   log(
-      //     'Erro get avaliacoes data',
-      //     error: result.bodyString,
-      //     stackTrace: StackTrace.current,
-      //   );
-      //   return ResultActionDTO.failure('Erro ao buscar dados', null);
-      // }
+      if (result.statusCode != null && result.statusCode! >= 400) {
+        log(
+          'Erro get avaliacoes data',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure('Erro ao buscar dados', null);
+      }
 
-      // final avaliacoes =
-      //     result.body
-      //         .map<AvaliacaoFinalizada>(
-      //           (model) => AvaliacaoFinalizada.fromMap(model),
-      //         )
-      //         .toList() ??
-      //     [];
+      final avaliacoes =
+          result.body
+              .map<AvaliacaoFinalizada>(
+                (model) => AvaliacaoFinalizada.fromMap(model),
+              )
+              .toList() ??
+          [];
 
-      return ResultActionDTO.success(data: []);
+      return ResultActionDTO.success(data: avaliacoes);
     } catch (e, s) {
       log('Erro get avaliações finalizadas', error: e, stackTrace: s);
       return ResultActionDTO.failure(
@@ -234,6 +235,121 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
     } catch (e, s) {
       log('Erro set usuário', error: e, stackTrace: s);
       return ResultActionDTO.failure('Erro ao definir usuário', null);
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<String>> startAvaliation({
+    required int avaliacaoId,
+  }) async {
+    try {
+      final result = await _restClient.post(ApiRoutes.avaliacoesIniciar(), {
+        "avaliacaoId": avaliacaoId,
+      });
+
+      if (result.statusCode != null && result.statusCode! >= 400) {
+        log(
+          'Erro start avaliation',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+      }
+
+      return ResultActionDTO.success(data: 'Iniciando avaliação com sucesso');
+    } catch (e, s) {
+      log('Erro start avaliation', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<List<AvaliatorDicretionsModel>>>
+  getAvaliadorCriterios({
+    required int gestaoAvaliacaoId,
+    required int modeloAvaliacaoId,
+  }) async {
+    try {
+      final result = await _restClient.post(
+        ApiRoutes.avaliacoesAvaliadorCriterios(),
+        {"gestaoAvaliacaoId": 30, "modeloAvaliacaoId": 17},
+      );
+
+      if (result.statusCode != null && result.statusCode! >= 400) {
+        log(
+          'Erro start avaliation',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+      }
+
+      final discretions =
+          result.body
+              .map<AvaliatorDicretionsModel>(
+                (model) => AvaliatorDicretionsModel.fromMap(model),
+              )
+              .toList() ??
+          [];
+
+      return ResultActionDTO.success(data: discretions);
+    } catch (e, s) {
+      log('Erro start avaliation', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<String>> confirmDiscretion({
+    required ConfirmDiscretionsDto dto,
+  }) async {
+    try {
+      final result = await _restClient
+          .post(ApiRoutes.avaliacoesConfirmarCriterio(), {
+            "criterioId": dto.id,
+            "cumprido": dto.isFulfilled,
+            "comentarios": dto.comment.isNotEmpty ? dto.comment : null,
+          });
+
+      if (result.statusCode != null && result.statusCode! >= 400) {
+        log(
+          'Erro start avaliation',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+      }
+
+      return ResultActionDTO.success(data: 'Critério confirmado com sucesso');
+    } catch (e, s) {
+      log('Erro start avaliation', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<List<UserAvaliationModel>>> concludeAvaliation({
+    required int avaliacaoId,
+  }) async {
+    try {
+      // final result = await _restClient.post(
+      //   ApiRoutes.avaliacoesConcluirAvaliation(),
+      //   {"avaliacaoId": avaliacaoId},
+      // );
+
+      // if (result.statusCode != null && result.statusCode! >= 400) {
+      //   log(
+      //     'Erro conclude avaliation',
+      //     error: result.bodyString,
+      //     stackTrace: StackTrace.current,
+      //   );
+      //   return ResultActionDTO.failure('Erro ao finalizar avaliação', null);
+      // }
+
+      return ResultActionDTO.failure('Erro ao finalizar avaliação', null);
+    } catch (e, s) {
+      log('Erro conclude avaliation', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao finalizar avaliação', null);
     }
   }
 }
