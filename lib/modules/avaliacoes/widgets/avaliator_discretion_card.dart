@@ -24,7 +24,9 @@ class AvaliatorDiscretionCard extends StatelessWidget {
     required this.isLoading,
     required this.onConfirm,
   }) : _isFulfilled = ValueNotifier(true),
-       _penalityController = ValueNotifier(TextEditingController()..text = '0'),
+       _penalityController = ValueNotifier(
+         TextEditingController()..text = model.penalidade.toString(),
+       ),
        _commentController = ValueNotifier(TextEditingController());
 
   @override
@@ -351,9 +353,9 @@ class AvaliatorDiscretionCard extends StatelessWidget {
                               label: '',
                               controller: _penalityController.value,
                               obscureText: false,
+                              enable: false,
                             ),
                           ),
-
                           Expanded(flex: 2, child: Text('Pontos')),
                         ],
                       ),

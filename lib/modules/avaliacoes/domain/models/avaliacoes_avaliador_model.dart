@@ -34,12 +34,18 @@ class AvaliacaoFinalizada extends AvaliacaoAvaliador {
     final criteriosCumpridos =
         criterios
             .where((ele) {
-              if (ele['cumprido'] == null) return false;
               return ele['cumprido'] ? true : false;
             })
             .toList()
             .length;
-    final penalidade = criterios.fold<double>(0, (previousValue, element) {
+    final criterioNaoCumpridos =
+        criterios.where((ele) {
+          return ele['cumprido'] ? false : true;
+        }).toList();
+    final penalidade = criterioNaoCumpridos.fold<double>(0, (
+      previousValue,
+      element,
+    ) {
       return previousValue + element['penalidade'];
     });
     return AvaliacaoFinalizada(

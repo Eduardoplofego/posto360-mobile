@@ -277,11 +277,11 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
 
       if (result.statusCode != null && result.statusCode! >= 400) {
         log(
-          'Erro start avaliation',
+          'Erro get discretions',
           error: result.bodyString,
           stackTrace: StackTrace.current,
         );
-        return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+        return ResultActionDTO.failure('Erro ao buscar critérios', null);
       }
 
       final discretions =
@@ -294,8 +294,8 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
 
       return ResultActionDTO.success(data: discretions);
     } catch (e, s) {
-      log('Erro start avaliation', error: e, stackTrace: s);
-      return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+      log('Erro get discretions', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao buscar critérios', null);
     }
   }
 
@@ -313,17 +313,17 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
 
       if (result.statusCode != null && result.statusCode! >= 400) {
         log(
-          'Erro start avaliation',
+          'Erro confirm discretion',
           error: result.bodyString,
           stackTrace: StackTrace.current,
         );
-        return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+        return ResultActionDTO.failure('Erro ao concluir critério', null);
       }
 
       return ResultActionDTO.success(data: 'Critério confirmado com sucesso');
     } catch (e, s) {
-      log('Erro start avaliation', error: e, stackTrace: s);
-      return ResultActionDTO.failure('Erro ao iniciar avaliação', null);
+      log('Erro confirm discretion', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao concluir critério', null);
     }
   }
 
