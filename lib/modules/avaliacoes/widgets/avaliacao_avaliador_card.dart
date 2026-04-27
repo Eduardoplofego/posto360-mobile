@@ -24,7 +24,9 @@ class AvaliacaoAvaliadorCard extends StatelessWidget {
     return _pendenteCard(model as AvaliacaoPendente);
   }
 
-  bool _isTomorrow(DateTime data) {
+  bool _isTomorrow(DateTime? data) {
+    if (data == null) return false;
+
     final now = DateTime.now();
 
     final today = DateTime(now.year, now.month, now.day);
@@ -35,7 +37,8 @@ class AvaliacaoAvaliadorCard extends StatelessWidget {
     return comparedDate == tomorrow;
   }
 
-  bool _isToday(DateTime data) {
+  bool _isToday(DateTime? data) {
+    if (data == null) return false;
     final now = DateTime.now();
 
     final today = DateTime(now.year, now.month, now.day);
@@ -46,10 +49,8 @@ class AvaliacaoAvaliadorCard extends StatelessWidget {
   }
 
   Widget _pendenteCard(AvaliacaoPendente model) {
-    // final isTomorrow = _isTomorrow(model.prazo);
-    // final isToday = _isToday(model.prazo);
-    final isTomorrow = false;
-    final isToday = false;
+    final isTomorrow = _isTomorrow(model.prazo);
+    final isToday = _isToday(model.prazo);
 
     final lightColor =
         isToday
@@ -239,7 +240,7 @@ class AvaliacaoAvaliadorCard extends StatelessWidget {
             const Divider(height: 0),
             const SizedBox(height: 12),
             AvaliatorWidget(
-              name: model.nome,
+              name: model.avaliador,
               leadingText: 'Realizada por',
               createdAt: UtilData.obterDataDDMMAAAA(model.dataAvaliacao),
             ),

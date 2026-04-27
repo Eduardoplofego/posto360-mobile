@@ -136,6 +136,13 @@ class AvaliacoesController extends GetxController with MessageMixin {
 
     if (avaliacoes.isError) {
       _loading(false);
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: avaliacoes.message,
+          type: MessageType.error,
+        ),
+      );
       return;
     }
 

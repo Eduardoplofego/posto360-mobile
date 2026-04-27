@@ -89,7 +89,7 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
   }
 
   @override
-  Future<ResultActionDTO<List<AvaliacaoAvaliador>>> getAvaliadorFinalizadas({
+  Future<ResultActionDTO<List<AvaliacaoFinalizada>>> getAvaliadorFinalizadas({
     required String dataInicial,
     required String dataFinal,
     required String usuarioId,
@@ -115,11 +115,11 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
 
       final avaliacoes =
           result.body
-              .map<AvaliacaoFinalizada>(
-                (model) => AvaliacaoFinalizada.fromMap(model),
-              )
-              .toList() ??
-          [];
+                  .map<AvaliacaoFinalizada>(
+                    (model) => AvaliacaoFinalizada.fromMap(model),
+                  )
+                  .toList()
+              as List<AvaliacaoFinalizada>;
 
       return ResultActionDTO.success(data: avaliacoes);
     } catch (e, s) {
@@ -132,7 +132,7 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
   }
 
   @override
-  Future<ResultActionDTO<List<AvaliacaoAvaliador>>> getAvaliadorPendentes({
+  Future<ResultActionDTO<List<AvaliacaoPendente>>> getAvaliadorPendentes({
     required String dataAtual,
     required String usuarioId,
   }) async {
@@ -153,11 +153,11 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
 
       final avaliacoes =
           result.body
-              .map<AvaliacaoPendente>(
-                (model) => AvaliacaoPendente.fromMap(model),
-              )
-              .toList() ??
-          [];
+                  .map<AvaliacaoPendente>(
+                    (model) => AvaliacaoPendente.fromMap(model),
+                  )
+                  .toList()
+              as List<AvaliacaoPendente>;
 
       return ResultActionDTO.success(data: avaliacoes);
     } catch (e, s) {
@@ -332,21 +332,21 @@ class AvaliacoesModuleRepositoryImpl implements AvaliacoesModuleRepository {
     required int avaliacaoId,
   }) async {
     try {
-      // final result = await _restClient.post(
-      //   ApiRoutes.avaliacoesConcluirAvaliation(),
-      //   {"avaliacaoId": avaliacaoId},
-      // );
+      final result = await _restClient.post(
+        ApiRoutes.avaliacoesConcluirAvaliation(),
+        {"avaliacaoId": avaliacaoId},
+      );
 
-      // if (result.statusCode != null && result.statusCode! >= 400) {
-      //   log(
-      //     'Erro conclude avaliation',
-      //     error: result.bodyString,
-      //     stackTrace: StackTrace.current,
-      //   );
-      //   return ResultActionDTO.failure('Erro ao finalizar avaliação', null);
-      // }
+      if (result.statusCode != null && result.statusCode! >= 400) {
+        log(
+          'Erro conclude avaliation',
+          error: result.bodyString,
+          stackTrace: StackTrace.current,
+        );
+        return ResultActionDTO.failure('Erro ao finalizar avaliação', null);
+      }
 
-      return ResultActionDTO.failure('Erro ao finalizar avaliação', null);
+      return ResultActionDTO.success();
     } catch (e, s) {
       log('Erro conclude avaliation', error: e, stackTrace: s);
       return ResultActionDTO.failure('Erro ao finalizar avaliação', null);

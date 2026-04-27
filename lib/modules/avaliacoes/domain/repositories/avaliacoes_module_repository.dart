@@ -16,12 +16,12 @@ abstract class AvaliacoesModuleRepository {
     required int gestaoAvaliacaoId,
     required int modeloAvaliacaoId,
   });
-  Future<ResultActionDTO<List<AvaliacaoAvaliador>>> getAvaliadorFinalizadas({
+  Future<ResultActionDTO<List<AvaliacaoFinalizada>>> getAvaliadorFinalizadas({
     required String dataInicial,
     required String dataFinal,
     required String usuarioId,
   });
-  Future<ResultActionDTO<List<AvaliacaoAvaliador>>> getAvaliadorPendentes({
+  Future<ResultActionDTO<List<AvaliacaoPendente>>> getAvaliadorPendentes({
     required String dataAtual,
     required String usuarioId,
   });

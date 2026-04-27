@@ -30,15 +30,27 @@ class AvaliacaoFinalizada extends AvaliacaoAvaliador {
   });
 
   factory AvaliacaoFinalizada.fromMap(Map<String, dynamic> map) {
+    final criterios = map['criterios'] as List;
+    final criteriosCumpridos =
+        criterios
+            .where((ele) {
+              if (ele['cumprido'] == null) return false;
+              return ele['cumprido'] ? true : false;
+            })
+            .toList()
+            .length;
+    final penalidade = criterios.fold<double>(0, (previousValue, element) {
+      return previousValue + element['penalidade'];
+    });
     return AvaliacaoFinalizada(
       id: map['id'],
       nome: map['nome'],
       descricao: map['descricao'],
-      numeroCriterios: map['numeroCriterios'],
-      criteriosCumpridos: map['criteriosCumpridos'],
-      penalidade: map['penalidade'],
-      avaliador: map['avaliador'],
-      dataAvaliacao: DateTime.parse(map['dataAvaliacao']),
+      numeroCriterios: criterios.length,
+      criteriosCumpridos: criteriosCumpridos,
+      penalidade: penalidade,
+      avaliador: map['nomeAvaliado'],
+      dataAvaliacao: DateTime.parse(map['dataConclusao']),
     );
   }
 }

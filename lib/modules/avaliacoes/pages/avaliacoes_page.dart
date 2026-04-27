@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:posto360/modules/avaliacoes/domain/models/avaliacoes_avaliador_model.dart';
 import 'package:posto360/modules/avaliacoes/widgets/avaliacao_avaliador_card.dart';
 import 'package:posto360/modules/avaliacoes/widgets/avaliacao_card.dart';
 import 'package:posto360/modules/avaliacoes/widgets/tabbar_widget.dart';
@@ -238,6 +237,8 @@ class AvaliacoesPage extends GetView<AvaliacoesController> {
         Expanded(
           child: RefreshIndicator(
             onRefresh: controller.loadAvaliacoesAvaliador,
+            backgroundColor: Colors.white,
+            color: PostoAppUiConfigurations.blueMediumColor,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return SizedBox(
@@ -247,9 +248,7 @@ class AvaliacoesPage extends GetView<AvaliacoesController> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: ListView.separated(
                         itemBuilder: (context, index) {
-                          final item =
-                              controller.avaliadorAvaliacoes[index]
-                                  as AvaliacaoPendente;
+                          final item = controller.avaliadorAvaliacoes[index];
                           return AvaliacaoAvaliadorCard(
                             model: item,
                             onPressed:
