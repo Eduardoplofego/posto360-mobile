@@ -37,78 +37,74 @@ class ResumeCardWidget extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Faltas injustificadas',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text('0', style: TextStyle(color: Colors.white, fontSize: 16)),
-            ],
+          _ResumeRow(
+            label: 'Faltas injustificadas',
+            value: model.faltasInjustificadas.toString(),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Faltas de ponto',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text('0', style: TextStyle(color: Colors.white, fontSize: 16)),
-            ],
+          _ResumeRow(
+            label: 'Registros incompletos',
+            value: model.faltasPonto.toString(),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Atrasos graves',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text('0', style: TextStyle(color: Colors.white, fontSize: 16)),
-            ],
+          _ResumeRow(
+            label: 'Atrasos graves',
+            value: model.atrasosGrave.toString(),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Atrasos médios',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text('0', style: TextStyle(color: Colors.white, fontSize: 16)),
-            ],
+          _ResumeRow(
+            label: 'Atrasos médios',
+            value: model.atrasosMedio.toString(),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Atrasos leves',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text('0', style: TextStyle(color: Colors.white, fontSize: 16)),
-            ],
+          _ResumeRow(
+            label: 'Atrasos leves',
+            value: model.atrasosLeve.toString(),
+          ),
+          const SizedBox(height: 4),
+          Divider(color: Colors.white24, height: 1),
+          const SizedBox(height: 4),
+          _ResumeRow(
+            label: 'Penalidade',
+            value: model.penalidade.toDouble().toStringAsFixed(2),
+            bold: true,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ResumeRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool bold;
+
+  const _ResumeRow({
+    required this.label,
+    required this.value,
+    this.bold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final weight = bold ? FontWeight.w700 : FontWeight.normal;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: weight,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: weight,
+          ),
+        ),
+      ],
     );
   }
 }

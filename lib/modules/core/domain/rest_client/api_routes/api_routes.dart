@@ -49,6 +49,8 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/fechamento-caixa/detalhes';
   static const _registroPontosDetalhes =
       '$_backendBaseUrl/api/mobile/pontos/detalhes';
+  static const _registroPontosPenalidades =
+      '$_backendBaseUrl/api/mobile/pontos/penalidades';
   static const _procedimentos =
       '$_backendBaseUrl/api/mobile/procedimentos/vendedor';
   static const _procedimentosDetalhes =
@@ -86,6 +88,7 @@ class ApiRoutes {
   static String fechamentoCaixa() => _fechamentoCaixa;
   static String fechamentoCaixaDetalhes() => _fechamentoCaixaDetalhes;
   static String registroPontosDetalhes() => _registroPontosDetalhes;
+  static String registroPontosPenalidades() => _registroPontosPenalidades;
   static String procedimentos() => _procedimentos;
   static String procedimentosDetalhes() => _procedimentosDetalhes;
   static String gerentesDashboardEquipe() => _gerentesDashboardEquipe;

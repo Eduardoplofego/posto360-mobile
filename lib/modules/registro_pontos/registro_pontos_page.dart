@@ -69,7 +69,10 @@ class RegistroPontosPage extends GetView<RegistroPontosController> {
                         itemCount: controller.pontosList.length,
                         itemBuilder: (context, index) {
                           final item = controller.pontosList[index];
-                          return PontoCardWidget(model: item);
+                          return PontoCardWidget(
+                            model: item,
+                            penalidades: controller.penalidadesDoDia(item.data),
+                          );
                         },
                       ),
                     );

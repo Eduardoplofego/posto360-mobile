@@ -95,7 +95,7 @@ class CardRhWidget extends StatelessWidget {
                 const SizedBox(height: 6),
                 _BulletItem(
                   color: Colors.orange,
-                  label: 'Falta de ponto: ${model.faltasPonto}',
+                  label: 'Registro incompleto: ${model.faltasPonto}',
                 ),
                 const SizedBox(height: 6),
                 _BulletItem(

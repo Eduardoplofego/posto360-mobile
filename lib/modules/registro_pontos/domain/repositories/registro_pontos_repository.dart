@@ -1,5 +1,6 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/faltas_atrasos_model.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/penalidade_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
 
 abstract class RegistroPontosRepository {
@@ -13,5 +14,10 @@ abstract class RegistroPontosRepository {
     required String dataFinal,
     required String dataAtual,
     required int codigoFuncionario,
+  });
+  Future<ResultActionDTO<List<PenalidadeModel>>> getPenalidades({
+    required String usuarioId,
+    required String dataInicial,
+    required String dataFinal,
   });
 }

@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/penalidade_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/ponto_timeline_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
 import 'package:posto360/modules/registro_pontos/widgets/ponto_badge_widget.dart';
 
+String _tipoLabel(String tipo) =>
+    tipo == 'Falta de ponto' ? 'Registro incompleto' : tipo;
+
 class PontoCardWidget extends StatelessWidget {
   final PontosModel model;
-  const PontoCardWidget({super.key, required this.model});
+  final DiaPenalidades penalidades;
+  const PontoCardWidget({
+    super.key,
+    required this.model,
+    required this.penalidades,
+  });
 
   @override
   Widget build(BuildContext context) {
     final dayMonth = DateFormat('dd/MM', 'pt_BR').format(model.data);
     final weekDay = DateFormat('EEEE', 'pt_BR').format(model.data);
-    final isCompleted =
-        model.pontos[0].isNotEmpty && model.pontos[2].isNotEmpty;
+    final hasPenalidade = penalidades.hasPenalidade;
 
     final ponto1 = model.pontos[0];
     final ponto2 = model.pontos[1];
@@ -84,26 +92,28 @@ class PontoCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                decoration: BoxDecoration(
-                  color:
-                      isCompleted ? Colors.green.shade100 : Colors.red.shade100,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: isCompleted ? Colors.green : Colors.red,
-                  ),
-                ),
-                child: Text(
-                  isCompleted ? 'Completo' : 'Incompleto',
-                  style: TextStyle(
-                    fontSize: 8,
-                    color:
-                        isCompleted
-                            ? Colors.green.shade800
-                            : Colors.red.shade800,
-                  ),
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                spacing: 4,
+                children:
+                    hasPenalidade
+                        ? (penalidades.porTipo.entries.toList()
+                              ..sort((a, b) => a.value.compareTo(b.value)))
+                            .map(
+                              (e) => _PenalidadeBadge(
+                                label: _tipoLabel(e.key),
+                                valor: e.value,
+                                isPenalidade: true,
+                              ),
+                            )
+                            .toList()
+                        : [
+                          _PenalidadeBadge(
+                            label: 'OK',
+                            valor: 0,
+                            isPenalidade: false,
+                          ),
+                        ],
               ),
             ],
           ),
@@ -156,4 +166,46 @@ Widget _timelineDivider() {
       const SizedBox(width: 2),
     ],
   );
+}
+
+class _PenalidadeBadge extends StatelessWidget {
+  final String label;
+  final double valor;
+  final bool isPenalidade;
+
+  const _PenalidadeBadge({
+    required this.label,
+    required this.valor,
+    required this.isPenalidade,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = isPenalidade ? Colors.red.shade800 : Colors.green.shade800;
+    final bg = isPenalidade ? Colors.red.shade100 : Colors.green.shade100;
+    final border = isPenalidade ? Colors.red : Colors.green;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label, style: TextStyle(fontSize: 9, color: fg)),
+          const SizedBox(width: 6),
+          Text(
+            valor.toStringAsFixed(2),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: fg,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

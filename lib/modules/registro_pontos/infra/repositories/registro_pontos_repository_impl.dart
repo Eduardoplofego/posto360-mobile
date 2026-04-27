@@ -5,6 +5,7 @@ import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.d
 import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
 import 'package:posto360/modules/registro_pontos/domain/helpers/pontos_model_helper.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/faltas_atrasos_model.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/penalidade_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
 import '../../domain/repositories/registro_pontos_repository.dart';
 
@@ -44,6 +45,46 @@ class RegistroPontosRepositoryImpl extends RegistroPontosRepository {
       log('Erro get registro pontos', error: e, stackTrace: s);
       return ResultActionDTO.failure(
         'Erro ao carregar registro de pontos',
+        null,
+      );
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<List<PenalidadeModel>>> getPenalidades({
+    required String usuarioId,
+    required String dataInicial,
+    required String dataFinal,
+  }) async {
+    try {
+      final response = await _client.post(
+        ApiRoutes.registroPontosPenalidades(),
+        {
+          "usuarioId": usuarioId,
+          "dataInicial": dataInicial,
+          "dataFinal": dataFinal,
+        },
+      );
+
+      if (response.statusCode == null || response.statusCode! > 300) {
+        return ResultActionDTO.failure(
+          'Erro ao buscar penalidades de pontos',
+          null,
+        );
+      }
+
+      final body =
+          (response.body as List<dynamic>? ?? [])
+              .whereType<Map<String, dynamic>>()
+              .toList();
+
+      final penalidades =
+          body.map((ele) => PenalidadeModel.fromMap(ele)).toList();
+      return ResultActionDTO.success(data: penalidades);
+    } catch (e, s) {
+      log('Erro get penalidades pontos', error: e, stackTrace: s);
+      return ResultActionDTO.failure(
+        'Erro ao carregar penalidades de pontos',
         null,
       );
     }

@@ -3,8 +3,12 @@ import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/registro_pontos/domain/adapters/month_adapter.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/faltas_atrasos_model.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/penalidade_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
 import 'package:posto360/modules/registro_pontos/infra/services/registro_pontos_services.dart';
+
+String _dayKey(DateTime data) =>
+    '${data.year}-${data.month.toString().padLeft(2, '0')}-${data.day.toString().padLeft(2, '0')}';
 
 class RegistroPontosController extends GetxController with MessageMixin {
   final RegistroPontosServices _registroPontosServices;
@@ -30,6 +34,7 @@ class RegistroPontosController extends GetxController with MessageMixin {
   final _monthSelected = DateTime.now().obs;
   final _registroPontoModel = Rx(FaltasAtrasosModel.empty());
   final _pontosList = <PontosModel>[].obs;
+  final _penalidadesPorDia = <String, DiaPenalidades>{}.obs;
 
   final _message = Rxn<MessagesModel>();
 
@@ -43,6 +48,9 @@ class RegistroPontosController extends GetxController with MessageMixin {
   bool get hasNextMonth =>
       !(monthSelected.month == DateTime.now().month &&
           monthSelected.year == DateTime.now().year);
+
+  DiaPenalidades penalidadesDoDia(DateTime data) =>
+      _penalidadesPorDia[_dayKey(data)] ?? DiaPenalidades.empty();
 
   // Actions
   void _selectMonthByParameter() {
@@ -69,6 +77,7 @@ class RegistroPontosController extends GetxController with MessageMixin {
     _loadingData.value = true;
     await _loadPontos();
     await _loadFaltasAtrasos();
+    await _loadPenalidades();
     _loadingData.value = false;
   }
 
@@ -89,6 +98,28 @@ class RegistroPontosController extends GetxController with MessageMixin {
     }
 
     _pontosList.assignAll(results.data!.reversed);
+  }
+
+  Future<void> _loadPenalidades() async {
+    final results = await _registroPontosServices.getPenalidades(
+      usuarioId: _authService.authenticatedUser!.id,
+      monthSelected: monthSelected,
+    );
+    if (results.isError) {
+      _penalidadesPorDia.clear();
+      return;
+    }
+    final porDiaTipo = <String, Map<String, double>>{};
+    for (final p in results.data!) {
+      final key = _dayKey(p.data);
+      final tipos = porDiaTipo.putIfAbsent(key, () => <String, double>{});
+      tipos[p.tipo] = (tipos[p.tipo] ?? 0) + p.penalidade.toDouble();
+    }
+    final newMap = <String, DiaPenalidades>{
+      for (final entry in porDiaTipo.entries)
+        entry.key: DiaPenalidades(porTipo: entry.value),
+    };
+    _penalidadesPorDia.assignAll(newMap);
   }
 
   Future<void> _loadFaltasAtrasos() async {
