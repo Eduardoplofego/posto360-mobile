@@ -209,7 +209,7 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
       barrierDismissible: false,
       textConfirm: 'Entendi',
       onConfirm: () {
-        Get.back();
+        Get.back(closeOverlays: true);
       },
     );
   }

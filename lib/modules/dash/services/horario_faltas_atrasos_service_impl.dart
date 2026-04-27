@@ -17,7 +17,7 @@ class HorarioFaltasAtrasosServiceImpl extends HorarioFaltasAtrasosService {
   Future<ResultActionDTO<HorarioFaltasModel>> getHorario({
     required DateTime dataSelecionada,
     required DateTime dataAtual,
-    required String codigoFuncionario,
+    required int codigoFuncionario,
   }) async {
     final (dataInicial, dataFinal) = DateHelper.getInitialAndLastCurrentDate(
       dataSelecionada,

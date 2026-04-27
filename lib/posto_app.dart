@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:month_year_picker/month_year_picker.dart';
+import 'package:posto360/modules/avaliacoes/avaliacoes_routers.dart';
 import 'package:posto360/modules/core/domain/bindings/application_bindings.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_theme.dart';
 import 'package:posto360/modules/campanhas/campanhas_routers.dart';
@@ -40,6 +41,7 @@ class PostoApp extends StatelessWidget {
         ...ChecklistsRouters.routes,
         ...FechamentoCaixaRouters.routes,
         ...RegistroPontosRouters.routes,
+        ...AvaliacoesRouters.routes,
       ],
     );
   }

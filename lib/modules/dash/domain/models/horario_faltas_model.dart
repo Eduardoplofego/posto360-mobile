@@ -2,12 +2,12 @@ import 'dart:convert';
 
 class HorarioFaltasModel {
   final String? horarioPrevisto;
-  final int faltasInjustificadas;
-  final int faltasPonto;
-  final int atrasosGrave;
-  final int atrasosMedio;
-  final int atrasosLeve;
-  final int penalidade;
+  final double faltasInjustificadas;
+  final double faltasPonto;
+  final double atrasosGrave;
+  final double atrasosMedio;
+  final double atrasosLeve;
+  final double penalidade;
 
   HorarioFaltasModel({
     required this.horarioPrevisto,
@@ -32,28 +32,44 @@ class HorarioFaltasModel {
   }
 
   String getJornadaTrabalho() {
-    if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
-      return '--';
+    try {
+      if (horarioPrevisto == null || horarioPrevisto!.isEmpty) {
+        return '--';
+      }
+
+      final turnos = horarioPrevisto!.split(' ');
+
+      if (turnos.length == 1) return getMidPeriod(turnos[0]);
+
+      final primeiroTurnoSplitted = turnos[0].split('-');
+      final segundoTurnosSplitted = turnos[1].split('-');
+
+      final tempoInicio = primeiroTurnoSplitted[0];
+      final tempoFim = segundoTurnosSplitted[1];
+
+      final horaTempoInicio = int.tryParse(tempoInicio.split(':')[0]) ?? 0;
+      final minutoTempoInicio = int.tryParse(tempoInicio.split(':')[1]) ?? 0;
+      final horaTempoFim = int.tryParse(tempoFim.split(':')[0]) ?? 0;
+      final minutoTempoFim = int.tryParse(tempoFim.split(':')[1]) ?? 0;
+
+      final inicio =
+          '${horaTempoInicio}h${minutoTempoInicio > 0 ? '$minutoTempoInicio' : ''}';
+      final fim =
+          '${horaTempoFim}h${minutoTempoFim > 0 ? '$minutoTempoFim' : ''}';
+      return '$inicio às $fim';
+    } catch (_) {
+      return "--";
     }
+  }
 
-    final turnos = horarioPrevisto!.split(' ');
+  String getMidPeriod(String period) {
+    final firstTime = period.split('-')[0];
+    final secondTime = period.split('-')[1];
 
-    final primeiroTurnoSplitted = turnos[0].split('-');
-    final segundoTurnosSplitted = turnos[2].split('-');
+    final firstHour = firstTime.split(':')[0];
+    final lastHour = secondTime.split(':')[0];
 
-    final tempoInicio = primeiroTurnoSplitted[0];
-    final tempoFim = segundoTurnosSplitted[1];
-
-    final horaTempoInicio = int.tryParse(tempoInicio.split(':')[0]) ?? 0;
-    final minutoTempoInicio = int.tryParse(tempoInicio.split(':')[1]) ?? 0;
-    final horaTempoFim = int.tryParse(tempoFim.split(':')[0]) ?? 0;
-    final minutoTempoFim = int.tryParse(tempoFim.split(':')[1]) ?? 0;
-
-    final inicio =
-        '${horaTempoInicio}h${minutoTempoInicio > 0 ? '$minutoTempoInicio' : ''}';
-    final fim =
-        '${horaTempoFim}h${minutoTempoFim > 0 ? '$minutoTempoFim' : ''}';
-    return '$inicio às $fim';
+    return '${firstHour}h às ${lastHour}h';
   }
 
   String getStartTime() {
@@ -89,12 +105,13 @@ class HorarioFaltasModel {
   factory HorarioFaltasModel.fromMap(Map<String, dynamic> map) {
     return HorarioFaltasModel(
       horarioPrevisto: map['horarioPrevisto'] ?? '',
-      faltasInjustificadas: map['Falta injustificado'] ?? 0,
-      faltasPonto: map['Falta de ponto'] ?? 0,
-      atrasosGrave: map['Atraso grave'] ?? 0,
-      atrasosMedio: map['Atraso medio'] ?? 0,
-      atrasosLeve: map['Atraso leve'] ?? 0,
-      penalidade: map['Penalidade'] ?? 0,
+      faltasInjustificadas:
+          (map['Falta injustificado'] as num?)?.toDouble() ?? 0,
+      faltasPonto: (map['Falta de ponto'] as num?)?.toDouble() ?? 0,
+      atrasosGrave: (map['Atraso grave'] as num?)?.toDouble() ?? 0,
+      atrasosMedio: (map['Atraso medio'] as num?)?.toDouble() ?? 0,
+      atrasosLeve: (map['Atraso leve'] as num?)?.toDouble() ?? 0,
+      penalidade: (map['Penalidade'] as num?)?.toDouble() ?? 0,
     );
   }
 

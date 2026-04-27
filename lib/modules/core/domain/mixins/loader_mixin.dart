@@ -13,7 +13,7 @@ mixin LoaderMixin on GetxController {
           barrierDismissible: false,
         );
       } else {
-        Get.back();
+        Get.back(closeOverlays: true);
       }
     });
   }

@@ -6,6 +6,6 @@ abstract class HorarioFaltasAtrasosRepository {
     required String dataInicial,
     required String dataFinal,
     required String dataAtual,
-    required String codigoFuncionario,
+    required int codigoFuncionario,
   });
 }
