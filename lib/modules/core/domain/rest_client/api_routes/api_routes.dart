@@ -11,6 +11,8 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/produtos-incentivados/performance-individual';
   static const _performanceEquipe =
       '$_backendBaseUrl/api/mobile/produtos-incentivados/performance-coletiva';
+  static const _performanceEquipeGerente =
+      '$_backendBaseUrl/api/mobile/produtos-incentivados/performance-coletiva-gerente';
   static const _cursos = '$_backendBaseUrl/api/mobile/ead/vendedor/cursos';
   static const _iniciarCurso =
       '$_backendBaseUrl/api/mobile/ead/vendedor/iniciar-curso';
@@ -67,6 +69,7 @@ class ApiRoutes {
   static String campanhas() => _campanhas;
   static String performanceIndividual() => _performanceIndividual;
   static String performanceEquipe() => _performanceEquipe;
+  static String performanceEquipeGerente() => _performanceEquipeGerente;
   static String cursos() => _cursos;
   static String iniciarCurso() => _iniciarCurso;
   static String aulas() => _aulas;

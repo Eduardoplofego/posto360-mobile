@@ -27,15 +27,13 @@ class PerformanceEquipeModel {
   }
 
   factory PerformanceEquipeModel.fromJson(Map<String, dynamic> json) {
-    final metaEquipeNum = json['metaEquipe'] as num;
-    final bonificacaoMetaValor = json['bonificacaoMetaValor'] as num;
     return PerformanceEquipeModel(
       campanhaId: json['campanhaId'],
-      vendaFilialMes: json['vendaFilialMes'],
-      quantidadeVendida: json['quantidadeVendida'],
-      metaEquipe: metaEquipeNum.toDouble(),
-      bonificacaoMetaValor: bonificacaoMetaValor.toDouble(),
-      progresso: json['progresso'],
+      vendaFilialMes: (json['vendaFilialMes'] as num).toDouble(),
+      quantidadeVendida: (json['quantidadeVendida'] as num).toDouble(),
+      metaEquipe: (json['metaEquipe'] as num).toDouble(),
+      bonificacaoMetaValor: (json['bonificacaoMetaValor'] as num).toDouble(),
+      progresso: (json['progresso'] as num).toDouble(),
     );
   }
 

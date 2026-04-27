@@ -65,4 +65,32 @@ class PerformanceServiceImpl extends PerformanceService {
 
     return ResultActionDTO.success(data: listPerformances);
   }
+
+  @override
+  Future<ResultActionDTO<List<PerformanceEquipeModel>>>
+  getEquipePerformancesGerente({
+    required int filialId,
+    required List<int> campanhasId,
+    required String data,
+  }) async {
+    final listPerformances = <PerformanceEquipeModel>[];
+
+    for (var campanhaId in campanhasId) {
+      final result = await _performanceRepository.getPerformanceEquipeGerente(
+        filialId: filialId,
+        campanhaId: campanhaId,
+        data: data,
+      );
+      if (result.isError) {
+        return ResultActionDTO.failure(
+          'Erro ao calcular performance de equipe',
+          [],
+        );
+      }
+
+      listPerformances.add(result.data!);
+    }
+
+    return ResultActionDTO.success(data: listPerformances);
+  }
 }

@@ -14,4 +14,10 @@ abstract class PerformanceService {
     required List<int> campanhasId,
     required String data,
   });
+  Future<ResultActionDTO<List<PerformanceEquipeModel>>>
+  getEquipePerformancesGerente({
+    required int filialId,
+    required List<int> campanhasId,
+    required String data,
+  });
 }

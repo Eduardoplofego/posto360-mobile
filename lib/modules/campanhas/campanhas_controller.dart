@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/modules/campanhas/domain/models/performance_individual_model.dart';
 import 'package:posto360/modules/core/domain/constants/constants.dart';
+import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/mixins/loader_mixin.dart';
 import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
@@ -148,7 +150,7 @@ class CampanhasController extends FullLifeCycleController
 
     _individualPerformances.assignAll(individualPerformances.data!);
 
-    final equipePerformances = await _performanceService.getEquipePerformances(
+    final equipePerformances = await fetchEquipePerformances(
       filialId: _authService.authenticatedUser!.idFilial!,
       campanhasId: campanhasIds,
       data: DataFormatters.formatarData(monthSelected),
@@ -165,6 +167,19 @@ class CampanhasController extends FullLifeCycleController
     }
 
     _equipePerformances.assignAll(equipePerformances.data!);
+  }
+
+  @protected
+  Future<ResultActionDTO<List<PerformanceEquipeModel>>> fetchEquipePerformances({
+    required int filialId,
+    required List<int> campanhasId,
+    required String data,
+  }) {
+    return _performanceService.getEquipePerformances(
+      filialId: filialId,
+      campanhasId: campanhasId,
+      data: data,
+    );
   }
 
   PerformanceIndividualModel getPerformanceIndividualByCampanhaId(

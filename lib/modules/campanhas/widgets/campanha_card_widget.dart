@@ -124,7 +124,9 @@ class CampanhaCardWidget extends StatelessWidget {
           const SizedBox(height: 6),
           ItemCampanhaDetail(
             titleItem: 'Valor por Meta',
-            value: Text(UtilBrasilFields.obterReal(campanha.bonificacaoEquipe)),
+            value: Text(
+              UtilBrasilFields.obterReal(performaceEquipe.bonificacaoMetaValor),
+            ),
           ),
           const SizedBox(height: 6),
           ItemCampanhaDetail(

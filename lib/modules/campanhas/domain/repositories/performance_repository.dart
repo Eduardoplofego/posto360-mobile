@@ -13,4 +13,9 @@ abstract class PerformanceRepository {
     required int campanhaId,
     required String data,
   });
+  Future<ResultActionDTO<PerformanceEquipeModel>> getPerformanceEquipeGerente({
+    required int filialId,
+    required int campanhaId,
+    required String data,
+  });
 }

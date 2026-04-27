@@ -74,4 +74,35 @@ class PerformanceRepositoryImpl extends PerformanceRepository {
       return ResultActionDTO.failure('Erro ao buscar performance', null);
     }
   }
+
+  @override
+  Future<ResultActionDTO<PerformanceEquipeModel>> getPerformanceEquipeGerente({
+    required int filialId,
+    required int campanhaId,
+    required String data,
+  }) async {
+    try {
+      final response = await _restClient.post(
+        ApiRoutes.performanceEquipeGerente(),
+        {"data": data, "filialId": filialId, "campanhaId": campanhaId},
+      );
+
+      if (response.body == null || (response.statusCode != 200)) {
+        return ResultActionDTO.failure(
+          'Não foi possível obter a performance da equipe\nRecarregue a página novamente',
+          null,
+        );
+      }
+
+      final performance = PerformanceEquipeModel.fromJson(response.body);
+
+      return ResultActionDTO.success(data: performance);
+    } catch (e, s) {
+      log('Erro get performances gerente', error: e, stackTrace: s);
+      return ResultActionDTO.failure(
+        'Erro ao buscar performance da equipe',
+        null,
+      );
+    }
+  }
 }

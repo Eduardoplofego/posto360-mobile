@@ -140,7 +140,7 @@ class DashGerentePage extends GetView<DashGerenteController> {
                             child: CardCampanhasWidget(
                               onPressed: () {
                                 Get.toNamed(
-                                  '/campanhas/${controller.monthSelected.toIso8601String()}',
+                                  '/campanhas-gerente/${controller.monthSelected.toIso8601String()}',
                                 );
                               },
                               campanhasAtivas:
