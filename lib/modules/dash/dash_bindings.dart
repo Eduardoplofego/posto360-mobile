@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:posto360/modules/cursos/domain/repositories/cursos_repository.dart';
 import 'package:posto360/modules/cursos/infra/repositories/cursos_repository_impl.dart';
-import 'package:posto360/modules/dash/domain/repositories/campanhas_repository.dart';
+import 'package:posto360/modules/dash/domain/repositories/avaliacoes_repository.dart';
 import 'package:posto360/modules/dash/domain/repositories/dashboard_repository.dart';
 import 'package:posto360/modules/dash/domain/repositories/fechamento_caixa_repository.dart';
-import 'package:posto360/modules/dash/infra/repositories/campanhas_repository_impl.dart';
+import 'package:posto360/modules/dash/infra/repositories/avaliacoes_repository_impl.dart';
 import 'package:posto360/modules/dash/infra/repositories/dashboard_repository_impl.dart';
 import 'package:posto360/modules/dash/domain/repositories/horario_faltas_atrasos_repository.dart';
 import 'package:posto360/modules/dash/infra/repositories/fechamento_caixa_repository_impl.dart';
@@ -15,10 +15,10 @@ import 'package:posto360/modules/core/domain/repositories/user_repository.dart';
 import 'package:posto360/modules/core/infra/repositories/user_repository_impl.dart';
 import 'package:posto360/modules/cursos/infra/services/cursos_service.dart';
 import 'package:posto360/modules/cursos/services/cursos_service_impl.dart';
-import 'package:posto360/modules/dash/infra/services/campanhas_service.dart';
+import 'package:posto360/modules/dash/infra/services/avaliacoes_service.dart';
 import 'package:posto360/modules/dash/infra/services/dashboard_service.dart';
 import 'package:posto360/modules/dash/infra/services/fechamento_caixa_service.dart';
-import 'package:posto360/modules/dash/services/campanhas_service_impl.dart';
+import 'package:posto360/modules/dash/services/avaliacoes_service_impl.dart';
 import 'package:posto360/modules/dash/services/dashboard_service_impl.dart';
 import 'package:posto360/modules/dash/infra/services/horario_faltas_atrasos_service.dart';
 import 'package:posto360/modules/dash/services/fechamento_caixa_service_impl.dart';
@@ -43,12 +43,6 @@ class DashBindings implements Bindings {
       () => HorarioFaltasAtrasosServiceImpl(
         horarioFaltasAtrasosRepository: Get.find(),
       ),
-    );
-    Get.lazyPut<CampanhasRepository>(
-      () => CampanhasRepositoryImpl(postoRestClient: Get.find()),
-    );
-    Get.lazyPut<CampanhasService>(
-      () => CampanhasServiceImpl(campanhaRepository: Get.find()),
     );
     Get.lazyPut<CursosRepository>(
       () => CursosRepositoryImpl(postoRestClient: Get.find()),
@@ -77,6 +71,10 @@ class DashBindings implements Bindings {
     Get.lazyPut<FechamentoCaixaService>(
       () => FechamentoCaixaServiceImpl(fechamentoCaixaRepository: Get.find()),
     );
+    Get.lazyPut<AvaliacoesRepository>(
+      () => AvaliacoesRepositoryImpl(Get.find()),
+    );
+    Get.lazyPut<AvaliacoesService>(() => AvaliacoesServiceImpl(Get.find()));
     Get.put(DashController());
   }
 }

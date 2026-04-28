@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
-import 'package:posto360/modules/core/domain/mixins/loader_mixin.dart';
 import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
 import 'package:posto360/modules/login/infra/services/login_service.dart';
 
-class LoginController extends GetxController with LoaderMixin, MessageMixin {
+class LoginController extends GetxController with MessageMixin {
   final LoginService _loginService;
-  final _loader = false.obs;
+  final _loading = false.obs;
   final _message = Rxn<MessagesModel>();
+
+  bool get loading => _loading.value;
 
   LoginController({required LoginService loginService})
     : _loginService = loginService;
@@ -14,7 +15,6 @@ class LoginController extends GetxController with LoaderMixin, MessageMixin {
   @override
   void onInit() {
     super.onInit();
-    loaderListener(_loader);
     messageListener(_message);
   }
 
@@ -22,7 +22,7 @@ class LoginController extends GetxController with LoaderMixin, MessageMixin {
     required String username,
     required String password,
   }) async {
-    _loader.toggle();
+    _loading(true);
 
     final result = await _loginService.login(
       email: username,
@@ -30,7 +30,7 @@ class LoginController extends GetxController with LoaderMixin, MessageMixin {
     );
 
     if (result.isError) {
-      _loader.toggle();
+      _loading(false);
       _message(
         MessagesModel(
           title: 'Erro',
@@ -38,8 +38,8 @@ class LoginController extends GetxController with LoaderMixin, MessageMixin {
           type: MessageType.error,
         ),
       );
-    } else {
-      _loader.toggle();
+      return;
     }
+    _loading(false);
   }
 }

@@ -20,7 +20,7 @@ class RegistroPontosPage extends GetView<RegistroPontosController> {
           title: 'Registro de pontos',
           leading: BackIconButtonWidget(
             onPressed: () async {
-              Get.back();
+              Get.back(closeOverlays: true);
             },
           ),
           actions: [],

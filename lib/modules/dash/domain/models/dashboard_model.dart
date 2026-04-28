@@ -35,15 +35,13 @@ class DashboardModel {
   factory DashboardModel.fromMap(Map<String, dynamic> map) {
     return DashboardModel(
       campanhasAtivas: map['campanhasAtivas'] ?? 0,
-      bonificacaoTotal: (map['bonificacaoTotal'] as num?)?.toDouble() ?? 0,
+      bonificacaoTotal: (map['bonificacaoTotal'] as num).toDouble(),
       totalCursos: map['cursos']['total'] ?? 0,
       cursosConcluidos: map['cursos']['concluidos'] ?? 0,
       totalChecklist: map['checklist']['total'] ?? 0,
       checklistsConcluidas: map['checklist']['concluidos'] ?? 0,
-      penalidadeCursos:
-          double.tryParse(map['cursos']['penalidades'].toString()) ?? 0,
-      penalidadeChecklists:
-          double.tryParse(map['checklist']['penalidades'].toString()) ?? 0,
+      penalidadeCursos: (map['cursos']['penalidades'] as num).toDouble(),
+      penalidadeChecklists: (map['checklist']['penalidades'] as num).toDouble(),
     );
   }
 }

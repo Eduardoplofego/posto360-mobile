@@ -21,7 +21,7 @@ class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
           title: 'Checklist',
           leading: BackIconButtonWidget(
             onPressed: () async {
-              Get.back();
+              Get.back(closeOverlays: true);
             },
           ),
           actions: [],

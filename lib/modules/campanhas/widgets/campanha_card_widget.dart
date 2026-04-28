@@ -49,7 +49,7 @@ class CampanhaCardWidget extends StatelessWidget {
           ),
           if (campanha.descricao != '') ...[
             const SizedBox(height: 6),
-            Row(children: [Text(campanha.descricao)]),
+            Text(campanha.descricao),
           ],
           const SizedBox(height: 6),
           ItemCampanhaDetail(

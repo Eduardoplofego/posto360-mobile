@@ -5,12 +5,14 @@ class CustomAppBar extends StatelessWidget {
   final Widget leading;
   final List<Widget>? actions;
   final bool withRoundedBorders;
+  final Widget? bottomAppbar;
   const CustomAppBar({
     super.key,
     required this.title,
     required this.leading,
     this.actions,
     this.withRoundedBorders = true,
+    this.bottomAppbar,
   });
 
   @override
@@ -48,6 +50,8 @@ class CustomAppBar extends StatelessWidget {
               ...?actions,
             ],
           ),
+          const SizedBox(height: 5),
+          bottomAppbar != null ? bottomAppbar! : const SizedBox.shrink(),
         ],
       ),
     );

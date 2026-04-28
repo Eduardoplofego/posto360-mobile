@@ -47,7 +47,7 @@ class _AulasPageState extends State<AulasPage> {
                 if (_controller.pdfLoaded) {
                   _controller.hideMaterialAulaWidget();
                 } else {
-                  Get.back();
+                  Get.back(closeOverlays: true);
                 }
               },
             ),
