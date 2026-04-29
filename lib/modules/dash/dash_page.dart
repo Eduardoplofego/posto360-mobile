@@ -28,214 +28,245 @@ class DashPage extends GetView<DashController> {
       key: controller.scaffoldKey,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Dashboard',
-          leading: MenuIconButtonWidget(
-            onPressed: () {
-              controller.scaffoldKey.currentState?.openDrawer();
-            },
+        child: Obx(
+          () => CustomAppBar(
+            title: controller.currentTab == 0 ? 'Início' : 'Performance',
+            leading: MenuIconButtonWidget(
+              onPressed: () {
+                controller.scaffoldKey.currentState?.openDrawer();
+              },
+            ),
+            actions: [],
           ),
-          actions: [],
         ),
       ),
       drawer: PostoAppDrawer(
         autheticatedUser: Get.find<AuthService>().getUser()!,
         onSavePhoto: controller.onSavePhoto,
       ),
-      body: RefreshIndicator.noSpinner(
-        onRefresh: controller.onRefresh,
-        child: Obx(() {
+      body: Obx(() {
+        if (controller.isLoading) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child:
-                controller.isLoading
-                    ? Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: Center(
-                        child: SizedBox(
-                          width: 35,
-                          height: 35,
-                          child: CircularProgressIndicator(
-                            color: PostoAppUiConfigurations.blueMediumColor,
-                          ),
-                        ),
-                      ),
-                    )
-                    : ListView(
-                      children: [
-                        const SizedBox(height: 8),
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 80,
-                          initDelay: 50,
-                          child: ProfileCardWidget(),
-                        ),
-                        const SizedBox(height: 26),
-                        CardResumeWidget(
-                          premioFuncao:
-                              controller.autheticatedUser.premioFuncao,
-                          premioCampanhas:
-                              controller.dashboardModel.bonificacaoTotal,
-                          penalidades: controller.penalidadeTotal,
-                        ),
-                        const SizedBox(height: 26),
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 100,
-                          initDelay: 150,
-                          child: WorkingDayWidget(),
-                        ),
-                        const SizedBox(height: 17),
-                        CardLoadingWidget(
-                          isLoading: controller.loadingWork,
-                          height: 160,
-                          initDelay: 180,
-                          child: CardProcedimentosWidget(
-                            onPressed: () {
-                              Get.toNamed('/procedimentos');
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 28),
-                        DashboardSectionHeaderWidget(),
-                        if (controller.loadingDashboardModel)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 24),
-                            child: Center(
-                              child: SizedBox(
-                                width: 35,
-                                height: 35,
-                                child: CircularProgressIndicator(
-                                  color:
-                                      PostoAppUiConfigurations.blueMediumColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        if (controller.hasDashboardModel &&
-                            !controller.loadingDashboardModel) ...[
-                          CardLoadingWidget(
-                            isLoading: controller.loadingDashboardModel,
-                            height: 200,
-                            initDelay: 300,
-                            child: CardCampanhasWidget(
-                              onPressed: () {
-                                Get.toNamed(
-                                  '/campanhas/${controller.monthSelected.toIso8601String()}',
-                                );
-                              },
-                              campanhasAtivas:
-                                  controller.dashboardModel.campanhasAtivas,
-                              bonificacaoTotal:
-                                  controller.dashboardModel.bonificacaoTotal,
-                            ),
-                          ),
-                          const SizedBox(height: 17),
-                          CardLoadingWidget(
-                            isLoading: controller.loadingWork,
-                            height: 190,
-                            initDelay: 200,
-                            child: CardRhWidget(
-                              model: controller.horarioFaltasAtrasos,
-                              onPressed: () {
-                                Get.toNamed(
-                                  '/registro-pontos/${controller.monthSelected.toIso8601String()}',
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 17),
-                          CardLoadingWidget(
-                            isLoading: controller.loadingDashboardModel,
-                            height: 200,
-                            initDelay: 300,
-                            child: CardAvaliacoesWidget(
-                              onPressed: () {
-                                Get.toNamed(
-                                  '/avaliacoes/${controller.monthSelected.toIso8601String()}',
-                                );
-                              },
-                              total: controller.avaliacoesModel.total,
-                              feitas: controller.avaliacoesModel.feitas,
-                              penalidade: controller.avaliacoesModel.penalidade,
-                            ),
-                          ),
-                          const SizedBox(height: 17),
-                          CardLoadingWidget(
-                            isLoading: controller.loadingWork,
-                            height: 190,
-                            initDelay: 200,
-                            child: CardCloseMoney(
-                              model: controller.cartoesModel,
-                              onPressed: () {
-                                String month =
-                                    controller.monthSelected.toIso8601String();
-                                Get.toNamed('/fechamento-caixa/$month');
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(height: 17),
-                          CardLoadingWidget(
-                            isLoading: controller.loadingDashboardModel,
-                            height: 190,
-                            initDelay: 200,
-                            child: CardDetailedWidget(
-                              icon: Icons.school_outlined,
-                              totalNumber:
-                                  controller.dashboardModel.cursosConcluidos
-                                      .toInt(),
-                              title: 'Performance Cursos',
-                              totalNumberDetailed:
-                                  controller.dashboardModel.totalCursos.toInt(),
-                              totalNumberDetailedText: 'cursos',
-                              totalTakeNumberDetailedText: 'concluídos',
-                              penalidade:
-                                  controller.dashboardModel.penalidadeCursos,
-                              hideTrendingDetail: true,
-                              onPressed: () {
-                                Get.toNamed('/cursos');
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 17),
-                          CardLoadingWidget(
-                            isLoading: controller.loadingDashboardModel,
-                            height: 190,
-                            initDelay: 200,
-                            child: CardDetailedWidget(
-                              icon: Icons.checklist_sharp,
-                              totalNumber:
-                                  controller.dashboardModel.checklistsConcluidas
-                                      .toInt(),
-                              title: 'Performance Checklists',
-                              totalNumberDetailed:
-                                  controller.dashboardModel.totalChecklist
-                                      .toInt(),
-                              totalNumberDetailedText: 'checklists',
-                              totalTakeNumberDetailedText: 'concluídos',
-                              penalidade:
-                                  controller
-                                      .dashboardModel
-                                      .penalidadeChecklists,
-                              hideTrendingDetail: true,
-                              onPressed: () {
-                                Get.toNamed('/checklists');
-                              },
-                            ),
-                          ),
-                        ],
-                        if (!controller.hasDashboardModel &&
-                            !controller.loadingDashboardModel) ...[
-                          EmptyDashboardModelWidget(
-                            onRefresh: controller.loadDashboardModel,
-                          ),
-                        ],
-                        const SizedBox(height: 32),
-                      ],
-                    ),
+            padding: const EdgeInsets.only(top: 24),
+            child: Center(
+              child: SizedBox(
+                width: 35,
+                height: 35,
+                child: CircularProgressIndicator(
+                  color: PostoAppUiConfigurations.blueMediumColor,
+                ),
+              ),
+            ),
           );
-        }),
+        }
+        return IndexedStack(
+          index: controller.currentTab,
+          children: [_buildInicioTab(), _buildPerformanceTab()],
+        );
+      }),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          currentIndex: controller.currentTab,
+          onTap: controller.changeTab,
+          selectedItemColor: PostoAppUiConfigurations.blueMediumColor,
+          unselectedItemColor: PostoAppUiConfigurations.darkGreyColor,
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Início',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_outlined),
+              activeIcon: Icon(Icons.bar_chart),
+              label: 'Performance',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInicioTab() {
+    return RefreshIndicator.noSpinner(
+      onRefresh: controller.onRefresh,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: ListView(
+          children: [
+            const SizedBox(height: 8),
+            CardLoadingWidget(
+              isLoading: controller.loadingWork,
+              height: 80,
+              initDelay: 50,
+              child: ProfileCardWidget(),
+            ),
+            const SizedBox(height: 26),
+            CardLoadingWidget(
+              isLoading: controller.loadingWork,
+              height: 100,
+              initDelay: 150,
+              child: WorkingDayWidget(),
+            ),
+            const SizedBox(height: 17),
+            CardLoadingWidget(
+              isLoading: controller.loadingWork,
+              height: 160,
+              initDelay: 180,
+              child: CardProcedimentosWidget(
+                onPressed: () {
+                  Get.toNamed('/procedimentos');
+                },
+              ),
+            ),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPerformanceTab() {
+    return RefreshIndicator.noSpinner(
+      onRefresh: controller.onRefresh,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: ListView(
+          children: [
+            const SizedBox(height: 8),
+            CardResumeWidget(
+              premioFuncao: controller.autheticatedUser.premioFuncao,
+              premioCampanhas: controller.dashboardModel.bonificacaoTotal,
+              penalidades: controller.penalidadeTotal,
+            ),
+            const SizedBox(height: 26),
+            DashboardSectionHeaderWidget(),
+            if (controller.loadingDashboardModel)
+              Padding(
+                padding: const EdgeInsets.only(top: 24),
+                child: Center(
+                  child: SizedBox(
+                    width: 35,
+                    height: 35,
+                    child: CircularProgressIndicator(
+                      color: PostoAppUiConfigurations.blueMediumColor,
+                    ),
+                  ),
+                ),
+              ),
+            if (controller.hasDashboardModel &&
+                !controller.loadingDashboardModel) ...[
+              CardLoadingWidget(
+                isLoading: controller.loadingDashboardModel,
+                height: 200,
+                initDelay: 300,
+                child: CardCampanhasWidget(
+                  onPressed: () {
+                    Get.toNamed(
+                      '/campanhas/${controller.monthSelected.toIso8601String()}',
+                    );
+                  },
+                  campanhasAtivas: controller.dashboardModel.campanhasAtivas,
+                  bonificacaoTotal: controller.dashboardModel.bonificacaoTotal,
+                ),
+              ),
+              const SizedBox(height: 17),
+              CardLoadingWidget(
+                isLoading: controller.loadingWork,
+                height: 190,
+                initDelay: 200,
+                child: CardRhWidget(
+                  model: controller.horarioFaltasAtrasos,
+                  onPressed: () {
+                    Get.toNamed(
+                      '/registro-pontos/${controller.monthSelected.toIso8601String()}',
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 17),
+              CardLoadingWidget(
+                isLoading: controller.loadingDashboardModel,
+                height: 200,
+                initDelay: 300,
+                child: CardAvaliacoesWidget(
+                  onPressed: () {
+                    Get.toNamed(
+                      '/avaliacoes/${controller.monthSelected.toIso8601String()}',
+                    );
+                  },
+                  total: controller.avaliacoesModel.total,
+                  feitas: controller.avaliacoesModel.feitas,
+                  penalidade: controller.avaliacoesModel.penalidade,
+                ),
+              ),
+              const SizedBox(height: 17),
+              CardLoadingWidget(
+                isLoading: controller.loadingWork,
+                height: 190,
+                initDelay: 200,
+                child: CardCloseMoney(
+                  model: controller.cartoesModel,
+                  onPressed: () {
+                    String month = controller.monthSelected.toIso8601String();
+                    Get.toNamed('/fechamento-caixa/$month');
+                  },
+                ),
+              ),
+              const SizedBox(height: 17),
+              CardLoadingWidget(
+                isLoading: controller.loadingDashboardModel,
+                height: 190,
+                initDelay: 200,
+                child: CardDetailedWidget(
+                  icon: Icons.school_outlined,
+                  totalNumber:
+                      controller.dashboardModel.cursosConcluidos.toInt(),
+                  title: 'Performance Cursos',
+                  totalNumberDetailed:
+                      controller.dashboardModel.totalCursos.toInt(),
+                  totalNumberDetailedText: 'cursos',
+                  totalTakeNumberDetailedText: 'concluídos',
+                  penalidade: controller.dashboardModel.penalidadeCursos,
+                  hideTrendingDetail: true,
+                  onPressed: () {
+                    Get.toNamed('/cursos');
+                  },
+                ),
+              ),
+              const SizedBox(height: 17),
+              CardLoadingWidget(
+                isLoading: controller.loadingDashboardModel,
+                height: 190,
+                initDelay: 200,
+                child: CardDetailedWidget(
+                  icon: Icons.checklist_sharp,
+                  totalNumber:
+                      controller.dashboardModel.checklistsConcluidas.toInt(),
+                  title: 'Performance Checklists',
+                  totalNumberDetailed:
+                      controller.dashboardModel.totalChecklist.toInt(),
+                  totalNumberDetailedText: 'checklists',
+                  totalTakeNumberDetailedText: 'concluídos',
+                  penalidade: controller.dashboardModel.penalidadeChecklists,
+                  hideTrendingDetail: true,
+                  onPressed: () {
+                    Get.toNamed('/checklists');
+                  },
+                ),
+              ),
+            ],
+            if (!controller.hasDashboardModel &&
+                !controller.loadingDashboardModel) ...[
+              EmptyDashboardModelWidget(
+                onRefresh: controller.loadDashboardModel,
+              ),
+            ],
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }

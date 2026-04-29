@@ -30,6 +30,7 @@ class DashController extends FullLifeCycleController
   final _message = Rxn<MessagesModel>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _selectPeriodScrollController = ScrollController();
+  final _currentTab = 0.obs;
 
   DashController() {
     _horarioFaltasAtrasosService = Get.find<HorarioFaltasAtrasosService>();
@@ -95,6 +96,8 @@ class DashController extends FullLifeCycleController
   bool get hasNextMonth => _hasNextMonth.value;
   bool get isLoading => _loader.value;
   int get daysRegistered => _daysRegistered.value;
+  int get currentTab => _currentTab.value;
+  void changeTab(int index) => _currentTab.value = index;
   ScrollController get selectPeriodScrollController =>
       _selectPeriodScrollController;
   String get photoUrl {
