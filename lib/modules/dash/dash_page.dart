@@ -8,6 +8,7 @@ import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/menu_icon_b
 import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_avaliacoes_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_campanhas_widget.dart';
+import 'package:posto360/modules/dash/widgets/card_chamados_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_close_money.dart';
 import 'package:posto360/modules/dash/widgets/card_procedimentos_widget.dart';
 import 'package:posto360/modules/dash/widgets/card_resume_widget.dart';
@@ -118,6 +119,17 @@ class DashPage extends GetView<DashController> {
               child: CardProcedimentosWidget(
                 onPressed: () {
                   Get.toNamed('/procedimentos');
+                },
+              ),
+            ),
+            const SizedBox(height: 17),
+            CardLoadingWidget(
+              isLoading: controller.loadingWork,
+              height: 160,
+              initDelay: 210,
+              child: CardChamadosWidget(
+                onPressed: () {
+                  Get.toNamed('/chamados');
                 },
               ),
             ),

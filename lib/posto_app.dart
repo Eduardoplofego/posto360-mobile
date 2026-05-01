@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:posto360/modules/avaliacoes/avaliacoes_routers.dart';
+import 'package:posto360/modules/chamados/chamados_routers.dart';
 import 'package:posto360/modules/core/domain/bindings/application_bindings.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_theme.dart';
 import 'package:posto360/modules/campanhas/campanhas_routers.dart';
@@ -50,6 +51,7 @@ class PostoApp extends StatelessWidget {
         ...RegistroPontosRouters.routes,
         ...ProcedimentosRouters.routes,
         ...AvaliacoesRouters.routes,
+        ...ChamadosRouters.routes,
       ],
     );
   }
