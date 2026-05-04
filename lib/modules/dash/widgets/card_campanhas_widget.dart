@@ -18,92 +18,99 @@ class CardCampanhasWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasButton = onPressed != null;
     return Container(
       width: Get.width,
-      padding: EdgeInsets.only(
-        top: 10,
-        right: onPressed != null ? 0 : 16,
-        left: 16,
-        bottom: onPressed != null ? 0 : 20,
-      ),
+      padding: EdgeInsets.fromLTRB(16, 12, hasButton ? 0 : 16, hasButton ? 0 : 16),
       decoration: BoxDecoration(
         color: PostoAppUiConfigurations.lightGreyBgColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
+          Padding(
+            padding: EdgeInsets.only(right: hasButton ? 16 : 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  spacing: 10,
                   children: [
-                    Row(
-                      spacing: 10,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.speed_outlined,
-                            color: PostoAppUiConfigurations.blueMediumColor,
-                            size: 30,
-                          ),
-                        ),
-                        Text(
-                          campanhasAtivas.toString(),
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 17),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 140,
-                          child: Text(
-                            'Performance Campanhas',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: PostoAppUiConfigurations.textDarkColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      UtilBrasilFields.obterReal(bonificacaoTotal),
-                      style: TextStyle(
-                        fontSize: 20,
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.local_offer_outlined,
                         color: PostoAppUiConfigurations.blueMediumColor,
+                        size: 30,
+                      ),
+                    ),
+                    Text(
+                      campanhasAtivas.toString(),
+                      style: const TextStyle(
+                        fontSize: 24,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Text(
+                  'Produtos Incentivados',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: PostoAppUiConfigurations.textDarkColor,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Divider(height: 1, color: Colors.black12),
+                const SizedBox(height: 10),
+                _PremiacaoRow(valor: bonificacaoTotal),
+              ],
+            ),
           ),
-          onPressed != null
-              ? ButtonCardWidget(onPressed: onPressed!)
-              : const SizedBox.shrink(),
+          if (hasButton) ...[
+            const SizedBox(height: 12),
+            ButtonCardWidget(onPressed: onPressed!),
+          ],
         ],
       ),
+    );
+  }
+}
+
+class _PremiacaoRow extends StatelessWidget {
+  final double valor;
+
+  const _PremiacaoRow({required this.valor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Text(
+          'Premiação conquistada',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: Colors.black54,
+          ),
+        ),
+        const Spacer(),
+        Text(
+          UtilBrasilFields.obterReal(valor),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: PostoAppUiConfigurations.textDarkColor,
+          ),
+        ),
+      ],
     );
   }
 }

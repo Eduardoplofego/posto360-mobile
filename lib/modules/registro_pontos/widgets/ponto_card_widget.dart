@@ -61,10 +61,10 @@ class PontoCardWidget extends StatelessWidget {
     ];
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 23, vertical: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color(0xFFECECEC)),
+        color: PostoAppUiConfigurations.lightGreyBgColor,
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         children: [

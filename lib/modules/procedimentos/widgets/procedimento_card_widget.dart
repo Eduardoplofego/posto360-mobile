@@ -26,7 +26,7 @@ class ProcedimentoCardWidget extends StatelessWidget {
         width: Get.width,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: PostoAppUiConfigurations.lightPurpleColor,
+          color: PostoAppUiConfigurations.lightGreyBgColor,
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(

@@ -28,9 +28,8 @@ class ChamadoCardWidget extends StatelessWidget {
       child: Container(
         width: Get.width,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: PostoAppUiConfigurations.lightGreyBgColor,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
         ),
         clipBehavior: Clip.antiAlias,
         child: IntrinsicHeight(
@@ -129,7 +128,7 @@ class ChamadoCardWidget extends StatelessWidget {
                                 child: LinearProgressIndicator(
                                   minHeight: 6,
                                   value: progresso.clamp(0.0, 1.0),
-                                  backgroundColor: const Color(0xFFE5E7EB),
+                                  backgroundColor: Colors.white,
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     PostoAppUiConfigurations.blueMediumColor,
                                   ),

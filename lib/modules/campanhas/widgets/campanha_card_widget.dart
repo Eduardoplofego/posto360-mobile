@@ -11,6 +11,7 @@ class CampanhaCardWidget extends StatelessWidget {
   final CampanhaModel campanha;
   final PerformanceIndividualModel performaceIndividual;
   final PerformanceEquipeModel performaceEquipe;
+
   const CampanhaCardWidget({
     super.key,
     required this.campanha,
@@ -20,144 +21,103 @@ class CampanhaCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalEquipeCompleted = performaceEquipe.progresso ~/ 100;
-    final remainingEquipeProgress =
-        (performaceEquipe.progresso - totalEquipeCompleted * 100) as num;
-
-    final totalIndividualCompleted = performaceIndividual.progresso ~/ 100;
-    final remainingIndividualProgress =
-        (performaceIndividual.progresso - totalIndividualCompleted * 100)
-            as num;
+    final isUnidade = campanha.tipoBonificacao == TypeBonificacao.unidade;
     return Container(
       width: Get.width,
-      padding: EdgeInsets.symmetric(horizontal: 23, vertical: 26),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color(0xFFECECEC)),
+        color: PostoAppUiConfigurations.lightGreyBgColor,
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                campanha.nomeCampanha,
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          Text(
+            campanha.nomeCampanha,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (campanha.descricao.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              campanha.descricao,
+              style: const TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+          ],
+          const SizedBox(height: 8),
+          Text(
+            'Apuração por ${campanha.tipoBonificacao.description().toLowerCase()}',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+          const SizedBox(height: 14),
+          _PerformanceSection(
+            title: 'Performance Individual',
+            icon: Icons.person_outline,
+            accent: PostoAppUiConfigurations.blueMediumColor,
+            details: [
+              _DetailRow(
+                label: 'Meta',
+                value: isUnidade
+                    ? '${campanha.metaIndividual.toStringAsFixed(0)} unid.'
+                    : UtilBrasilFields.obterReal(campanha.metaIndividual),
+              ),
+              _DetailRow(
+                label: 'Valor por meta',
+                value: UtilBrasilFields.obterReal(campanha.bonificacaoIndividual),
+              ),
+              _DetailRow(
+                label: 'Vendas',
+                value: isUnidade
+                    ? '${campanha.resultadoIndividual.toStringAsFixed(0)} unid.'
+                    : UtilBrasilFields.obterReal(campanha.resultadoIndividual),
+              ),
+              _DetailRow(
+                label: 'Premiação conquistada',
+                value: UtilBrasilFields.obterReal(
+                  campanha.bonificacaoIndividualConquistada,
+                ),
+                bold: true,
               ),
             ],
+            progresso: performaceIndividual.progresso,
           ),
-          if (campanha.descricao != '') ...[
-            const SizedBox(height: 6),
-            Text(campanha.descricao),
-          ],
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Tipo de Apuração',
-            value: Text(campanha.tipoBonificacao.description().toLowerCase()),
-          ),
-          Divider(color: Color(0xFFECECEC)),
-          const SizedBox(height: 6),
-          Text('Performance Individual'),
-          const SizedBox(height: 8),
-          ItemCampanhaDetail(
-            titleItem: 'Meta Individual',
-            value: Text(
-              campanha.tipoBonificacao == TypeBonificacao.unidade
-                  ? '${campanha.metaIndividual.toStringAsFixed(0)} unid.'
-                  : UtilBrasilFields.obterReal((0).toDouble()),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Valor por Meta',
-            value: Text(
-              UtilBrasilFields.obterReal(campanha.bonificacaoIndividual),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Resultado Individual',
-            value: Text(
-              campanha.tipoBonificacao == TypeBonificacao.unidade
-                  ? '${campanha.resultadoIndividual.toStringAsFixed(0)} unid.'
-                  : UtilBrasilFields.obterReal(campanha.resultadoIndividual),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Premiação Conquistada',
-            value: Text(
-              UtilBrasilFields.obterReal(
-                campanha.bonificacaoIndividualConquistada,
+          const SizedBox(height: 16),
+          Divider(height: 1, color: Colors.black12),
+          const SizedBox(height: 16),
+          _PerformanceSection(
+            title: 'Performance Equipe',
+            icon: Icons.groups_2_outlined,
+            accent: PostoAppUiConfigurations.orangeColor,
+            details: [
+              _DetailRow(
+                label: 'Meta',
+                value: isUnidade
+                    ? '${campanha.metaEquipe.toStringAsFixed(0)} unid.'
+                    : UtilBrasilFields.obterReal(campanha.metaEquipe),
               ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCamapanhaPercentCompletedWidget(
-            titleItem: 'Realizado',
-            value: '${remainingIndividualProgress.toInt()}%',
-            totalPercentCompleted: totalIndividualCompleted,
-            dotColor: PostoAppUiConfigurations.blueMediumColor,
-          ),
-          const SizedBox(height: 6),
-          LinearProgressIndicator(
-            value: remainingIndividualProgress.toInt() / 100,
-            backgroundColor: Color(0xFFECECEC),
-            color: PostoAppUiConfigurations.blueMediumColor,
-            minHeight: 11,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          const SizedBox(height: 6),
-          Divider(color: Color(0xFFECECEC)),
-          const SizedBox(height: 6),
-          Text('Performance Equipe'),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Meta Equipe',
-            value: Text(
-              campanha.tipoBonificacao == TypeBonificacao.unidade
-                  ? '${campanha.metaEquipe.toStringAsFixed(0)} unid.'
-                  : UtilBrasilFields.obterReal(campanha.metaEquipe),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Valor por Meta',
-            value: Text(
-              UtilBrasilFields.obterReal(performaceEquipe.bonificacaoMetaValor),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Resultado Equipe',
-            value: Text(
-              campanha.tipoBonificacao == TypeBonificacao.unidade
-                  ? '${campanha.resultadoEquipe.toStringAsFixed(0)} unid.'
-                  : UtilBrasilFields.obterReal(campanha.resultadoEquipe),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCampanhaDetail(
-            titleItem: 'Premiação Conquistada',
-            value: Text(
-              UtilBrasilFields.obterReal(campanha.bonificacaoEquipeConquistada),
-            ),
-          ),
-          const SizedBox(height: 6),
-          ItemCamapanhaPercentCompletedWidget(
-            titleItem: 'Realizado',
-            value: '${remainingEquipeProgress.toInt()}%',
-            totalPercentCompleted: totalEquipeCompleted,
-            dotColor: PostoAppUiConfigurations.blueMediumColor,
-          ),
-          const SizedBox(height: 6),
-          LinearProgressIndicator(
-            value: remainingEquipeProgress.toInt() / 100,
-            backgroundColor: Color(0xFFECECEC),
-            color: PostoAppUiConfigurations.blueMediumColor,
-            minHeight: 11,
-            borderRadius: BorderRadius.circular(10),
+              _DetailRow(
+                label: 'Valor por meta',
+                value: UtilBrasilFields.obterReal(
+                  performaceEquipe.bonificacaoMetaValor,
+                ),
+              ),
+              _DetailRow(
+                label: 'Vendas',
+                value: isUnidade
+                    ? '${campanha.resultadoEquipe.toStringAsFixed(0)} unid.'
+                    : UtilBrasilFields.obterReal(campanha.resultadoEquipe),
+              ),
+              _DetailRow(
+                label: 'Premiação conquistada',
+                value: UtilBrasilFields.obterReal(
+                  campanha.bonificacaoEquipeConquistada,
+                ),
+                bold: true,
+              ),
+            ],
+            progresso: performaceEquipe.progresso,
           ),
         ],
       ),
@@ -165,83 +125,146 @@ class CampanhaCardWidget extends StatelessWidget {
   }
 }
 
-class ItemCamapanhaPercentCompletedWidget extends StatelessWidget {
-  final String titleItem;
-  final String value;
-  final Color? dotColor;
-  final int totalPercentCompleted;
-  const ItemCamapanhaPercentCompletedWidget({
-    super.key,
-    required this.titleItem,
-    required this.value,
-    this.dotColor,
-    this.totalPercentCompleted = 0,
+class _PerformanceSection extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color accent;
+  final List<_DetailRow> details;
+  final double progresso;
+
+  const _PerformanceSection({
+    required this.title,
+    required this.icon,
+    required this.accent,
+    required this.details,
+    required this.progresso,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final cycles = progresso ~/ 100;
+    final remaining = (progresso - cycles * 100).toInt();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CircleAvatar(backgroundColor: dotColor ?? Color(0xFF7BA9F2), radius: 6),
-        const SizedBox(width: 10),
-        Text(titleItem),
-        const SizedBox(width: 10),
-        if (totalPercentCompleted < 5)
-          Expanded(
-            child: Wrap(
-              spacing: 4,
-              runSpacing: 4,
-              children: List.generate(
-                totalPercentCompleted,
-                (index) => Icon(
-                  Icons.workspace_premium_outlined,
-                  size: 18,
-                  color: Colors.yellow.shade900,
-                ),
+        Row(
+          children: [
+            Icon(icon, size: 18, color: accent),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: accent,
               ),
             ),
-          ),
-        if (totalPercentCompleted >= 5) ...[
-          Row(
-            children: [
-              Text('+$totalPercentCompleted'),
-              Icon(
-                Icons.workspace_premium_outlined,
-                size: 18,
-                color: Colors.yellow.shade900,
-              ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        ...details,
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            const Text(
+              'Realizado',
+              style: TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+            const Spacer(),
+            if (cycles >= 1) ...[
+              _CycleBadge(cycles: cycles, color: accent),
+              const SizedBox(width: 8),
             ],
+            Text(
+              '$remaining%',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: accent,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: LinearProgressIndicator(
+            value: remaining / 100,
+            backgroundColor: Colors.white,
+            color: accent,
+            minHeight: 8,
           ),
-          Spacer(),
-        ],
-
-        Text(value, style: TextStyle(fontWeight: FontWeight.w500)),
+        ),
       ],
     );
   }
 }
 
-class ItemCampanhaDetail extends StatelessWidget {
-  final String titleItem;
-  final Widget value;
-  final Color? dotColor;
-  const ItemCampanhaDetail({
-    super.key,
-    required this.titleItem,
+class _DetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool bold;
+
+  const _DetailRow({
+    required this.label,
     required this.value,
-    this.dotColor,
+    this.bold = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CircleAvatar(backgroundColor: dotColor ?? Color(0xFF7BA9F2), radius: 6),
-        const SizedBox(width: 10),
-        Text(titleItem),
-        Spacer(),
-        value,
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+              color: PostoAppUiConfigurations.textDarkColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CycleBadge extends StatelessWidget {
+  final int cycles;
+  final Color color;
+
+  const _CycleBadge({required this.cycles, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.workspace_premium_outlined, size: 14, color: color),
+          const SizedBox(width: 2),
+          Text(
+            '${cycles}x',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

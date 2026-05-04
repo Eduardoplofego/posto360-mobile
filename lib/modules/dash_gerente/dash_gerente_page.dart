@@ -192,7 +192,7 @@ class DashGerentePage extends GetView<DashGerenteController> {
                 controller.hasResumoEquipe) ...[
               CardLoadingWidget(
                 isLoading: controller.loadingResumoEquipe,
-                height: 150,
+                height: 190,
                 initDelay: 80,
                 child: CardResumoEquipeWidget(
                   resumo: controller.resumoEquipe,
