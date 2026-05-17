@@ -12,17 +12,14 @@ class ChecklistPage extends GetView<ChecklistController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Checklist',
-          leading: BackIconButtonWidget(
-            onPressed: () async {
-              Get.back(closeOverlays: true);
-            },
-          ),
-          actions: [],
+      appBar: CustomAppBar(
+        title: 'Checklist',
+        leading: BackIconButtonWidget(
+          onPressed: () async {
+            Get.back(closeOverlays: true);
+          },
         ),
+        actions: [],
       ),
       body: ListView(
         children: [

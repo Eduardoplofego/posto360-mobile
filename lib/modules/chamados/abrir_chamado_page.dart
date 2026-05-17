@@ -13,13 +13,10 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Novo chamado',
-          leading: BackIconButtonWidget(onPressed: () => Get.back()),
-          actions: const [],
-        ),
+      appBar: CustomAppBar(
+        title: 'Novo chamado',
+        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        actions: const [],
       ),
       body: Stack(
         children: [

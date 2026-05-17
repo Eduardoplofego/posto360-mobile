@@ -82,15 +82,12 @@ class ChamadoEditarPage extends GetView<ChamadoEditarController> {
           if (ok) Get.back();
         },
         child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(70),
-            child: CustomAppBar(
-              title: 'Preencher chamado',
-              leading: BackIconButtonWidget(
-                onPressed: () => _onBackPressed(context),
-              ),
-              actions: const [],
+          appBar: CustomAppBar(
+            title: 'Preencher chamado',
+            leading: BackIconButtonWidget(
+              onPressed: () => _onBackPressed(context),
             ),
+            actions: const [],
           ),
           body: _buildBody(),
         ),

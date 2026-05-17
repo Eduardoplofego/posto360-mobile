@@ -15,17 +15,14 @@ class ChecklistAnswerPage extends GetView<ChecklistAnswerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Checklist',
-          leading: BackIconButtonWidget(
-            onPressed: () async {
-              Get.back(closeOverlays: true);
-            },
-          ),
-          actions: [],
+      appBar: CustomAppBar(
+        title: 'Checklist',
+        leading: BackIconButtonWidget(
+          onPressed: () async {
+            Get.back(closeOverlays: true);
+          },
         ),
+        actions: [],
       ),
       bottomNavigationBar: FooterConcludeChecklist(
         onPressed: controller.concludedChecklist,

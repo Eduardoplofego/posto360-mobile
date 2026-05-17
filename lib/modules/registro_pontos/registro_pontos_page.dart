@@ -14,17 +14,14 @@ class RegistroPontosPage extends GetView<RegistroPontosController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Registro de pontos',
-          leading: BackIconButtonWidget(
-            onPressed: () async {
-              Get.back(closeOverlays: true);
-            },
-          ),
-          actions: [],
+      appBar: CustomAppBar(
+        title: 'Registro de pontos',
+        leading: BackIconButtonWidget(
+          onPressed: () async {
+            Get.back(closeOverlays: true);
+          },
         ),
+        actions: [],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

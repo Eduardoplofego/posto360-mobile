@@ -12,38 +12,35 @@ class ChamadosPage extends GetView<ChamadosController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Chamados',
-          leading: BackIconButtonWidget(onPressed: () => Get.back()),
-          actions: [
-            TextButton.icon(
-              onPressed: () async {
-                await Get.toNamed('/abrir-chamado');
-                await controller.onRefresh();
-              },
-              icon: const Icon(Icons.add_rounded, color: Colors.white, size: 18),
-              label: const Text(
-                'Novo',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white.withValues(alpha: 0.18),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
-                ),
+      appBar: CustomAppBar(
+        title: 'Chamados',
+        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        actions: [
+          TextButton.icon(
+            onPressed: () async {
+              await Get.toNamed('/abrir-chamado');
+              await controller.onRefresh();
+            },
+            icon: const Icon(Icons.add_rounded, color: Colors.white, size: 18),
+            label: const Text(
+              'Novo',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
               ),
             ),
-          ],
-        ),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white.withValues(alpha: 0.18),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+            ),
+          ),
+        ],
       ),
       body: RefreshIndicator.noSpinner(
         onRefresh: controller.onRefresh,

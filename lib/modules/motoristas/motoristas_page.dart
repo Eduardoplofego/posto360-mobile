@@ -16,17 +16,14 @@ class MotoristasPage extends GetView<MotoristasController> {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: scaffoldKey,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Filiais',
-          leading: MenuIconButtonWidget(
-            onPressed: () {
-              scaffoldKey.currentState?.openDrawer();
-            },
-          ),
-          actions: const [],
+      appBar: CustomAppBar(
+        title: 'Filiais',
+        leading: MenuIconButtonWidget(
+          onPressed: () {
+            scaffoldKey.currentState?.openDrawer();
+          },
         ),
+        actions: const [],
       ),
       drawer: PostoAppDrawer(
         autheticatedUser: Get.find<AuthService>().getUser()!,

@@ -38,7 +38,7 @@ class _AulasPageState extends State<AulasPage> {
     _controller.getCursoArgument(dto);
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
+        preferredSize: CustomAppBar.preferredSizeFor(),
         child: Obx(() {
           return CustomAppBar(
             title: _controller.curso?.titulo ?? '',

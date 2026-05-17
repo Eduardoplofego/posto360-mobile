@@ -14,13 +14,10 @@ class ChamadoDetalhePage extends GetView<ChamadoDetalheController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Chamado',
-          leading: BackIconButtonWidget(onPressed: () => Get.back()),
-          actions: const [],
-        ),
+      appBar: CustomAppBar(
+        title: 'Chamado',
+        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        actions: const [],
       ),
       body: RefreshIndicator.noSpinner(
         onRefresh: controller.onRefresh,

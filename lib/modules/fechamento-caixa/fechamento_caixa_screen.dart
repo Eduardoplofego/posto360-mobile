@@ -14,17 +14,14 @@ class FechamentoCaixaScreen extends GetView<FechamentoCaixaController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Fechamento Caixa',
-          leading: BackIconButtonWidget(
-            onPressed: () async {
-              Get.back(closeOverlays: true);
-            },
-          ),
-          actions: [],
+      appBar: CustomAppBar(
+        title: 'Fechamento Caixa',
+        leading: BackIconButtonWidget(
+          onPressed: () async {
+            Get.back(closeOverlays: true);
+          },
         ),
+        actions: [],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

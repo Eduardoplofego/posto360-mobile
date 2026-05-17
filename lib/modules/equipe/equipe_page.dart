@@ -12,13 +12,10 @@ class EquipePage extends GetView<EquipeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Equipe',
-          leading: BackIconButtonWidget(onPressed: () => Get.back()),
-          actions: const [],
-        ),
+      appBar: CustomAppBar(
+        title: 'Equipe',
+        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        actions: const [],
       ),
       body: RefreshIndicator.noSpinner(
         onRefresh: controller.onRefresh,

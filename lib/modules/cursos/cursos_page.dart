@@ -15,17 +15,14 @@ class CursosPage extends GetView<CursosController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
-        child: CustomAppBar(
-          title: 'Cursos',
-          leading: BackIconButtonWidget(
-            onPressed: () async {
-              Get.back(closeOverlays: true);
-            },
-          ),
-          actions: [],
+      appBar: CustomAppBar(
+        title: 'Cursos',
+        leading: BackIconButtonWidget(
+          onPressed: () async {
+            Get.back(closeOverlays: true);
+          },
         ),
+        actions: [],
       ),
       body: RefreshIndicator(
         onRefresh: controller.onRefresh,

@@ -28,7 +28,7 @@ class DashPage extends GetView<DashController> {
     return Scaffold(
       key: controller.scaffoldKey,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
+        preferredSize: CustomAppBar.preferredSizeFor(),
         child: Obx(
           () => CustomAppBar(
             title: controller.currentTab == 0 ? 'Início' : 'Performance',
@@ -200,6 +200,19 @@ class DashPage extends GetView<DashController> {
               ),
               const SizedBox(height: 17),
               CardLoadingWidget(
+                isLoading: controller.loadingWork,
+                height: 190,
+                initDelay: 200,
+                child: CardCloseMoney(
+                  model: controller.cartoesModel,
+                  onPressed: () {
+                    String month = controller.monthSelected.toIso8601String();
+                    Get.toNamed('/fechamento-caixa/$month');
+                  },
+                ),
+              ),
+              const SizedBox(height: 17),
+              CardLoadingWidget(
                 isLoading: controller.loadingDashboardModel,
                 height: 200,
                 initDelay: 300,
@@ -212,19 +225,6 @@ class DashPage extends GetView<DashController> {
                   total: controller.avaliacoesModel.total,
                   feitas: controller.avaliacoesModel.feitas,
                   penalidade: controller.avaliacoesModel.penalidade,
-                ),
-              ),
-              const SizedBox(height: 17),
-              CardLoadingWidget(
-                isLoading: controller.loadingWork,
-                height: 190,
-                initDelay: 200,
-                child: CardCloseMoney(
-                  model: controller.cartoesModel,
-                  onPressed: () {
-                    String month = controller.monthSelected.toIso8601String();
-                    Get.toNamed('/fechamento-caixa/$month');
-                  },
                 ),
               ),
               const SizedBox(height: 17),
