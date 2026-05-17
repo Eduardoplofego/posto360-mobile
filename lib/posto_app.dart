@@ -16,6 +16,7 @@ import 'package:posto360/modules/dash_gerente/dash_gerente_routers.dart';
 import 'package:posto360/modules/equipe/equipe_routers.dart';
 import 'package:posto360/modules/fechamento-caixa/fechamento_caixa_routers.dart';
 import 'package:posto360/modules/login/login_routers.dart';
+import 'package:posto360/modules/motoristas/motoristas_routers.dart';
 import 'package:posto360/modules/core/routers/splash_routers.dart';
 import 'package:posto360/modules/procedimentos/procedimentos_routers.dart';
 import 'package:posto360/modules/registro_pontos/registro_pontos_routers.dart';
@@ -52,6 +53,7 @@ class PostoApp extends StatelessWidget {
         ...ProcedimentosRouters.routes,
         ...AvaliacoesRouters.routes,
         ...ChamadosRouters.routes,
+        ...MotoristasRouters.routes,
       ],
     );
   }

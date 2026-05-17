@@ -36,11 +36,12 @@ class _PostoAppDrawerState extends State<PostoAppDrawer> {
       return;
     }
 
+    await Get.find<AuthService>().logout();
+
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
-
-    Get.find<AuthService>().logout();
   }
 
   Future<bool> _requestLogout() async {

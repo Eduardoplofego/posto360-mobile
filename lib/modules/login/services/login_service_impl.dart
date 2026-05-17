@@ -28,9 +28,9 @@ class LoginServiceImpl extends LoginService {
 
       final storage = GetStorage();
 
-      storage.write(Constants.JWT_TOKEN, response.token);
       storage.write(Constants.USER_KEY, response.user.toMap());
       storage.write(Constants.USER_PHOTO_URL, response.user.photoUrl);
+      storage.write(Constants.JWT_TOKEN, response.token);
       return ResultActionDTO.success();
     } on UserNotFoundException catch (_) {
       return ResultActionDTO.failure('Usuário não encontrado', null);

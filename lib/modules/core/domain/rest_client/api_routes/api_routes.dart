@@ -94,6 +94,8 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/chamados/abrir-chamado';
   static const _chamadosAtualizarCampos =
       '$_backendBaseUrl/api/mobile/chamados/atualizar-campos';
+  static const _motoristasDashboard =
+      '$_backendBaseUrl/api/mobile/motorista/dashboard';
 
   static String login() => _login;
   static String honorario() => _honorary;
@@ -145,4 +147,5 @@ class ApiRoutes {
   static String chamadosDadosAbrir() => _chamadosDadosAbrir;
   static String chamadosAbrir() => _chamadosAbrir;
   static String chamadosAtualizarCampos() => _chamadosAtualizarCampos;
+  static String motoristasDashboard() => _motoristasDashboard;
 }

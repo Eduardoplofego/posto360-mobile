@@ -24,8 +24,11 @@ class AuthService extends GetxService {
         Get.offAllNamed('/login');
       } else {
         final user = getUser();
-        if (user?.tipoUsuario == 'GERENTE') {
+        final tipo = user?.tipoUsuario.trim().toUpperCase();
+        if (tipo == 'GERENTE') {
           Get.offAllNamed('/dashboard-gerente');
+        } else if (tipo == 'MOTORISTA') {
+          Get.offAllNamed('/dashboard-motorista');
         } else {
           Get.offAllNamed('/dashboard');
         }
@@ -36,11 +39,14 @@ class AuthService extends GetxService {
     return this;
   }
 
-  void logout() {
-    _getStorage.write(Constants.JWT_TOKEN, null);
-    _getStorage.write(Constants.USER_KEY, null);
-    _getStorage.write(Constants.CAMPANHAS_CONTROLLER, null);
-    _getStorage.write(Constants.USER_PHOTO_URL, null);
+  Future<void> logout() async {
+    await _getStorage.remove(Constants.JWT_TOKEN);
+    await _getStorage.remove(Constants.USER_KEY);
+    await _getStorage.remove(Constants.CAMPANHAS_CONTROLLER);
+    await _getStorage.remove(Constants.USER_PHOTO_URL);
+    _authenticatedUser.value = null;
+    _isLogged.value = false;
+    Get.offAllNamed('/login');
   }
 
   UserModel? getUser() {
