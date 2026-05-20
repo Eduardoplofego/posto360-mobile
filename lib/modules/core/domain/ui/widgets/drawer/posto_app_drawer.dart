@@ -54,20 +54,24 @@ class _PostoAppDrawerState extends State<PostoAppDrawer> {
         ),
         backgroundColor: Colors.white,
         actions: [
-          TextButton(
-            onPressed: () => Get.back(result: false),
-            child: Text(
-              'Cancelar',
-              style: TextStyle(fontSize: 16, color: Colors.red.shade400),
+          Builder(
+            builder: (ctx) => TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(fontSize: 16, color: Colors.red.shade400),
+              ),
             ),
           ),
-          TextButton(
-            onPressed: () => Get.back(result: true),
-            child: Text(
-              'Sair',
-              style: TextStyle(
-                fontSize: 16,
-                color: PostoAppUiConfigurations.blueMediumColor,
+          Builder(
+            builder: (ctx) => TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: PostoAppUiConfigurations.blueMediumColor,
+                ),
               ),
             ),
           ),

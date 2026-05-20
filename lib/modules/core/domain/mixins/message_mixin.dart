@@ -4,18 +4,22 @@ import 'package:get/get.dart';
 mixin MessageMixin on GetxController {
   void messageListener(Rxn<MessagesModel> message) {
     ever<MessagesModel?>(message, (model) {
-      if (model != null) {
-        Get.snackbar(
-          model.title,
-          model.message,
-          messageText: Text(
-            model.message,
-            style: TextStyle(color: Colors.white),
+      if (model == null) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = Get.context;
+        if (ctx == null) return;
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          SnackBar(
+            content: Text(
+              model.message,
+              style: TextStyle(color: model.type.textColor()),
+            ),
+            backgroundColor: model.type.color(),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
           ),
-          backgroundColor: model.type.color(),
-          colorText: model.type.textColor(),
         );
-      }
+      });
     });
   }
 }
