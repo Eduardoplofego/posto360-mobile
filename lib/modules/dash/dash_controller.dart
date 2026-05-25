@@ -78,7 +78,8 @@ class DashController extends FullLifeCycleController
       dashboardModel.penalidadeChecklists +
       dashboardModel.penalidadeCursos +
       horarioFaltasAtrasos.penalidade.toDouble() +
-      cartoesModel.penalidade;
+      cartoesModel.penalidade +
+      avaliacoesModel.penalidade;
 
   DashboardModel get dashboardModel => _dashboardModel.value;
   CartoesModel get cartoesModel => _cartoesModel.value;
