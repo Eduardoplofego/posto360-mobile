@@ -16,7 +16,7 @@ class ChamadoDetalhePage extends GetView<ChamadoDetalheController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Chamado',
-        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        leading: const BackIconButtonWidget(),
         actions: const [],
       ),
       body: RefreshIndicator.noSpinner(

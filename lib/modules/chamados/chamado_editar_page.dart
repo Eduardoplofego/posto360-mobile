@@ -39,16 +39,20 @@ class ChamadoEditarPage extends GetView<ChamadoEditarController> {
           style: const TextStyle(fontSize: 13, height: 1.4),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(result: false),
-            child: const Text('Continuar preenchendo'),
-          ),
-          TextButton(
-            onPressed: () => Get.back(result: true),
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFFB91C1C),
+          Builder(
+            builder: (ctx) => TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Continuar preenchendo'),
             ),
-            child: const Text('Sair mesmo assim'),
+          ),
+          Builder(
+            builder: (ctx) => TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFFB91C1C),
+              ),
+              child: const Text('Sair mesmo assim'),
+            ),
           ),
         ],
       ),
@@ -60,11 +64,11 @@ class ChamadoEditarPage extends GetView<ChamadoEditarController> {
   Future<void> _onBackPressed(BuildContext context) async {
     final pendentes = controller.camposPendentes.length;
     if (pendentes == 0) {
-      Get.back();
+      Navigator.of(context).maybePop();
       return;
     }
     final ok = await _confirmarSaida(context, pendentes);
-    if (ok) Get.back();
+    if (ok && context.mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -79,7 +83,7 @@ class ChamadoEditarPage extends GetView<ChamadoEditarController> {
             context,
             controller.camposPendentes.length,
           );
-          if (ok) Get.back();
+          if (ok && context.mounted) Navigator.of(context).pop();
         },
         child: Scaffold(
           appBar: CustomAppBar(

@@ -14,7 +14,7 @@ class ProcedimentoDetalhePage extends GetView<ProcedimentoDetalheController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Procedimento',
-        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        leading: const BackIconButtonWidget(),
         actions: const [],
       ),
       body: RefreshIndicator.noSpinner(

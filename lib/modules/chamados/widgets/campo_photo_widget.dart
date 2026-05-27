@@ -167,7 +167,7 @@ class _PhotoViewerPageState extends State<_PhotoViewerPage> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.close_rounded),
-          onPressed: () => Get.back(),
+          onPressed: () => Navigator.of(context).maybePop(),
         ),
       ),
       body: PageView.builder(

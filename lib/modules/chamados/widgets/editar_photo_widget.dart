@@ -108,7 +108,9 @@ class EditarPhotoWidget extends StatelessWidget {
     if (source == null) return;
     final picked = await ImagePicker().pickImage(
       source: source,
-      imageQuality: 85,
+      imageQuality: 75,
+      maxWidth: 1600,
+      maxHeight: 1600,
     );
     if (picked == null) return;
     final file = File(picked.path);

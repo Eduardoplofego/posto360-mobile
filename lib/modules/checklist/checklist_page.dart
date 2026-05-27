@@ -14,11 +14,7 @@ class ChecklistPage extends GetView<ChecklistController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Checklist',
-        leading: BackIconButtonWidget(
-          onPressed: () async {
-            Get.back(closeOverlays: true);
-          },
-        ),
+        leading: const BackIconButtonWidget(),
         actions: [],
       ),
       body: ListView(

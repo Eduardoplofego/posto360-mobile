@@ -14,7 +14,7 @@ class ChamadosPage extends GetView<ChamadosController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Chamados',
-        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        leading: const BackIconButtonWidget(),
         actions: [
           TextButton.icon(
             onPressed: () async {

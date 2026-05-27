@@ -14,7 +14,7 @@ class EquipePage extends GetView<EquipeController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Equipe',
-        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        leading: const BackIconButtonWidget(),
         actions: const [],
       ),
       body: RefreshIndicator.noSpinner(

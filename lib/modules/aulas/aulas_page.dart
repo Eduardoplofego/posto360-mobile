@@ -43,11 +43,11 @@ class _AulasPageState extends State<AulasPage> {
           return CustomAppBar(
             title: _controller.curso?.titulo ?? '',
             leading: BackIconButtonWidget(
-              onPressed: () async {
+              onPressed: () {
                 if (_controller.pdfLoaded) {
                   _controller.hideMaterialAulaWidget();
                 } else {
-                  Get.back(closeOverlays: true);
+                  Navigator.of(context).maybePop();
                 }
               },
             ),

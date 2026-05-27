@@ -15,7 +15,7 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Novo chamado',
-        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        leading: const BackIconButtonWidget(),
         actions: const [],
       ),
       body: Stack(
@@ -67,7 +67,7 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
                       padding: const EdgeInsets.only(bottom: 10),
                       child: TemplateCardWidget(
                         template: t,
-                        onPressed: () => _abrir(t),
+                        onPressed: () => _abrir(context, t),
                       ),
                     ),
                   ),
@@ -116,7 +116,7 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
     );
   }
 
-  Future<void> _abrir(ChamadoTemplateModel template) async {
+  Future<void> _abrir(BuildContext context, ChamadoTemplateModel template) async {
     if (controller.isSubmitting) return;
     final confirmed = await _confirmarAbertura(template);
     if (confirmed != true) return;
@@ -125,20 +125,24 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
       titulo: template.nome,
     );
     if (!result.ok) {
-      Get.snackbar(
-        'Não foi possível abrir o chamado',
-        result.error ?? 'Tente novamente.',
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
-        backgroundColor: Colors.white,
-        colorText: PostoAppUiConfigurations.textDarkColor,
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            result.error ?? 'Tente novamente.',
+            style: TextStyle(color: PostoAppUiConfigurations.textDarkColor),
+          ),
+          backgroundColor: Colors.white,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+        ),
       );
       return;
     }
     if (result.chamadoId != null) {
       Get.offNamed('/editar-chamado/${result.chamadoId}');
     } else {
-      Get.back();
+      if (context.mounted) Navigator.of(context).maybePop();
     }
   }
 
@@ -200,22 +204,26 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
         ),
         actionsPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(result: false),
-            style: TextButton.styleFrom(
-              foregroundColor: PostoAppUiConfigurations.greyColor,
+          Builder(
+            builder: (ctx) => TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              style: TextButton.styleFrom(
+                foregroundColor: PostoAppUiConfigurations.greyColor,
+              ),
+              child: const Text('Cancelar'),
             ),
-            child: const Text('Cancelar'),
           ),
-          ElevatedButton.icon(
-            onPressed: () => Get.back(result: true),
-            icon: const Icon(Icons.send_rounded, size: 18),
-            label: const Text('Abrir chamado'),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: PostoAppUiConfigurations.blueMediumColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+          Builder(
+            builder: (ctx) => ElevatedButton.icon(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              icon: const Icon(Icons.send_rounded, size: 18),
+              label: const Text('Abrir chamado'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: PostoAppUiConfigurations.blueMediumColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
           ),

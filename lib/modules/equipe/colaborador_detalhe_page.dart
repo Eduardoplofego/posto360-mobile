@@ -20,7 +20,7 @@ class ColaboradorDetalhePage extends GetView<ColaboradorDetalheController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Colaborador',
-        leading: BackIconButtonWidget(onPressed: () => Get.back()),
+        leading: const BackIconButtonWidget(),
         actions: const [],
       ),
       body: RefreshIndicator.noSpinner(

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 
 class BackIconButtonWidget extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
-  const BackIconButtonWidget({super.key, required this.onPressed});
+  const BackIconButtonWidget({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 6),
       child: IconButton(
-        onPressed: onPressed,
+        onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
         color: Colors.white,
         style: IconButton.styleFrom(
           backgroundColor: PostoAppUiConfigurations.blueMediumColor,

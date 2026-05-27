@@ -17,11 +17,7 @@ class CursosPage extends GetView<CursosController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Cursos',
-        leading: BackIconButtonWidget(
-          onPressed: () async {
-            Get.back(closeOverlays: true);
-          },
-        ),
+        leading: const BackIconButtonWidget(),
         actions: [],
       ),
       body: RefreshIndicator(

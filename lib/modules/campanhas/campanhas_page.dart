@@ -16,11 +16,7 @@ class CampanhasPage extends GetView<CampanhasController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Produtos Incentivados',
-        leading: BackIconButtonWidget(
-          onPressed: () async {
-            Get.back(closeOverlays: true);
-          },
-        ),
+        leading: const BackIconButtonWidget(),
         actions: [],
       ),
       body: LayoutBuilder(

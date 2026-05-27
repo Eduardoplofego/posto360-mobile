@@ -16,11 +16,7 @@ class FechamentoCaixaScreen extends GetView<FechamentoCaixaController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Fechamento Caixa',
-        leading: BackIconButtonWidget(
-          onPressed: () async {
-            Get.back(closeOverlays: true);
-          },
-        ),
+        leading: const BackIconButtonWidget(),
         actions: [],
       ),
       body: LayoutBuilder(

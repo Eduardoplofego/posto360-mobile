@@ -16,11 +16,7 @@ class RegistroPontosPage extends GetView<RegistroPontosController> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Registro de pontos',
-        leading: BackIconButtonWidget(
-          onPressed: () async {
-            Get.back(closeOverlays: true);
-          },
-        ),
+        leading: const BackIconButtonWidget(),
         actions: [],
       ),
       body: LayoutBuilder(
