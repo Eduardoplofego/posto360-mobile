@@ -102,7 +102,7 @@ class CampanhasController extends FullLifeCycleController
   }
 
   Future<void> _loadCampanhas() async {
-    final campanhas = await _campanhasService.getAllCampanhas(
+    final campanhas = await fetchCampanhas(
       filialId: _authService.authenticatedUser!.idFilial!,
       usuarioId: _authService.authenticatedUser!.id,
       empresaId: _authService.authenticatedUser!.idEmpresa,
@@ -119,6 +119,21 @@ class CampanhasController extends FullLifeCycleController
     } else {
       campanhaController.campanhas.assignAll(campanhas.data!);
     }
+  }
+
+  @protected
+  Future<ResultActionDTO<List<CampanhaModel>>> fetchCampanhas({
+    required int filialId,
+    required String usuarioId,
+    required int empresaId,
+    required DateTime data,
+  }) {
+    return _campanhasService.getAllCampanhas(
+      filialId: filialId,
+      usuarioId: usuarioId,
+      empresaId: empresaId,
+      data: data,
+    );
   }
 
   Future<void> _loadPerformances() async {

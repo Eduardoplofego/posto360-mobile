@@ -8,4 +8,11 @@ abstract class AppCampanhasService {
     required int empresaId,
     required DateTime data,
   });
+
+  Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhasGerente({
+    required int filialId,
+    required String usuarioId,
+    required int empresaId,
+    required DateTime data,
+  });
 }

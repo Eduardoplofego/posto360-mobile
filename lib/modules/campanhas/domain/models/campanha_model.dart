@@ -16,6 +16,8 @@ class CampanhaModel {
   final double resultadoIndividual;
   final double bonificacaoEquipeConquistada;
   final double bonificacaoIndividualConquistada;
+  final double bonificacaoGerente;
+  final double bonificacaoGerenteConquistada;
 
   CampanhaModel({
     required this.campanhaId,
@@ -31,6 +33,8 @@ class CampanhaModel {
     required this.resultadoIndividual,
     required this.bonificacaoEquipeConquistada,
     required this.bonificacaoIndividualConquistada,
+    this.bonificacaoGerente = 0.0,
+    this.bonificacaoGerenteConquistada = 0.0,
   });
 
   factory CampanhaModel.empty() {
@@ -48,6 +52,8 @@ class CampanhaModel {
       resultadoIndividual: 0.0,
       bonificacaoEquipeConquistada: 0.0,
       bonificacaoIndividualConquistada: 0.0,
+      bonificacaoGerente: 0.0,
+      bonificacaoGerenteConquistada: 0.0,
     );
   }
 
@@ -66,6 +72,8 @@ class CampanhaModel {
       'resultadoIndividual': resultadoIndividual,
       'bonificacaoEquipeConquistada': bonificacaoEquipeConquistada,
       'bonificacaoIndividualConquistada': bonificacaoIndividualConquistada,
+      'bonificacaoGerente': bonificacaoGerente,
+      'bonificacaoGerenteConquistada': bonificacaoGerenteConquistada,
     };
   }
 
@@ -89,6 +97,9 @@ class CampanhaModel {
           map['bonificacaoEquipeConquistada']?.toDouble() ?? 0.0,
       bonificacaoIndividualConquistada:
           map['bonificacaoIndividualConquistada']?.toDouble() ?? 0.0,
+      bonificacaoGerente: map['bonificacaoGerente']?.toDouble() ?? 0.0,
+      bonificacaoGerenteConquistada:
+          map['bonificacaoGerenteConquistada']?.toDouble() ?? 0.0,
     );
   }
 

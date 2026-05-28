@@ -24,6 +24,7 @@ import 'package:posto360/modules/campanhas/domain/repositories/performance_repos
 import 'package:posto360/modules/campanhas/infra/repositories/performance_repository_impl.dart';
 import 'package:posto360/modules/campanhas/infra/services/performance_service.dart';
 import 'package:posto360/modules/campanhas/services/performance_service_impl.dart';
+import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/modules/core/domain/repositories/user_repository.dart';
 import 'package:posto360/modules/core/infra/repositories/user_repository_impl.dart';
 import 'package:posto360/modules/core/infra/services/user_service.dart';
@@ -62,7 +63,10 @@ class DashGerenteBindings implements Bindings {
       () => PerformanceServiceImpl(performanceRepository: Get.find()),
     );
     Get.lazyPut<DashboardRepository>(
-      () => DashboardRepositoryImpl(restClient: Get.find()),
+      () => DashboardRepositoryImpl(
+        restClient: Get.find(),
+        dashboardCampanhasUrl: ApiRoutes.dashboardCampanhasGerente(),
+      ),
     );
     Get.lazyPut<DashboardService>(
       () => DashboardServiceImpl(

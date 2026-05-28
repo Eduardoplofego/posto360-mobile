@@ -22,13 +22,31 @@ class CampanhasServiceImpl extends AppCampanhasService {
     final (dataInicial, dataFinal) = DateHelper.getInitialAndLastCurrentDate(
       data,
     );
-    final result = await _repository.getAllCampanhas(
+    return _repository.getAllCampanhas(
       filialId: filialId,
       usuarioId: usuarioId,
       empresaId: empresaId,
       dataInicial: DataFormatters.formatarData(dataInicial),
       dataFinal: DataFormatters.formatarData(dataFinal),
     );
-    return result;
+  }
+
+  @override
+  Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhasGerente({
+    required int filialId,
+    required String usuarioId,
+    required int empresaId,
+    required DateTime data,
+  }) async {
+    final (dataInicial, dataFinal) = DateHelper.getInitialAndLastCurrentDate(
+      data,
+    );
+    return _repository.getAllCampanhasGerente(
+      filialId: filialId,
+      usuarioId: usuarioId,
+      empresaId: empresaId,
+      dataInicial: DataFormatters.formatarData(dataInicial),
+      dataFinal: DataFormatters.formatarData(dataFinal),
+    );
   }
 }

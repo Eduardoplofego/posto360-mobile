@@ -7,6 +7,8 @@ class ApiRoutes {
   static const _honorary = '$_backendBaseUrl/api/mobile/horario-faltas-atrasos';
   static const _campanhas =
       '$_backendBaseUrl/api/mobile/produtos-incentivados/detalhes';
+  static const _campanhasGerente =
+      '$_backendBaseUrl/api/mobile/gerentes/produtos-incentivados/detalhes';
   static const _performanceIndividual =
       '$_backendBaseUrl/api/mobile/produtos-incentivados/performance-individual';
   static const _performanceEquipe =
@@ -27,6 +29,8 @@ class ApiRoutes {
       '$_backendBaseUrl/api/mobile/dashboard/financeiro';
   static const _dashboardCampanhas =
       '$_backendBaseUrl/api/mobile/dashboard/campanhas';
+  static const _dashboardCampanhasGerente =
+      '$_backendBaseUrl/api/mobile/gerentes/dashboard/campanhas';
   static const _dashboardCursos =
       '$_backendBaseUrl/api/mobile/dashboard/cursos';
   static const _dashboardChecklists =
@@ -100,6 +104,7 @@ class ApiRoutes {
   static String login() => _login;
   static String honorario() => _honorary;
   static String campanhas() => _campanhas;
+  static String campanhasGerente() => _campanhasGerente;
   static String performanceIndividual() => _performanceIndividual;
   static String performanceEquipe() => _performanceEquipe;
   static String performanceEquipeGerente() => _performanceEquipeGerente;
@@ -112,6 +117,7 @@ class ApiRoutes {
   static String dashboardRH() => _dashboardRH;
   static String dashboardFinanceiro() => _dashboardFinanceiro;
   static String dashboardCampanhas() => _dashboardCampanhas;
+  static String dashboardCampanhasGerente() => _dashboardCampanhasGerente;
   static String dashboardCursos() => _dashboardCursos;
   static String dashboardChecklists() => _dashboardChecklists;
   static String checklists() => _checklists;

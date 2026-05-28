@@ -20,9 +20,45 @@ class CampanhasRepositoryImpl extends AppCampanhasRepository {
     required int empresaId,
     required String dataInicial,
     required String dataFinal,
+  }) {
+    return _fetchCampanhas(
+      url: ApiRoutes.campanhas(),
+      filialId: filialId,
+      usuarioId: usuarioId,
+      empresaId: empresaId,
+      dataInicial: dataInicial,
+      dataFinal: dataFinal,
+    );
+  }
+
+  @override
+  Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhasGerente({
+    required int filialId,
+    required String usuarioId,
+    required int empresaId,
+    required String dataInicial,
+    required String dataFinal,
+  }) {
+    return _fetchCampanhas(
+      url: ApiRoutes.campanhasGerente(),
+      filialId: filialId,
+      usuarioId: usuarioId,
+      empresaId: empresaId,
+      dataInicial: dataInicial,
+      dataFinal: dataFinal,
+    );
+  }
+
+  Future<ResultActionDTO<List<CampanhaModel>>> _fetchCampanhas({
+    required String url,
+    required int filialId,
+    required String usuarioId,
+    required int empresaId,
+    required String dataInicial,
+    required String dataFinal,
   }) async {
     try {
-      final result = await _restClient.post(ApiRoutes.campanhas(), {
+      final result = await _restClient.post(url, {
         "dataInicial": dataInicial,
         "dataFinal": dataFinal,
         "filialId": filialId,

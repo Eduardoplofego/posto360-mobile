@@ -9,4 +9,12 @@ abstract class AppCampanhasRepository {
     required String dataInicial,
     required String dataFinal,
   });
+
+  Future<ResultActionDTO<List<CampanhaModel>>> getAllCampanhasGerente({
+    required int filialId,
+    required String usuarioId,
+    required int empresaId,
+    required String dataInicial,
+    required String dataFinal,
+  });
 }

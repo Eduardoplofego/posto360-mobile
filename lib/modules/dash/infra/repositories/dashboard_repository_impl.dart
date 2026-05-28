@@ -10,9 +10,13 @@ import '../../domain/repositories/dashboard_repository.dart';
 
 class DashboardRepositoryImpl extends DashboardRepository {
   final PostoRestClient _restClient;
+  final String _campanhasUrl;
 
-  DashboardRepositoryImpl({required PostoRestClient restClient})
-    : _restClient = restClient;
+  DashboardRepositoryImpl({
+    required PostoRestClient restClient,
+    String? dashboardCampanhasUrl,
+  }) : _restClient = restClient,
+       _campanhasUrl = dashboardCampanhasUrl ?? ApiRoutes.dashboardCampanhas();
 
   @override
   Future<ResultActionDTO<DashboardModel>> getDashboardData({
@@ -22,13 +26,12 @@ class DashboardRepositoryImpl extends DashboardRepository {
     required String dataFinal,
   }) async {
     try {
-      final resultCampanhas = await _restClient
-          .post(ApiRoutes.dashboardCampanhas(), {
-            "funcionarioCodigo": funcionarioCodigo,
-            "dataInicial": dataInicial,
-            "dataFinal": dataFinal,
-            "idsCampanhas": idsCamapnhas,
-          });
+      final resultCampanhas = await _restClient.post(_campanhasUrl, {
+        "funcionarioCodigo": funcionarioCodigo,
+        "dataInicial": dataInicial,
+        "dataFinal": dataFinal,
+        "idsCampanhas": idsCamapnhas,
+      });
       if (resultCampanhas.statusCode != null &&
           resultCampanhas.statusCode! >= 400) {
         log(
