@@ -8,32 +8,64 @@ class PontoBadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final hour = model.ponto.hour.toString().padLeft(2, '0');
-    // final minute = model.ponto.minute.toString().padLeft(2, '0');
-    // final pontoText = '$hour:$minute';
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey.shade200,
+    final batida = model.ponto;
+    final hasMarcador = batida.hasMarcador;
+    final destaque = PostoAppUiConfigurations.orangeColor;
+
+    return Tooltip(
+      message: hasMarcador ? '${model.text}: ${batida.marcadorDescricao}' : '',
+      triggerMode:
+          hasMarcador ? TooltipTriggerMode.tap : TooltipTriggerMode.manual,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color:
+                  hasMarcador
+                      ? destaque.withValues(alpha: 0.15)
+                      : Colors.grey.shade200,
+              border:
+                  hasMarcador ? Border.all(color: destaque, width: 1) : null,
+            ),
+            child: Icon(
+              model.icon,
+              color: hasMarcador ? destaque : Colors.grey.shade500,
+              size: 16,
+            ),
           ),
-          child: Icon(model.icon, color: Colors.grey.shade500, size: 16),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          model.ponto,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        ),
-        Text(
-          model.text,
-          style: TextStyle(
-            fontSize: 10,
-            color: PostoAppUiConfigurations.darkGreyColor,
+          const SizedBox(height: 4),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                batida.hora,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+              if (hasMarcador) ...[
+                const SizedBox(width: 2),
+                Text(
+                  batida.marcadorSigla,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 9,
+                    color: destaque,
+                  ),
+                ),
+              ],
+            ],
           ),
-        ),
-      ],
+          Text(
+            model.text,
+            style: TextStyle(
+              fontSize: 10,
+              color: PostoAppUiConfigurations.darkGreyColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

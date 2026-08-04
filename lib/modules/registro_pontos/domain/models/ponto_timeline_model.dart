@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/batida_model.dart';
 
 class PontoTimelineModel {
-  final String ponto;
+  final BatidaModel ponto;
   final IconData icon;
   final String text;
 

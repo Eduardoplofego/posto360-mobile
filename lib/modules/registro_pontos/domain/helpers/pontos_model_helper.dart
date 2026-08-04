@@ -1,3 +1,4 @@
+import 'package:posto360/modules/registro_pontos/domain/models/batida_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
 
 PontosModel getFromMap(Map<String, dynamic> map) {
@@ -6,30 +7,29 @@ PontosModel getFromMap(Map<String, dynamic> map) {
   final saida1 = map['saida1Batida'] as String?;
   final saida2 = map['saida2Batida'] as String?;
 
-  final entrada1Formatada = _formatTime(entrada1);
-  final entrada2Formatada = _formatTime(entrada2);
-  final saida1Formatada = _formatTime(saida1);
-  final saida2Formatada = _formatTime(saida2);
-
   final data = DateTime.parse(map['data']);
 
   return PontosModel(
     data: data,
     pontos: [
-      entrada1Formatada,
-      saida1Formatada,
-      entrada2Formatada,
-      saida2Formatada,
+      _parseBatida(entrada1),
+      _parseBatida(saida1),
+      _parseBatida(entrada2),
+      _parseBatida(saida2),
     ],
   );
 }
 
-String _formatTime(String? input) {
-  if (input == null) return '-';
-  final regex = RegExp(r'^(\d{2}):(\d{2})(?:\s*\(.*\))?$');
-  final match = regex.firstMatch(input);
-  if (match != null) {
-    return '${match.group(1)}:${match.group(2)}';
-  }
-  return '-';
+BatidaModel _parseBatida(String? input) {
+  if (input == null) return const BatidaModel.vazia();
+  final regex = RegExp(r'^(\d{2}):(\d{2})(?:\s*\(([^)]*)\))?$');
+  final match = regex.firstMatch(input.trim());
+  if (match == null) return const BatidaModel.vazia();
+
+  final marcador = match.group(3)?.trim();
+
+  return BatidaModel(
+    hora: '${match.group(1)}:${match.group(2)}',
+    marcador: (marcador == null || marcador.isEmpty) ? null : marcador,
+  );
 }

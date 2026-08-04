@@ -1,8 +1,16 @@
+import 'package:posto360/modules/registro_pontos/domain/models/batida_model.dart';
+
 class PontosModel {
   final DateTime data;
-  final List<String> pontos;
+  final List<BatidaModel> pontos;
 
   PontosModel({required this.data, required this.pontos});
+
+  /// Batidas do dia que possuem algum marcador vindo da API (ex.: `(I)`).
+  List<BatidaModel> get batidasComMarcador =>
+      pontos.where((ponto) => ponto.hasMarcador).toList();
+
+  bool get hasBatidaComMarcador => batidasComMarcador.isNotEmpty;
 
   String getTotalWorkHours() {
     Duration parseTime(String time) {
@@ -16,11 +24,13 @@ class PontosModel {
     }
 
     final entrada1 =
-        pontos[0].isNotEmpty ? parseTime(pontos[0]) : Duration.zero;
-    final saida1 = pontos[1].isNotEmpty ? parseTime(pontos[1]) : Duration.zero;
+        pontos[0].hora.isNotEmpty ? parseTime(pontos[0].hora) : Duration.zero;
+    final saida1 =
+        pontos[1].hora.isNotEmpty ? parseTime(pontos[1].hora) : Duration.zero;
     final entrada2 =
-        pontos[2].isNotEmpty ? parseTime(pontos[2]) : Duration.zero;
-    final saida2 = pontos[3].isNotEmpty ? parseTime(pontos[3]) : Duration.zero;
+        pontos[2].hora.isNotEmpty ? parseTime(pontos[2].hora) : Duration.zero;
+    final saida2 =
+        pontos[3].hora.isNotEmpty ? parseTime(pontos[3].hora) : Duration.zero;
 
     final total = (saida1 - entrada1) + (saida2 - entrada2);
 
@@ -38,6 +48,9 @@ class PontosModel {
   }
 
   Map<String, dynamic> toMap() {
-    return {'data': data, 'pontos': pontos};
+    return {
+      'data': data,
+      'pontos': pontos.map((ponto) => ponto.toMap()).toList(),
+    };
   }
 }

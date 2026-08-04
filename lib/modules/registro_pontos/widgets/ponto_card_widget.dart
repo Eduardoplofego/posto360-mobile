@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/registro_pontos/domain/models/batida_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/penalidade_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/ponto_timeline_model.dart';
 import 'package:posto360/modules/registro_pontos/domain/models/pontos_model.dart';
@@ -41,7 +42,7 @@ class PontoCardWidget extends StatelessWidget {
         model: PontoTimelineModel(
           ponto: ponto2,
           icon: Icons.coffee,
-          text: 'Saída 2',
+          text: 'Saída 1',
         ),
       ),
       PontoBadgeWidget(
@@ -124,8 +125,50 @@ class PontoCardWidget extends StatelessWidget {
               _totalWorkDay(model.getTotalWorkHours()),
             ],
           ),
+          if (model.hasBatidaComMarcador) ...[
+            const SizedBox(height: 10),
+            _MarcadoresLegenda(batidas: model.batidasComMarcador),
+          ],
         ],
       ),
+    );
+  }
+}
+
+class _MarcadoresLegenda extends StatelessWidget {
+  final List<BatidaModel> batidas;
+
+  const _MarcadoresLegenda({required this.batidas});
+
+  @override
+  Widget build(BuildContext context) {
+    final destaque = PostoAppUiConfigurations.orangeColor;
+
+    final legendas = <String, String>{};
+    for (final batida in batidas) {
+      legendas[batida.marcadorSigla] = batida.marcadorDescricao;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 2,
+      children:
+          legendas.entries
+              .map(
+                (e) => Row(
+                  children: [
+                    Icon(Icons.info_outline, size: 12, color: destaque),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        '${e.key} ${e.value}',
+                        style: TextStyle(fontSize: 10, color: destaque),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              .toList(),
     );
   }
 }
