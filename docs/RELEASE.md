@@ -2,6 +2,10 @@
 
 Procedimento para gerar e publicar uma nova versão do app Android na Google Play Console.
 
+> **iOS não segue este documento.** O build e a publicação do iOS são feitos pelo
+> **Codemagic**; a configuração da pipeline fica no painel do Codemagic, não no repositório.
+> Daqui, o que se aplica ao iOS é apenas o bump de versão no `pubspec.yaml`.
+
 ## Pré-requisitos
 
 - Flutter instalado e funcionando (`flutter doctor`)
@@ -155,3 +159,17 @@ Usuários **não percebem nada** — o Google continua re-assinando o app instal
 - **`Your Android App Bundle was signed with the wrong key`**: SHA-1 do keystore não bate com o registrado na Play Console. Conferir com `keytool -list -v` e comparar com o certificado da chave de upload na Console.
 - **`Version code X has already been used`**: o `versionCode` no `pubspec.yaml` precisa ser maior que qualquer um já enviado (mesmo de tracks de teste).
 - **Build falha em `flutter build appbundle`**: rodar `flutter clean && flutter pub get` antes; conferir `flutter doctor`.
+- **`Release app bundle failed to strip debug symbols from native libraries`**: quase sempre **falso alarme**. O Gradle termina com sucesso e o `.aab` é gerado normalmente; o que falha é a *verificação* que o Flutter faz depois — ela usa o `apkanalyzer` do `cmdline-tools` e, quando esse componente não está instalado, assume que o strip falhou e sai com código 1 (`_isAabStrippedOfDebugSymbols` em `flutter_tools/lib/src/android/gradle.dart`).
+
+  Para confirmar que o bundle está bom, checar se ele contém os símbolos extraídos:
+
+  ```powershell
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  $z=[System.IO.Compression.ZipFile]::OpenRead("build\app\outputs\bundle\release\app-release.aab")
+  $z.Entries | Where-Object { $_.FullName -match 'debugsymbols' } | Select-Object FullName
+  $z.Dispose()
+  ```
+
+  Se aparecer `BUNDLE-METADATA/com.android.tools.build.debugsymbols/<arch>/libflutter.so.sym`, o AGP fez o strip e o `.aab` pode ser enviado.
+
+  Correção definitiva: instalar o **Android SDK Command-line Tools** (Android Studio → Settings → Languages & Frameworks → Android SDK → SDK Tools → marcar *Android SDK Command-line Tools (latest)*). Depois disso o `flutter build appbundle --release` volta a sair com código 0.
