@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
+import 'package:posto360/modules/fechamento-caixa/domain/models/cartao_discrepancia_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes_model.dart';
 import '../../domain/repositories/app_fechamento_caixa_repository.dart';
@@ -104,6 +105,39 @@ class AppFechamentoCaixaRepositoryImpl extends AppFechamentoCaixaRepository {
         'Erro ao carregar jornada de trabalho',
         [],
       );
+    }
+  }
+
+  @override
+  Future<ResultActionDTO<List<CartaoDiscrepanciaModel>>> getCartoesDoDia({
+    required String usuarioId,
+    required String dia,
+  }) async {
+    try {
+      final result = await _restClient.post(
+        ApiRoutes.fechamentoCaixaCartoesDetalhes(),
+        {"usuarioId": usuarioId, "dia": dia},
+      );
+
+      if (result.statusCode == null || result.statusCode! > 300) {
+        return ResultActionDTO.failure('Erro ao buscar cartões do dia', []);
+      }
+
+      final body =
+          (result.body as List<dynamic>? ?? [])
+              .whereType<Map<String, dynamic>>()
+              .toList();
+
+      final cartoes =
+          body.map((ele) => CartaoDiscrepanciaModel.fromMap(ele)).toList();
+
+      return ResultActionDTO.success(
+        message: 'Sucesso ao buscar cartões do dia',
+        data: cartoes,
+      );
+    } catch (e, s) {
+      log('Erro get fechamento_caixa_cartoes', error: e, stackTrace: s);
+      return ResultActionDTO.failure('Erro ao carregar cartões do dia', []);
     }
   }
 }

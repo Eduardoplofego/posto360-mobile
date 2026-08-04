@@ -88,7 +88,7 @@ class FechamentoCaixaController extends GetxController with MessageMixin {
 
   void _countCardsInfos() {
     for (var card in cardList) {
-      _totalCartoesDeletados.value += card.cartoesCorrigidos;
+      _totalCartoesDeletados.value += card.cartoesDeletados;
       _totalCartoesCorrigidos.value += card.cartoesCorrigidos;
       _totalCartoesVinculados.value += card.cartoesVinculados;
       _diferencaTotal.value += card.diferenca;

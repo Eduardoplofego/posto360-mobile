@@ -1,4 +1,5 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/fechamento-caixa/domain/models/cartao_discrepancia_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/repositories/app_fechamento_caixa_repository.dart';
@@ -62,5 +63,19 @@ class FechamentoCaixaServiceImpl extends AppFechamentoCaixaService {
     }
 
     return result;
+  }
+
+  @override
+  Future<ResultActionDTO<List<CartaoDiscrepanciaModel>>> getCartoesDoDia({
+    required String usuarioId,
+    required DateTime dia,
+  }) async {
+    final mes = dia.month.toString().padLeft(2, '0');
+    final diaDoMes = dia.day.toString().padLeft(2, '0');
+
+    return await _fechamentoCaixaRepository.getCartoesDoDia(
+      usuarioId: usuarioId,
+      dia: '${dia.year}-$mes-$diaDoMes',
+    );
   }
 }

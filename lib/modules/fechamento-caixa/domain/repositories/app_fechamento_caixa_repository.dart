@@ -1,4 +1,5 @@
 import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
+import 'package:posto360/modules/fechamento-caixa/domain/models/cartao_discrepancia_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/cartoes_model.dart';
 import 'package:posto360/modules/fechamento-caixa/domain/models/detalhes_cartoes_model.dart';
 
@@ -12,5 +13,9 @@ abstract class AppFechamentoCaixaRepository {
     required String usuarioId,
     required String dataInicial,
     required String dataFinal,
+  });
+  Future<ResultActionDTO<List<CartaoDiscrepanciaModel>>> getCartoesDoDia({
+    required String usuarioId,
+    required String dia,
   });
 }
