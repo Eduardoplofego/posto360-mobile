@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +13,7 @@ import 'package:posto360/modules/chamados/domain/models/upload_photo_dto.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 
-class EditarPhotoWidget extends StatelessWidget {
+class EditarPhotoWidget extends StatefulWidget {
   final ChamadoCampoModel campo;
   final List<UploadPhotoDto> uploads;
   final bool Function(String url) isFotoMarcada;
@@ -30,28 +32,36 @@ class EditarPhotoWidget extends StatelessWidget {
   });
 
   @override
+  State<EditarPhotoWidget> createState() => _EditarPhotoWidgetState();
+}
+
+class _EditarPhotoWidgetState extends State<EditarPhotoWidget> {
+  final _picker = ImagePicker();
+  bool _ocupado = false;
+
+  @override
   Widget build(BuildContext context) {
-    final existentes = campo.fotos;
+    final existentes = widget.campo.fotos;
     final tiles = <Widget>[];
 
     for (final foto in existentes) {
       tiles.add(
         _ExistingTile(
           foto: foto,
-          marcada: isFotoMarcada(foto.url),
-          onToggle: () => onToggleExclusao(foto.url),
+          marcada: widget.isFotoMarcada(foto.url),
+          onToggle: () => widget.onToggleExclusao(foto.url),
         ),
       );
     }
-    for (var i = 0; i < uploads.length; i++) {
+    for (var i = 0; i < widget.uploads.length; i++) {
       tiles.add(
         _UploadTile(
-          foto: uploads[i],
-          onRemover: () => onRemoverUpload(i),
+          foto: widget.uploads[i],
+          onRemover: () => widget.onRemoverUpload(i),
         ),
       );
     }
-    tiles.add(_AddTile(onPressed: () => _abrirPicker(context)));
+    tiles.add(_AddTile(onPressed: _abrirPicker));
 
     return GridView.count(
       shrinkWrap: true,
@@ -63,11 +73,25 @@ class EditarPhotoWidget extends StatelessWidget {
     );
   }
 
-  Future<void> _abrirPicker(BuildContext context) async {
-    final source = await showModalBottomSheet<ImageSource>(
+  /// Um toque por vez: sem a trava, um segundo toque enquanto a câmera abre
+  /// dispara um novo pickImage e o Android descarta o resultado do primeiro.
+  Future<void> _abrirPicker() async {
+    if (_ocupado) return;
+    _ocupado = true;
+    try {
+      final source = await _escolherOrigem();
+      if (source == null || !mounted) return;
+      await _selecionarFoto(source);
+    } finally {
+      _ocupado = false;
+    }
+  }
+
+  Future<ImageSource?> _escolherOrigem() {
+    return showModalBottomSheet<ImageSource>(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
+      builder: (sheetContext) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -91,7 +115,10 @@ class EditarPhotoWidget extends StatelessWidget {
                 color: PostoAppUiConfigurations.blueMediumColor,
               ),
               title: const Text('Tirar foto'),
-              onTap: () => Get.back(result: ImageSource.camera),
+              // Navigator.pop e não Get.back: o Get.back tenta fechar snackbar
+              // antes de navegar e quebra o toque, deixando a aba presa.
+              onTap: () =>
+                  Navigator.of(sheetContext).pop(ImageSource.camera),
             ),
             ListTile(
               leading: Icon(
@@ -99,27 +126,79 @@ class EditarPhotoWidget extends StatelessWidget {
                 color: PostoAppUiConfigurations.blueMediumColor,
               ),
               title: const Text('Escolher da galeria'),
-              onTap: () => Get.back(result: ImageSource.gallery),
+              onTap: () =>
+                  Navigator.of(sheetContext).pop(ImageSource.gallery),
             ),
           ],
         ),
       ),
     );
-    if (source == null) return;
-    final picked = await ImagePicker().pickImage(
-      source: source,
-      imageQuality: 75,
-      maxWidth: 1600,
-      maxHeight: 1600,
-    );
+  }
+
+  Future<void> _selecionarFoto(ImageSource source) async {
+    final XFile? picked;
+    try {
+      picked = await _picker.pickImage(
+        source: source,
+        imageQuality: 75,
+        maxWidth: 1600,
+        maxHeight: 1600,
+      );
+    } on PlatformException catch (e, s) {
+      log('Erro ao abrir camera/galeria', error: e, stackTrace: s);
+      _avisar(_mensagemErro(e.code, source));
+      return;
+    } catch (e, s) {
+      log('Erro inesperado ao selecionar foto', error: e, stackTrace: s);
+      _avisar('Não foi possível abrir a câmera. Tente novamente.');
+      return;
+    }
+
     if (picked == null) return;
-    final file = File(picked.path);
-    final bytes = await file.readAsBytes();
-    if (bytes.isEmpty) return;
-    final mime = lookupMimeType(picked.path) ?? 'image/jpeg';
-    final nome = _gerarNome(picked.path);
-    onAdicionarUpload(
-      UploadPhotoDto(nome: nome, tipo: mime, bytes: bytes),
+
+    try {
+      final bytes = await File(picked.path).readAsBytes();
+      if (bytes.isEmpty) {
+        _avisar('A imagem selecionada está vazia.');
+        return;
+      }
+      if (!mounted) return;
+      widget.onAdicionarUpload(
+        UploadPhotoDto(
+          nome: _gerarNome(picked.path),
+          tipo: lookupMimeType(picked.path) ?? 'image/jpeg',
+          bytes: bytes,
+        ),
+      );
+    } catch (e, s) {
+      log('Erro ao ler arquivo da foto', error: e, stackTrace: s);
+      _avisar('Não foi possível ler a imagem selecionada.');
+    }
+  }
+
+  String _mensagemErro(String code, ImageSource source) {
+    switch (code) {
+      case 'camera_access_denied':
+        return 'Permissão de câmera negada. Libere o acesso nas configurações do aparelho.';
+      case 'photo_access_denied':
+        return 'Permissão da galeria negada. Libere o acesso nas configurações do aparelho.';
+      case 'multiple_request':
+        return 'Já existe uma seleção de foto em andamento.';
+      default:
+        return source == ImageSource.camera
+            ? 'Não foi possível abrir a câmera. Tente novamente.'
+            : 'Não foi possível abrir a galeria. Tente novamente.';
+    }
+  }
+
+  void _avisar(String mensagem) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
     );
   }
 

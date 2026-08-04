@@ -11,13 +11,25 @@ import './chamado_detalhe_controller.dart';
 class ChamadoDetalhePage extends GetView<ChamadoDetalheController> {
   const ChamadoDetalhePage({super.key});
 
+  Future<void> _abrirEdicao() async {
+    await Get.toNamed(
+      '/editar-chamado/${controller.chamadoId}',
+      arguments: controller.chamado,
+    );
+    await controller.onRefresh();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final podeEditar = controller.chamado?.podeEditar ?? false;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Chamado',
         leading: const BackIconButtonWidget(),
-        actions: const [],
+        actions: [
+          if (podeEditar) _EditarButton(onPressed: _abrirEdicao),
+        ],
       ),
       body: RefreshIndicator.noSpinner(
         onRefresh: controller.onRefresh,
@@ -94,6 +106,31 @@ class ChamadoDetalhePage extends GetView<ChamadoDetalheController> {
             ],
           );
         }),
+      ),
+    );
+  }
+}
+
+class _EditarButton extends StatelessWidget {
+  final Future<void> Function() onPressed;
+
+  const _EditarButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: onPressed,
+      icon: const Icon(Icons.edit_outlined, color: Colors.white, size: 18),
+      label: const Text(
+        'Editar',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+      ),
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.white.withValues(alpha: 0.18),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100),
+        ),
       ),
     );
   }

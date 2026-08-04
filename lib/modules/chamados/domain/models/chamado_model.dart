@@ -84,6 +84,13 @@ class ChamadoModel {
 
   bool get isCompleto => totalCampos > 0 && camposRespondidos >= totalCampos;
 
+  bool get isFinalizado {
+    final s = status.toLowerCase();
+    return s.contains('finaliz') || s.contains('conclu');
+  }
+
+  bool get podeEditar => !isFinalizado;
+
   factory ChamadoModel.fromMap(Map<String, dynamic> map) {
     final abertoPorRaw = map['abertoPor'];
     final responsavelRaw = map['responsavel'];

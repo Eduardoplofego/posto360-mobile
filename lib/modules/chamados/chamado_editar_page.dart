@@ -87,7 +87,9 @@ class ChamadoEditarPage extends GetView<ChamadoEditarController> {
         },
         child: Scaffold(
           appBar: CustomAppBar(
-            title: 'Preencher chamado',
+            title: controller.chamado != null
+                ? 'Editar chamado'
+                : 'Preencher chamado',
             leading: BackIconButtonWidget(
               onPressed: () => _onBackPressed(context),
             ),
@@ -282,7 +284,7 @@ class _SaveBar extends StatelessWidget {
   Future<void> _onPressed() async {
     final result = await controller.salvar();
     if (result.ok) {
-      Get.until((route) => route.settings.name == '/chamados');
+      Get.back(result: true);
       if (Get.isRegistered<ChamadosController>()) {
         await Get.find<ChamadosController>().onRefresh();
       }
