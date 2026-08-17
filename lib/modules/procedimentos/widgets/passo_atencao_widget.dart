@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/texto_com_links.dart';
 import 'package:posto360/modules/procedimentos/domain/models/passo_model.dart';
 import 'package:posto360/modules/procedimentos/widgets/passo_imagem_widget.dart';
 
@@ -27,14 +28,13 @@ class PassoAtencaoWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 10,
             children: [
-              Icon(
-                Icons.warning_amber_rounded,
-                color: orange,
-                size: 20,
-              ),
+              Icon(Icons.warning_amber_rounded, color: orange, size: 20),
               Expanded(
-                child: Text(
-                  passo.descricao,
+                child: TextoComLinks(
+                  texto: passo.descricao,
+                  // no fundo alaranjado o azul do link some: o próprio laranja
+                  // escuro do bloco, sublinhado, lê melhor
+                  linkColor: const Color(0xFF7C3300),
                   style: TextStyle(
                     fontSize: 13.5,
                     height: 1.45,

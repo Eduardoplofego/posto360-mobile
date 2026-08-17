@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/texto_com_links.dart';
 import 'package:posto360/modules/procedimentos/widgets/etapa_expansion_widget.dart';
 import './procedimento_detalhe_controller.dart';
 
@@ -50,7 +51,10 @@ class ProcedimentoDetalhePage extends GetView<ProcedimentoDetalheController> {
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
             children: [
-              _Hero(nome: nome, descricao: temDescricao ? procedimento.descricao : null),
+              _Hero(
+                nome: nome,
+                descricao: temDescricao ? procedimento.descricao : null,
+              ),
               const SizedBox(height: 20),
               ...procedimento.etapas.map(
                 (etapa) => Padding(
@@ -126,8 +130,9 @@ class _Hero extends StatelessWidget {
           ),
           if (descricao != null) ...[
             const SizedBox(height: 6),
-            Text(
-              descricao!,
+            TextoComLinks(
+              texto: descricao!,
+              linkColor: Colors.white,
               style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 13,

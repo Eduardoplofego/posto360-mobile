@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/texto_com_links.dart';
 import 'package:posto360/modules/procedimentos/domain/models/passo_model.dart';
 import 'package:posto360/modules/procedimentos/widgets/passo_imagem_widget.dart';
 
@@ -45,8 +46,8 @@ class PassoItemWidget extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Text(
-                  passo.descricao,
+                child: TextoComLinks(
+                  texto: passo.descricao,
                   style: TextStyle(
                     fontSize: 13.5,
                     height: 1.45,
