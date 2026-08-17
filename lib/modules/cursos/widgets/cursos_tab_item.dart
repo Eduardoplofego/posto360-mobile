@@ -21,22 +21,23 @@ class CursosTabItem extends GetView<CursosController> {
           ),
         );
       }
-      return SizedBox(
-        height: 380 * (controller.cursosToShow.length).toDouble(),
-        child: ListView.separated(
-          physics: NeverScrollableScrollPhysics(),
-          separatorBuilder: (context, index) => const SizedBox(height: 24),
-          itemCount: controller.cursosToShow.length,
-          itemBuilder: (context, index) {
-            final curso = controller.cursosToShow[index];
-            return CursoCard(
-              curso: curso,
-              afterReturnClass: controller.loadCursos,
-              onStartCourse: controller.startCurso,
-              showMessageError: controller.showMessageError,
-            );
-          },
-        ),
+      // shrinkWrap em vez de altura fixa: o card cresce conforme o conteúdo
+      // (prazo, procedimentos) e altura chutada por item corta o último card
+      return ListView.separated(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: const NeverScrollableScrollPhysics(),
+        separatorBuilder: (context, index) => const SizedBox(height: 24),
+        itemCount: controller.cursosToShow.length,
+        itemBuilder: (context, index) {
+          final curso = controller.cursosToShow[index];
+          return CursoCard(
+            curso: curso,
+            afterReturnClass: controller.loadCursos,
+            onStartCourse: controller.startCurso,
+            showMessageError: controller.showMessageError,
+          );
+        },
       );
     });
   }

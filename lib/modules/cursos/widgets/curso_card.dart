@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
+import 'package:posto360/modules/core/domain/utils/enums/curso_status.dart';
 import 'package:posto360/modules/aulas/domain/models/curso_model.dart';
 import 'package:posto360/modules/cursos/widgets/curso_folder_widget.dart';
+import 'package:posto360/modules/cursos/widgets/curso_procedimentos_widget.dart';
 import 'package:posto360/modules/cursos/widgets/curso_progress_widget.dart';
 
 class CursoCard extends StatelessWidget {
@@ -70,7 +72,7 @@ class CursoCard extends StatelessWidget {
                   ),
                 ),
               ),
-              curso.ultimoAcesso != null && curso.ultimoAcesso!.year != 1900
+              curso.ultimoAcesso != null
                   ? Flexible(
                     child: Text(
                       'Acessado em ${DataFormatters.formatarData(curso.ultimoAcesso!)}',
@@ -84,8 +86,38 @@ class CursoCard extends StatelessWidget {
                   : const SizedBox.shrink(),
             ],
           ),
+          if (curso.prazoFinal != null) ...[
+            const SizedBox(height: 4),
+            SizedBox(
+              width: Get.width,
+              child: Text(
+                'Prazo: ${DataFormatters.formatarData(curso.prazoFinal!)}',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color:
+                      _prazoVencido
+                          ? PostoAppUiConfigurations.orangeColor
+                          : PostoAppUiConfigurations.greyColor,
+                ),
+              ),
+            ),
+          ],
+          // o mesmo atalho aparece dentro da aula: aqui ele serve para o
+          // vendedor consultar o passo a passo sem precisar abrir o curso
+          CursoProcedimentosResumo(procedimentos: curso.procedimentos),
         ],
       ),
     );
+  }
+
+  /// O prazo só pesa enquanto o curso não foi concluído: depois de finalizado
+  /// não faz sentido marcar em vermelho.
+  bool get _prazoVencido {
+    final prazo = curso.prazoFinal;
+    if (prazo == null || curso.status == CursoStatus.finalizado) return false;
+
+    final hoje = DateTime.now();
+    return prazo.isBefore(DateTime(hoje.year, hoje.month, hoje.day));
   }
 }

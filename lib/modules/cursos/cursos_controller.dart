@@ -34,7 +34,6 @@ class CursosController extends GetxController with LoaderMixin, MessageMixin {
   final _isConcludedCursosSelected = false.obs;
   final _cursosConluidos = <CursoModel>[].obs;
   final _cursosEmAndamento = <CursoModel>[].obs;
-  final _cursosSearched = <CursoModel>[].obs;
 
   // Getters
   int get totalCursos => _cursos.length;
@@ -73,51 +72,30 @@ class CursosController extends GetxController with LoaderMixin, MessageMixin {
   // Actions
   void onSearchChanged(String text) {
     _searchText.value = text;
-    if (text.isEmpty) {
-      _cursosSearched.assignAll(_cursos);
-      _cursosConluidos.assignAll(
-        _cursos
-            .where((curso) => curso.status == CursoStatus.finalizado)
-            .toList(),
-      );
-      _cursosEmAndamento.assignAll(
-        _cursos
-            .where((curso) => curso.status == CursoStatus.andamento)
-            .toList(),
-      );
-    } else {
-      final cursosPesquisados =
-          _cursosSearched
-              .where(
-                (curso) =>
-                    curso.titulo.toLowerCase().contains(text.toLowerCase()),
-              )
-              .toList();
-      _cursosSearched.assignAll(cursosPesquisados);
-      _cursosConluidos.assignAll(
-        cursosPesquisados
-            .where((curso) => curso.status == CursoStatus.finalizado)
-            .toList(),
-      );
-      _cursosEmAndamento.assignAll(
-        cursosPesquisados
-            .where((curso) => curso.status == CursoStatus.andamento)
-            .toList(),
-      );
-    }
+    _aplicarFiltros();
   }
 
   void changeSelectedTab(int index) {
     _isConcludedCursosSelected.value = index == 1;
-    if (_isConcludedCursosSelected.value) {
-      _cursosSearched.assignAll(
-        _cursos.where((curso) => curso.status == CursoStatus.finalizado),
-      );
-    } else {
-      _cursosSearched.assignAll(
-        _cursos.where((curso) => curso.status != CursoStatus.finalizado),
-      );
-    }
+  }
+
+  /// Reaplica a busca sempre sobre a lista completa (`_cursos`), para que
+  /// apagar caracteres volte a exibir os cursos filtrados anteriormente.
+  void _aplicarFiltros() {
+    final busca = _searchText.value.trim().toLowerCase();
+    final Iterable<CursoModel> filtrados =
+        busca.isEmpty
+            ? _cursos
+            : _cursos.where(
+              (curso) => curso.titulo.toLowerCase().contains(busca),
+            );
+
+    _cursosConluidos.assignAll(
+      filtrados.where((curso) => curso.status == CursoStatus.finalizado),
+    );
+    _cursosEmAndamento.assignAll(
+      filtrados.where((curso) => curso.status != CursoStatus.finalizado),
+    );
   }
 
   Future<void> onRefresh() async {
@@ -136,16 +114,7 @@ class CursosController extends GetxController with LoaderMixin, MessageMixin {
       final result = await _cursosService.getAllCursos(usuarioId: user.id);
       if (result.success) {
         _cursos.assignAll(result.data!);
-        _cursosConluidos.assignAll(
-          result.data!
-              .where((curso) => curso.status == CursoStatus.finalizado)
-              .toList(),
-        );
-        _cursosEmAndamento.assignAll(
-          result.data!
-              .where((curso) => curso.status != CursoStatus.finalizado)
-              .toList(),
-        );
+        _aplicarFiltros();
       }
     }
   }

@@ -5,10 +5,10 @@ import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
 import 'package:posto360/modules/aulas/aulas_controller.dart';
 import 'package:posto360/modules/aulas/widgets/conclude_class_widget.dart';
+import 'package:posto360/modules/cursos/widgets/curso_procedimentos_widget.dart';
 import 'package:posto360/modules/aulas/widgets/module_progress.dart';
 import 'package:posto360/modules/aulas/widgets/select_prev_next_class.dart';
 import 'package:posto360/modules/aulas/widgets/video_player_widget.dart';
-import 'package:posto360/modules/cursos/domain/dtos/curso_to_aula_dto.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class AulasPage extends StatefulWidget {
@@ -34,8 +34,6 @@ class _AulasPageState extends State<AulasPage> {
 
   @override
   Widget build(BuildContext context) {
-    final dto = Get.arguments as CursoToAulaDTO?;
-    _controller.getCursoArgument(dto);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: CustomAppBar.preferredSizeFor(),
@@ -57,8 +55,9 @@ class _AulasPageState extends State<AulasPage> {
       ),
       backgroundColor: PostoAppUiConfigurations.lightPurpleColor,
       body: Obx(() {
-        if (_controller.pdfLoaded) {
-          return SfPdfViewer.network(_controller.currentAula!.urlMaterial);
+        final urlMaterial = _controller.currentAula?.urlMaterial ?? '';
+        if (_controller.pdfLoaded && urlMaterial.isNotEmpty) {
+          return SfPdfViewer.network(urlMaterial);
         } else {
           return ListView(
             children: [
@@ -71,6 +70,9 @@ class _AulasPageState extends State<AulasPage> {
               ),
               ConcludeClassWidget(),
               ModuleProgress(),
+              CursoProcedimentosWidget(
+                procedimentos: _controller.curso?.procedimentos ?? [],
+              ),
               if (_controller.hasData) ..._controller.generateTimeLineItems(),
             ],
           );

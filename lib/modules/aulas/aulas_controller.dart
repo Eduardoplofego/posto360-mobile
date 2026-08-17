@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,12 +79,13 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
     super.onInit();
     messageListener(_message);
     loaderListener(_loading);
+    await getCursoArgument(Get.arguments as CursoToAulaDTO?);
   }
 
   @override
   void onClose() {
+    _disposeVideoPlayer();
     super.onClose();
-    chewieController?.dispose();
   }
 
   @override
@@ -101,54 +104,66 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
 
   Future<void> _loadAulas() async {
     _loading(true);
-    if (_curso.value != null) {
+    try {
+      if (_curso.value == null) {
+        _hasData(false);
+        return;
+      }
       final aulasDto = await _aulasService.getAulas(
         cursoId: _curso.value!.templateId,
         usuarioId: _authService.authenticatedUser!.id,
       );
-      if (aulasDto.success) {
-        final aulas = aulasDto.data!;
-        if (aulas.length > 1) aulas.sort((a, b) => a.ordem.compareTo(b.ordem));
-        _aulas.assignAll(aulas);
-        await _loadFirstCurrentAula();
-        if (aulas.isEmpty) {
-          _hasData(false);
-        } else {
-          _hasData(true);
-        }
+      if (!aulasDto.success) {
+        _hasData(false);
+        _message(
+          MessagesModel(
+            title: 'Erro',
+            message:
+                aulasDto.message.isNotEmpty
+                    ? aulasDto.message
+                    : 'Não foi possível carregar as aulas deste curso',
+            type: MessageType.error,
+          ),
+        );
+        return;
       }
+      final aulas = aulasDto.data ?? [];
+      if (aulas.length > 1) aulas.sort((a, b) => a.ordem.compareTo(b.ordem));
+      _aulas.assignAll(aulas);
+      _hasData(aulas.isNotEmpty);
+      await _loadFirstCurrentAula();
+    } catch (e, s) {
+      log('Erro ao carregar aulas do curso', error: e, stackTrace: s);
+      _hasData(false);
+      _message(
+        MessagesModel(
+          title: 'Erro',
+          message: 'Não foi possível carregar as aulas deste curso',
+          type: MessageType.error,
+        ),
+      );
+    } finally {
+      _loading(false);
     }
-    _loading(false);
   }
 
   Future<void> _loadFirstCurrentAula() async {
-    int current = 0;
-    for (var aula in _aulas) {
-      if (aula.status == AulaStatus.finalizado) {
-        current++;
-      }
-    }
-    if (current < _aulas.length) {
-      _currentAulaIndex.value = current;
-      _currentAula.value = _aulas[_currentAulaIndex.value];
-      if (_currentAula.value != null) {
-        await initializeVideoPlayer();
-      }
-    } else {
+    if (_aulas.isEmpty) {
       _currentAulaIndex.value = 0;
-      _currentAula.value = _aulas[_currentAulaIndex.value];
-      if (_currentAula.value != null) {
-        await initializeVideoPlayer();
-      }
+      _currentAula.value = null;
+      await _disposeVideoPlayer();
+      return;
     }
+    final concluidas =
+        _aulas.where((aula) => aula.status == AulaStatus.finalizado).length;
+    await setCurrentAula(concluidas < _aulas.length ? concluidas : 0);
   }
 
   Future<void> setCurrentAula(int index) async {
+    if (index < 0 || index >= _aulas.length) return;
     _currentAulaIndex.value = index;
     _currentAula.value = _aulas[index];
-    if (_currentAula.value != null && _currentAula.value!.urlVideo != '') {
-      await initializeVideoPlayer();
-    }
+    await initializeVideoPlayer();
   }
 
   Future<void> showMaterialAulaWidget() async {
@@ -163,26 +178,21 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
     if (isToShowMaterial) {
       _isToShowMaterialComplementar(false);
     } else {
-      debugPrint(
-        'Definindo aula atual para: Aula${_aulas[_currentAulaIndex.value - 1].ordem}',
-      );
       setCurrentAula(currentAulaIndex - 1);
     }
   }
 
   void setNextClass() {
-    if (currentAula!.hasMaterial && !isToShowMaterial) {
+    final aula = currentAula;
+    if (aula == null) return;
+
+    if (aula.hasMaterial && !isToShowMaterial) {
       _isToShowMaterialComplementar(true);
     } else {
       // verificar se a aula foi concluida
-      if (currentAula!.status == AulaStatus.emAndamento) {
+      if (aula.status == AulaStatus.emAndamento) {
         _showDialogConfirmConcludeClass();
       } else {
-        // caso nao, mostrar dialog
-        // caso sim, fazer transicao
-        debugPrint(
-          'Definindo aula atual para: Aula${_aulas[_currentAulaIndex.value + 1].ordem}',
-        );
         _isToShowMaterialComplementar(false);
         setCurrentAula(currentAulaIndex + 1);
       }
@@ -215,28 +225,51 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   }
 
   Future<void> initializeVideoPlayer() async {
-    VideoPlayerController videoPlayerController;
-    videoPlayerController = VideoPlayerController.networkUrl(
-      Uri.parse(_currentAula.value!.urlVideo),
-    );
-    await videoPlayerController.initialize();
-    final chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      showControlsOnInitialize: false,
-      placeholder: Container(width: 50, height: 50, color: Colors.black),
-      autoPlay: false,
-      looping: false,
-      deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
-    );
-    _chewieController.value = chewieController;
+    await _disposeVideoPlayer();
+
+    final urlVideo = _currentAula.value?.urlVideo ?? '';
+    if (urlVideo.isEmpty) return;
+
+    final uri = Uri.tryParse(urlVideo);
+    if (uri == null || !uri.hasScheme) {
+      log('URL de vídeo inválida para a aula ${_currentAula.value?.id}: $urlVideo');
+      return;
+    }
+
+    try {
+      final videoPlayerController = VideoPlayerController.networkUrl(uri);
+      await videoPlayerController.initialize();
+      _chewieController.value = ChewieController(
+        videoPlayerController: videoPlayerController,
+        showControlsOnInitialize: false,
+        placeholder: Container(width: 50, height: 50, color: Colors.black),
+        autoPlay: false,
+        looping: false,
+        deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
+      );
+    } catch (e, s) {
+      // Um vídeo indisponível não pode impedir o acesso ao restante do curso.
+      log('Erro ao inicializar o vídeo da aula', error: e, stackTrace: s);
+      _chewieController.value = null;
+    }
+  }
+
+  Future<void> _disposeVideoPlayer() async {
+    final chewie = _chewieController.value;
+    if (chewie == null) return;
+    _chewieController.value = null;
+    final videoPlayerController = chewie.videoPlayerController;
+    chewie.dispose();
+    await videoPlayerController.dispose();
   }
 
   Future<void> visualizeAula() async {
+    final aula = currentAula;
+    if (aula == null) return;
+
     _isVisulizeAulaLoading(true);
-    await Future.delayed(const Duration(seconds: 2));
-    final result = await _aulasService.concludeAula(aulaId: currentAula!.id);
+    final result = await _aulasService.concludeAula(aulaId: aula.id);
     if (result) {
-      _isVisulizeAulaLoading(false);
       await _loadAulas();
     } else {
       _message(
@@ -279,7 +312,7 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
             width: Get.width,
             indicator: TimelineClassItemWidget(
               aula: aula,
-              isCurrent: currentAula!.ordem == aula.ordem,
+              isCurrent: currentAula?.ordem == aula.ordem,
             ),
           ),
         ),

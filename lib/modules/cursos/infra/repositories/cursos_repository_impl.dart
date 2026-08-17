@@ -4,6 +4,7 @@ import 'package:posto360/modules/core/domain/dto/result_action_dto.dart';
 import 'package:posto360/modules/core/domain/rest_client/api_routes/api_routes.dart';
 import 'package:posto360/modules/core/domain/rest_client/posto_rest_client.dart';
 import 'package:posto360/modules/aulas/domain/models/curso_model.dart';
+import 'package:posto360/modules/core/domain/utils/status_text.dart';
 
 import '../../domain/repositories/cursos_repository.dart';
 
@@ -46,20 +47,29 @@ class CursosRepositoryImpl extends CursosRepository {
         'cursoId': cursoId,
       });
 
-      final resultMessage = result.body['message'] as String?;
+      final body = result.body;
+      log('Iniciar curso [${result.statusCode}]: $body');
 
-      if (resultMessage == null) {
-        return ResultActionDTO.failure(
-          'Não foi possível iniciar o curso',
-          false,
-        );
-      }
+      final resultMessage =
+          body is Map ? body['message']?.toString() : body?.toString();
+      final mensagemNormalizada = StatusText.normalize(resultMessage);
 
-      if (resultMessage.contains('foi iniciado')) {
+      // A API responde "o curso já foi iniciado" quando o vínculo existe:
+      // isso não é erro, o usuário só precisa entrar no curso.
+      final jaIniciado =
+          mensagemNormalizada.contains('iniciado') ||
+          mensagemNormalizada.contains('andamento');
+
+      if ((result.statusCode ?? 0) < 400 && jaIniciado) {
         return ResultActionDTO.success(data: true);
       }
 
-      return ResultActionDTO.failure(resultMessage, false);
+      return ResultActionDTO.failure(
+        resultMessage?.isNotEmpty == true
+            ? resultMessage!
+            : 'Não foi possível iniciar o curso',
+        false,
+      );
     } catch (e, s) {
       log('Erro iniciar curso', error: e, stackTrace: s);
       return ResultActionDTO.failure('Não foi possível iniciar o curso', false);

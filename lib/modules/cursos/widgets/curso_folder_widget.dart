@@ -79,30 +79,26 @@ class _CursoFolderWidgetState extends State<CursoFolderWidget> {
           children: [
             InkWell(
               onTap: () async {
-                bool isToCourse = true;
                 if (widget.curso.status == CursoStatus.naoIniciado) {
                   final shouldStart = await _checkIfToStartCurso();
+                  // Usuário desistiu: não inicia nem navega.
+                  if (!shouldStart) return;
 
-                  if (shouldStart) {
-                    final resultStart = await widget.onStartCourse(
-                      cursoId: widget.curso.id,
-                    );
+                  final resultStart = await widget.onStartCourse(
+                    cursoId: widget.curso.id,
+                  );
 
-                    if (!resultStart) {
-                      isToCourse = false;
-                    }
+                  if (!resultStart) {
+                    widget.showMessageError('Não foi possível iniciar o curso');
+                    return;
                   }
                 }
 
-                if (isToCourse) {
-                  await Get.toNamed(
-                    '/cursos/aulas',
-                    arguments: CursoToAulaDTO(curso: widget.curso),
-                  );
-                  widget.afterReturnClass();
-                } else {
-                  widget.showMessageError('Não foi possível iniciar o curso');
-                }
+                await Get.toNamed(
+                  '/cursos/aulas',
+                  arguments: CursoToAulaDTO(curso: widget.curso),
+                );
+                widget.afterReturnClass();
               },
               borderRadius: BorderRadius.circular(50),
               child: Container(
