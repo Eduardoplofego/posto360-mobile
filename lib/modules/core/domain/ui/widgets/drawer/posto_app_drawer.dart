@@ -87,12 +87,16 @@ class _PostoAppDrawerState extends State<PostoAppDrawer> {
     if (image == null) return;
     final result = await widget.onSavePhoto(image.path);
     if (result.isError) {
-      Get.snackbar(
-        'Erro',
-        result.message,
-        backgroundColor: Colors.red.shade400,
-        colorText: Colors.white,
-      );
+      // ScaffoldMessenger e não Get.snackbar: no Flutter 3.41 o Get.snackbar
+      // quebra e trava o Get.back no resto da sessão.
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: Colors.red.shade400,
+          ),
+        );
+      }
     }
     GetStorage().write(Constants.USER_PHOTO_URL, result.data);
     setState(() {});

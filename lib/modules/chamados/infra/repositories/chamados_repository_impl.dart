@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:posto360/modules/chamados/domain/models/chamado_campo_model.dart';
@@ -72,25 +71,13 @@ class ChamadosRepositoryImpl extends ChamadosRepository {
   Future<ResultActionDTO<List<ChamadoTemplateModel>>> getTemplatesAbrirChamado({
     required int empresaId,
   }) async {
-    final url = ApiRoutes.chamadosDadosAbrir();
-    final payload = {'empresaId': empresaId};
-    // ignore: avoid_print
-    print('[CHAMADOS] >>> POST $url');
-    // ignore: avoid_print
-    print('[CHAMADOS] >>> payload: $payload');
     try {
-      final result = await _postoRestClient.post(url, payload);
+      final result = await _postoRestClient.post(
+        ApiRoutes.chamadosDadosAbrir(),
+        {'empresaId': empresaId},
+      );
       final status = result.statusCode;
       final body = result.body;
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< status: $status');
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< statusText: ${result.statusText}');
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< body type: ${body.runtimeType}');
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< body: $body');
-
       if (status == null || status < 200 || status >= 300) {
         return ResultActionDTO.failure(
           'Erro ${status ?? ''} ao buscar templates'.trim(),
@@ -98,15 +85,9 @@ class ChamadosRepositoryImpl extends ChamadosRepository {
         );
       }
       if (body is! Map) {
-        // ignore: avoid_print
-    print('[CHAMADOS] !!! body não é Map (é ${body.runtimeType})');
         return ResultActionDTO.failure('Resposta inválida do servidor', []);
       }
       final rawTemplates = body['templates'];
-      // ignore: avoid_print
-    print('[CHAMADOS] templates raw type: ${rawTemplates.runtimeType}');
-      // ignore: avoid_print
-    print('[CHAMADOS] templates raw: $rawTemplates');
       if (rawTemplates is! List) {
         return ResultActionDTO.success(data: []);
       }
@@ -116,14 +97,8 @@ class ChamadosRepositoryImpl extends ChamadosRepository {
             (t) => ChamadoTemplateModel.fromMap(Map<String, dynamic>.from(t)),
           )
           .toList();
-      // ignore: avoid_print
-    print('[CHAMADOS] parseados ${templates.length} templates');
       return ResultActionDTO.success(data: templates);
     } catch (e, s) {
-      // ignore: avoid_print
-    print('[CHAMADOS] !!! exception: $e');
-      // ignore: avoid_print
-    print('[CHAMADOS] !!! stack: $s');
       log('Erro get templates abrir chamado', error: e, stackTrace: s);
       return ResultActionDTO.failure(
         'Erro ao buscar templates: ${e.toString()}',
@@ -140,43 +115,23 @@ class ChamadosRepositoryImpl extends ChamadosRepository {
     required int filialId,
     required int empresaId,
   }) async {
-    final url = ApiRoutes.chamadosAbrir();
-    final payload = {
-      'templateId': templateId,
-      'abertoPor': abertoPor,
-      'titulo': titulo,
-      'filialId': filialId,
-      'empresaId': empresaId,
-    };
-    // ignore: avoid_print
-    print('[CHAMADOS] >>> POST $url');
-    // ignore: avoid_print
-    print('[CHAMADOS] >>> payload: $payload');
     try {
-      final result = await _postoRestClient.post(url, payload);
+      final result = await _postoRestClient.post(ApiRoutes.chamadosAbrir(), {
+        'templateId': templateId,
+        'abertoPor': abertoPor,
+        'titulo': titulo,
+        'filialId': filialId,
+        'empresaId': empresaId,
+      });
       final status = result.statusCode;
-      final body = result.body;
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< status: $status');
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< body type: ${body.runtimeType}');
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< body: $body');
       if (status == null || status < 200 || status >= 300) {
         return ResultActionDTO.failure(
           'Erro ${status ?? ''} ao abrir chamado'.trim(),
           null,
         );
       }
-      final chamadoId = _extrairChamadoId(body);
-      // ignore: avoid_print
-    print('[CHAMADOS] chamadoId extraído: $chamadoId');
-      return ResultActionDTO.success(data: chamadoId);
+      return ResultActionDTO.success(data: _extrairChamadoId(result.body));
     } catch (e, s) {
-      // ignore: avoid_print
-    print('[CHAMADOS] !!! exception abrir: $e');
-      // ignore: avoid_print
-    print('[CHAMADOS] !!! stack: $s');
       log('Erro abrir chamado', error: e, stackTrace: s);
       return ResultActionDTO.failure(
         'Erro ao abrir chamado: ${e.toString()}',
@@ -190,53 +145,12 @@ class ChamadosRepositoryImpl extends ChamadosRepository {
     required int chamadoId,
     required List<Map<String, dynamic>> campos,
   }) async {
-    final url = ApiRoutes.chamadosAtualizarCampos();
-    final body = {'chamadoId': chamadoId, 'campos': campos};
-
-    int totalFotos = 0;
-    int totalBase64Bytes = 0;
-    for (final c in campos) {
-      if (c['tipo'] == 'photo') {
-        final entries = c['valorJson'] as List?;
-        if (entries == null) continue;
-        for (final e in entries) {
-          if (e is Map && e['action'] == 'upload') {
-            totalFotos++;
-            final dados = e['dadosUpload'] as Map?;
-            final b64 = dados?['base64'] as String?;
-            if (b64 != null) totalBase64Bytes += b64.length;
-          }
-        }
-      }
-    }
-    final payloadStr = jsonEncode(body);
-    final payloadKB = (payloadStr.length / 1024).toStringAsFixed(1);
-    final base64KB = (totalBase64Bytes / 1024).toStringAsFixed(1);
-
-    // ignore: avoid_print
-    print('[CHAMADOS] >>> POST $url');
-    // ignore: avoid_print
-    print(
-      '[CHAMADOS] >>> ${campos.length} campo(s), $totalFotos foto(s) p/ upload',
-    );
-    // ignore: avoid_print
-    print(
-      '[CHAMADOS] >>> payload total: ${payloadKB}KB (base64: ${base64KB}KB)',
-    );
-
-    final stopwatch = Stopwatch()..start();
     try {
-      final result = await _postoRestClient.post(url, body);
-      stopwatch.stop();
-      final status = result.statusCode;
-      // ignore: avoid_print
-    print(
-        '[CHAMADOS] <<< status: $status (${stopwatch.elapsedMilliseconds}ms)',
+      final result = await _postoRestClient.post(
+        ApiRoutes.chamadosAtualizarCampos(),
+        {'chamadoId': chamadoId, 'campos': campos},
       );
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< statusText: ${result.statusText}');
-      // ignore: avoid_print
-    print('[CHAMADOS] <<< body: ${result.body}');
+      final status = result.statusCode;
       if (status == null || status < 200 || status >= 300) {
         return ResultActionDTO.failure(
           'Erro ${status ?? ''} ao atualizar campos: ${result.statusText ?? ''}'
@@ -246,13 +160,6 @@ class ChamadosRepositoryImpl extends ChamadosRepository {
       }
       return ResultActionDTO.success(data: true);
     } catch (e, s) {
-      stopwatch.stop();
-      // ignore: avoid_print
-    print(
-        '[CHAMADOS] !!! exception após ${stopwatch.elapsedMilliseconds}ms: $e',
-      );
-      // ignore: avoid_print
-    print('[CHAMADOS] !!! stack: $s');
       log('Erro atualizar campos chamado', error: e, stackTrace: s);
       return ResultActionDTO.failure(
         'Erro ao atualizar campos: ${e.toString()}',
