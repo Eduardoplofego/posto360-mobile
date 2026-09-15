@@ -35,6 +35,8 @@ class UserModel {
     this.ponto,
   });
 
+  bool get isMotorista => tipoUsuario.trim().toUpperCase() == 'MOTORISTA';
+
   factory UserModel.empty() {
     return UserModel(
       id: '',

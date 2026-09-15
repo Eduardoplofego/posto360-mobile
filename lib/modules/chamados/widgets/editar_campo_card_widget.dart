@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:posto360/modules/chamados/domain/models/chamado_campo_model.dart';
+import 'package:posto360/modules/chamados/domain/models/chamado_tanque_model.dart';
 import 'package:posto360/modules/chamados/domain/models/upload_photo_dto.dart';
 import 'package:posto360/modules/chamados/widgets/editar_photo_widget.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
@@ -14,6 +17,8 @@ class EditarCampoCardWidget extends StatelessWidget {
   final void Function(String url) onToggleExclusaoFoto;
   final void Function(UploadPhotoDto foto) onAdicionarUpload;
   final void Function(int index) onRemoverUpload;
+  final Map<String, String> litrosPorTanque;
+  final void Function(String tanqueId, String valor) onLitrosTanqueChanged;
 
   const EditarCampoCardWidget({
     super.key,
@@ -25,6 +30,8 @@ class EditarCampoCardWidget extends StatelessWidget {
     required this.onToggleExclusaoFoto,
     required this.onAdicionarUpload,
     required this.onRemoverUpload,
+    required this.litrosPorTanque,
+    required this.onLitrosTanqueChanged,
     this.pendente = false,
   });
 
@@ -124,9 +131,295 @@ class EditarCampoCardWidget extends StatelessWidget {
           onAdicionarUpload: onAdicionarUpload,
           onRemoverUpload: onRemoverUpload,
         );
+      case ChamadoCampoTipo.tanques:
+        return _EditarTanques(
+          tanques: campo.tanques,
+          litrosPorTanque: litrosPorTanque,
+          onChanged: onLitrosTanqueChanged,
+        );
       case ChamadoCampoTipo.unknown:
         return _ReadOnlyHint(label: 'Tipo "${campo.tipoRaw}" não suportado');
     }
+  }
+}
+
+class _EditarTanques extends StatefulWidget {
+  final List<ChamadoTanqueModel> tanques;
+  final Map<String, String> litrosPorTanque;
+  final void Function(String tanqueId, String valor) onChanged;
+
+  const _EditarTanques({
+    required this.tanques,
+    required this.litrosPorTanque,
+    required this.onChanged,
+  });
+
+  @override
+  State<_EditarTanques> createState() => _EditarTanquesState();
+}
+
+class _EditarTanquesState extends State<_EditarTanques> {
+  final _selecionados = <String>{};
+
+  static final NumberFormat _litrosFormat = NumberFormat.decimalPattern('pt_BR');
+
+  /// So entram no filtro os produtos que a filial realmente tem em tanque.
+  List<String> get _codigos {
+    final presentes = <String>{
+      for (final tanque in widget.tanques) tanque.produtoCodigo,
+    };
+    return [
+      ...ordemCodigosProduto.where(presentes.contains),
+      ...presentes.where((c) => !ordemCodigosProduto.contains(c)),
+    ];
+  }
+
+  int _litros(ChamadoTanqueModel tanque) =>
+      int.tryParse((widget.litrosPorTanque[tanque.tanqueId] ?? '').trim()) ?? 0;
+
+  /// Sem filtro, mostra tudo. Com filtro, mostra os produtos marcados e tambem
+  /// qualquer tanque ja lancado, para o motorista nao perder de vista o que
+  /// digitou ao trocar a selecao.
+  List<ChamadoTanqueModel> get _visiveis {
+    if (_selecionados.isEmpty) return widget.tanques;
+    return widget.tanques
+        .where(
+          (t) => _selecionados.contains(t.produtoCodigo) || _litros(t) > 0,
+        )
+        .toList();
+  }
+
+  int get _total =>
+      widget.tanques.fold<int>(0, (soma, t) => soma + _litros(t));
+
+  void _alternar(String codigo) {
+    setState(() {
+      if (!_selecionados.remove(codigo)) _selecionados.add(codigo);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.tanques.isEmpty) {
+      return _ReadOnlyHint(
+        label: 'Nenhum tanque cadastrado para esta filial',
+      );
+    }
+    final visiveis = _visiveis;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Marque os produtos que vieram na carga para filtrar os tanques, e '
+          'informe os litros descarregados em cada um.',
+          style: TextStyle(
+            fontSize: 11,
+            color: PostoAppUiConfigurations.darkGreyColor,
+            height: 1.35,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: _codigos
+              .map(
+                (codigo) => _ChipProduto(
+                  label: codigo,
+                  selecionado: _selecionados.contains(codigo),
+                  onTap: () => _alternar(codigo),
+                ),
+              )
+              .toList(),
+        ),
+        const SizedBox(height: 12),
+        ...visiveis.map(
+          (tanque) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _LinhaTanque(
+              key: ValueKey(tanque.tanqueId),
+              tanque: tanque,
+              valor: widget.litrosPorTanque[tanque.tanqueId] ?? '',
+              onChanged: (v) {
+                widget.onChanged(tanque.tanqueId, v);
+                // O total e a visibilidade dependem do que foi digitado.
+                setState(() {});
+              },
+            ),
+          ),
+        ),
+        if (_total > 0) ...[
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Total descarregado',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: PostoAppUiConfigurations.darkGreyColor,
+                  ),
+                ),
+              ),
+              Text(
+                '${_litrosFormat.format(_total)} L',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: PostoAppUiConfigurations.blueMediumColor,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _ChipProduto extends StatelessWidget {
+  final String label;
+  final bool selecionado;
+  final VoidCallback onTap;
+
+  const _ChipProduto({
+    required this.label,
+    required this.selecionado,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(100),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: selecionado
+              ? PostoAppUiConfigurations.blueMediumColor
+              : Colors.white,
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(
+            color: selecionado
+                ? PostoAppUiConfigurations.blueMediumColor
+                : const Color(0xFFE5E7EB),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: selecionado
+                ? Colors.white
+                : PostoAppUiConfigurations.textDarkColor,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LinhaTanque extends StatefulWidget {
+  final ChamadoTanqueModel tanque;
+  final String valor;
+  final ValueChanged<String> onChanged;
+
+  const _LinhaTanque({
+    super.key,
+    required this.tanque,
+    required this.valor,
+    required this.onChanged,
+  });
+
+  @override
+  State<_LinhaTanque> createState() => _LinhaTanqueState();
+}
+
+class _LinhaTanqueState extends State<_LinhaTanque> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.valor);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final capacidade = widget.tanque.capacidade;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.tanque.produto,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: PostoAppUiConfigurations.textDarkColor,
+                  ),
+                ),
+                Text(
+                  capacidade == null
+                      ? 'Tanque ${widget.tanque.tanqueId}'
+                      : 'Tanque ${widget.tanque.tanqueId} · ${capacidade.round()} L',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: PostoAppUiConfigurations.darkGreyColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 96,
+            child: TextField(
+              controller: _controller,
+              onChanged: widget.onChanged,
+              textAlign: TextAlign.end,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: PostoAppUiConfigurations.textDarkColor,
+              ),
+              decoration: InputDecoration(
+                isDense: true,
+                hintText: '0',
+                suffixText: 'L',
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 8,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -420,6 +713,8 @@ class _TipoIcon extends StatelessWidget {
         return Icons.checklist_rounded;
       case ChamadoCampoTipo.photo:
         return Icons.image_outlined;
+      case ChamadoCampoTipo.tanques:
+        return Icons.local_gas_station_outlined;
       case ChamadoCampoTipo.unknown:
         return Icons.help_outline_rounded;
     }

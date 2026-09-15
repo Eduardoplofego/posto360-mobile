@@ -24,6 +24,7 @@ class ChamadoEditarController extends GetxController {
   final _editsTexto = <int, String>{}.obs;
   final _photoDeletions = <int, Set<String>>{}.obs;
   final _photoUploads = <int, List<UploadPhotoDto>>{}.obs;
+  final _editsTanques = <int, Map<String, String>>{}.obs;
 
   bool get isLoading => _loading.value;
   bool get isSaving => _saving.value;
@@ -34,6 +35,27 @@ class ChamadoEditarController extends GetxController {
 
   String? valorTextoAtual(ChamadoCampoModel campo) {
     return _editsTexto[campo.id] ?? campo.valorTexto;
+  }
+
+  /// Litros por tanque como texto de input: parte do que ja veio salvo e
+  /// aplica por cima o que o usuario digitou nesta sessao (inclusive campo
+  /// apagado, que vira string vazia).
+  Map<String, String> litrosAtuais(ChamadoCampoModel campo) {
+    final atual = <String, String>{};
+    campo.litrosPorTanque.forEach((tanqueId, litros) {
+      atual[tanqueId] = litros.round().toString();
+    });
+    final edits = _editsTanques[campo.id];
+    if (edits != null) atual.addAll(edits);
+    return atual;
+  }
+
+  void setLitrosTanque(int campoId, String tanqueId, String valor) {
+    final atual = Map<String, String>.from(
+      _editsTanques[campoId] ?? <String, String>{},
+    );
+    atual[tanqueId] = valor;
+    _editsTanques[campoId] = atual;
   }
 
   bool isFotoMarcadaParaExclusao(int campoId, String url) =>
@@ -74,6 +96,7 @@ class ChamadoEditarController extends GetxController {
     if (_editsTexto.isNotEmpty) return true;
     if (_photoDeletions.values.any((s) => s.isNotEmpty)) return true;
     if (_photoUploads.values.any((l) => l.isNotEmpty)) return true;
+    if (_editsTanques.values.any((m) => m.isNotEmpty)) return true;
     return false;
   }
 
@@ -85,6 +108,10 @@ class ChamadoEditarController extends GetxController {
           .length;
       final novas = uploadsFor(campo.id).length;
       return (mantidas + novas) == 0;
+    }
+    if (campo.tipo == ChamadoCampoTipo.tanques) {
+      // A carga raramente vai para todos os tanques, entao basta um lancado.
+      return _lancamentosTanques(campo).isEmpty;
     }
     final v = (valorTextoAtual(campo) ?? '').trim();
     return v.isEmpty;
@@ -127,6 +154,7 @@ class ChamadoEditarController extends GetxController {
       _editsTexto.clear();
       _photoDeletions.clear();
       _photoUploads.clear();
+      _editsTanques.clear();
     } else {
       _errorMessage.value = result.message;
       _campos.clear();
@@ -161,6 +189,19 @@ class ChamadoEditarController extends GetxController {
     return (ok: false, error: result.message);
   }
 
+  /// Litros validos por tanque, na ordem em que os tanques vieram da API.
+  /// Tanque em branco ou zerado nao entra: a descarga so cita onde houve carga.
+  List<Map<String, dynamic>> _lancamentosTanques(ChamadoCampoModel campo) {
+    final atuais = litrosAtuais(campo);
+    final lancamentos = <Map<String, dynamic>>[];
+    for (final tanque in campo.tanques) {
+      final litros = int.tryParse((atuais[tanque.tanqueId] ?? '').trim());
+      if (litros == null || litros <= 0) continue;
+      lancamentos.add({'tanqueId': tanque.tanqueId, 'litros': litros});
+    }
+    return lancamentos;
+  }
+
   List<Map<String, dynamic>> _montarPayload() {
     final out = <Map<String, dynamic>>[];
     for (final campo in _campos) {
@@ -190,6 +231,16 @@ class ChamadoEditarController extends GetxController {
           'id': campo.id,
           'tipo': campo.tipoRaw,
           'valorJson': entries,
+        });
+      } else if (campo.tipo == ChamadoCampoTipo.tanques) {
+        final edits = _editsTanques[campo.id];
+        if (edits == null || edits.isEmpty) continue;
+        // Manda o estado completo, nao so o que mudou: a resposta substitui a
+        // anterior inteira.
+        out.add({
+          'id': campo.id,
+          'tipo': campo.tipoRaw,
+          'valorJson': _lancamentosTanques(campo),
         });
       } else {
         if (!_editsTexto.containsKey(campo.id)) continue;

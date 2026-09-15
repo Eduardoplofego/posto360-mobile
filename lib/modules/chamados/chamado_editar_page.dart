@@ -174,6 +174,9 @@ class ChamadoEditarPage extends GetView<ChamadoEditarController> {
                             controller.adicionarUpload(campo.id, foto),
                         onRemoverUpload: (index) =>
                             controller.removerUpload(campo.id, index),
+                        litrosPorTanque: controller.litrosAtuais(campo),
+                        onLitrosTanqueChanged: (tanqueId, valor) => controller
+                            .setLitrosTanque(campo.id, tanqueId, valor),
                       ),
                     ),
                   ),
@@ -281,30 +284,36 @@ class _SaveBar extends StatelessWidget {
 
   const _SaveBar({required this.controller});
 
-  Future<void> _onPressed() async {
+  // Navigator/ScaffoldMessenger e não Get.back/Get.snackbar: no Flutter 3.41 o
+  // Get.snackbar lança "No Overlay widget found" e deixa a fila de snackbar do
+  // GetX travada como "aberta"; a partir daí todo Get.back só tenta fechar esse
+  // snackbar fantasma e não sai da tela.
+  Future<void> _onPressed(BuildContext context) async {
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     final result = await controller.salvar();
     if (result.ok) {
-      Get.back(result: true);
+      navigator.pop(true);
+      _mostrarMensagem(messenger, 'Respostas salvas com sucesso.');
       if (Get.isRegistered<ChamadosController>()) {
         await Get.find<ChamadosController>().onRefresh();
       }
-      Get.snackbar(
-        'Chamado atualizado',
-        'Respostas salvas com sucesso.',
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
-        backgroundColor: Colors.white,
-        colorText: PostoAppUiConfigurations.textDarkColor,
-      );
       return;
     }
-    Get.snackbar(
-      'Aviso',
-      result.error ?? 'Não foi possível salvar.',
-      snackPosition: SnackPosition.BOTTOM,
-      margin: const EdgeInsets.all(16),
-      backgroundColor: Colors.white,
-      colorText: PostoAppUiConfigurations.textDarkColor,
+    _mostrarMensagem(messenger, result.error ?? 'Não foi possível salvar.');
+  }
+
+  void _mostrarMensagem(ScaffoldMessengerState messenger, String mensagem) {
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          mensagem,
+          style: TextStyle(color: PostoAppUiConfigurations.textDarkColor),
+        ),
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
     );
   }
 
@@ -325,7 +334,8 @@ class _SaveBar extends StatelessWidget {
         width: double.infinity,
         child: Obx(
           () => ElevatedButton.icon(
-            onPressed: controller.isSaving ? null : _onPressed,
+            onPressed:
+                controller.isSaving ? null : () => _onPressed(context),
             icon: controller.isSaving
                 ? const SizedBox(
                     width: 16,

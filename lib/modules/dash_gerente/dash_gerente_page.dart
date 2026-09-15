@@ -103,7 +103,13 @@ class DashGerentePage extends GetView<DashGerenteController> {
               isLoading: controller.loadingWork,
               height: 80,
               initDelay: 50,
-              child: ProfileCardWidget(),
+              child: Obx(
+                () => ProfileCardWidget(
+                  photoUrl: controller.photoUrl,
+                  nome: controller.nameUser,
+                  tipoUsuario: controller.autheticatedUser.tipoUsuario,
+                ),
+              ),
             ),
             const SizedBox(height: 26),
             CardLoadingWidget(

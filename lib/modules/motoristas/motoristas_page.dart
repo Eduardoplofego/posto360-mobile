@@ -5,6 +5,10 @@ import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart
 import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/drawer/posto_app_drawer.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/menu_icon_button_widget.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/loading/card_loading_widget.dart';
+import 'package:posto360/modules/dash/widgets/card_chamados_widget.dart';
+import 'package:posto360/modules/dash/widgets/card_procedimentos_widget.dart';
+import 'package:posto360/modules/dash/widgets/profile_card_widget.dart';
 import 'package:posto360/modules/motoristas/widgets/filial_card_widget.dart';
 import './motoristas_controller.dart';
 
@@ -13,50 +17,133 @@ class MotoristasPage extends GetView<MotoristasController> {
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
-      key: scaffoldKey,
-      appBar: CustomAppBar(
-        title: 'Filiais',
-        leading: MenuIconButtonWidget(
-          onPressed: () {
-            scaffoldKey.currentState?.openDrawer();
-          },
+      key: controller.scaffoldKey,
+      appBar: PreferredSize(
+        preferredSize: CustomAppBar.preferredSizeFor(),
+        child: Obx(
+          () => CustomAppBar(
+            title: controller.currentTab == 0 ? 'Início' : 'Carregamentos',
+            leading: MenuIconButtonWidget(
+              onPressed: () {
+                controller.scaffoldKey.currentState?.openDrawer();
+              },
+            ),
+            actions: [],
+          ),
         ),
-        actions: const [],
       ),
       drawer: PostoAppDrawer(
         autheticatedUser: Get.find<AuthService>().getUser()!,
         onSavePhoto: controller.onSavePhoto,
       ),
-      body: Obx(() {
-        if (controller.isLoading) {
-          return Center(
-            child: SizedBox(
-              width: 35,
-              height: 35,
-              child: CircularProgressIndicator(
-                color: PostoAppUiConfigurations.blueMediumColor,
+      body: Obx(
+        () => IndexedStack(
+          index: controller.currentTab,
+          children: [_buildInicioTab(), _buildCarregamentosTab()],
+        ),
+      ),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          currentIndex: controller.currentTab,
+          onTap: controller.changeTab,
+          selectedItemColor: PostoAppUiConfigurations.blueMediumColor,
+          unselectedItemColor: PostoAppUiConfigurations.darkGreyColor,
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Início',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.local_shipping_outlined),
+              activeIcon: Icon(Icons.local_shipping),
+              label: 'Carregamentos',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInicioTab() {
+    return RefreshIndicator.noSpinner(
+      onRefresh: controller.onRefresh,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: ListView(
+          children: [
+            const SizedBox(height: 8),
+            CardLoadingWidget(
+              isLoading: controller.isLoading,
+              height: 80,
+              initDelay: 50,
+              child: ProfileCardWidget(
+                photoUrl: controller.photoUrl,
+                nome: controller.nameUser,
+                tipoUsuario: controller.autheticatedUser.tipoUsuario,
               ),
             ),
-          );
-        }
-        if (controller.hasError) {
-          return _errorState(controller.errorMessage!);
-        }
-        if (!controller.hasFiliais) {
-          return _emptyState();
-        }
-        return RefreshIndicator.noSpinner(
-          onRefresh: controller.onRefresh,
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            itemCount: controller.filiais.length,
-            itemBuilder: (context, index) =>
-                FilialCardWidget(filial: controller.filiais[index]),
+            const SizedBox(height: 26),
+            CardLoadingWidget(
+              isLoading: controller.isLoading,
+              height: 160,
+              initDelay: 180,
+              child: CardProcedimentosWidget(
+                onPressed: () {
+                  Get.toNamed('/procedimentos');
+                },
+              ),
+            ),
+            const SizedBox(height: 17),
+            CardLoadingWidget(
+              isLoading: controller.isLoading,
+              height: 160,
+              initDelay: 210,
+              child: CardChamadosWidget(
+                onPressed: () {
+                  Get.toNamed('/chamados');
+                },
+              ),
+            ),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarregamentosTab() {
+    if (controller.isLoading) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: Center(
+          child: SizedBox(
+            width: 35,
+            height: 35,
+            child: CircularProgressIndicator(
+              color: PostoAppUiConfigurations.blueMediumColor,
+            ),
           ),
-        );
-      }),
+        ),
+      );
+    }
+    if (controller.hasError) {
+      return _errorState(controller.errorMessage!);
+    }
+    if (!controller.hasFiliais) {
+      return _emptyState();
+    }
+    return RefreshIndicator.noSpinner(
+      onRefresh: controller.onRefresh,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        itemCount: controller.filiais.length,
+        itemBuilder: (context, index) =>
+            FilialCardWidget(filial: controller.filiais[index]),
+      ),
     );
   }
 

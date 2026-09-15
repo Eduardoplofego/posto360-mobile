@@ -31,7 +31,10 @@ class FilialCardWidget extends StatelessWidget {
         children: [
           _header(),
           const SizedBox(height: 12),
-          _medicoesSection(),
+          if (filial.hasProdutos)
+            _medicoesSection()
+          else
+            _semMedicao(),
           if (filial.carregamentosHoje.isNotEmpty) ...[
             const SizedBox(height: 16),
             _sectionTitle('Carregamentos hoje', filial.carregamentosHoje.length),
@@ -109,6 +112,26 @@ class FilialCardWidget extends StatelessWidget {
           color: PostoAppUiConfigurations.lightGreyBgColor,
         ),
         ...filial.produtos.map((p) => MedicaoProdutoRow(produto: p)),
+      ],
+    );
+  }
+
+  Widget _semMedicao() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(
+          height: 1,
+          color: PostoAppUiConfigurations.lightGreyBgColor,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Sem medição disponível',
+          style: TextStyle(
+            fontSize: 12,
+            color: PostoAppUiConfigurations.greyColor,
+          ),
+        ),
       ],
     );
   }

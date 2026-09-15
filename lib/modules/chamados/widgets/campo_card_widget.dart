@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:posto360/modules/chamados/domain/models/chamado_campo_model.dart';
 import 'package:posto360/modules/chamados/widgets/campo_photo_widget.dart';
 import 'package:posto360/modules/chamados/widgets/campo_select_widget.dart';
@@ -76,6 +77,8 @@ class CampoCardWidget extends StatelessWidget {
         return CampoSelectWidget(campo: campo);
       case ChamadoCampoTipo.photo:
         return CampoPhotoWidget(campo: campo);
+      case ChamadoCampoTipo.tanques:
+        return _CampoTanquesReadOnly(campo: campo);
       case ChamadoCampoTipo.unknown:
         return Container(
           width: double.infinity,
@@ -114,6 +117,8 @@ class _TipoIcon extends StatelessWidget {
         return Icons.checklist_rounded;
       case ChamadoCampoTipo.photo:
         return Icons.image_outlined;
+      case ChamadoCampoTipo.tanques:
+        return Icons.local_gas_station_outlined;
       case ChamadoCampoTipo.unknown:
         return Icons.help_outline_rounded;
     }
@@ -132,6 +137,109 @@ class _TipoIcon extends StatelessWidget {
         _icon,
         size: 16,
         color: PostoAppUiConfigurations.blueMediumColor,
+      ),
+    );
+  }
+}
+
+class _CampoTanquesReadOnly extends StatelessWidget {
+  final ChamadoCampoModel campo;
+
+  const _CampoTanquesReadOnly({required this.campo});
+
+  static final NumberFormat _litrosFormat = NumberFormat.decimalPattern('pt_BR');
+
+  @override
+  Widget build(BuildContext context) {
+    final lancados = campo.tanques
+        .where((t) => (campo.litrosPorTanque[t.tanqueId] ?? 0) > 0)
+        .toList();
+
+    if (lancados.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
+        ),
+        child: Text(
+          'Nenhuma descarga lançada',
+          style: TextStyle(
+            fontSize: 12,
+            color: PostoAppUiConfigurations.darkGreyColor,
+          ),
+        ),
+      );
+    }
+
+    final total = lancados.fold<double>(
+      0,
+      (soma, t) => soma + (campo.litrosPorTanque[t.tanqueId] ?? 0),
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...lancados.map(
+            (tanque) => Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${tanque.produto} · ${tanque.tanqueId}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: PostoAppUiConfigurations.textDarkColor,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${_litrosFormat.format(campo.litrosPorTanque[tanque.tanqueId]!.round())} L',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: PostoAppUiConfigurations.textDarkColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Divider(height: 12, color: const Color(0xFFE5E7EB)),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Total descarregado',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: PostoAppUiConfigurations.darkGreyColor,
+                  ),
+                ),
+              ),
+              Text(
+                '${_litrosFormat.format(total.round())} L',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: PostoAppUiConfigurations.blueMediumColor,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

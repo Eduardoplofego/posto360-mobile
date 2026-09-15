@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/chamados/domain/models/chamado_template_model.dart';
 import 'package:posto360/modules/chamados/widgets/template_card_widget.dart';
+import 'package:posto360/modules/core/domain/services/filiais_acesso_service.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/custom_app_bar.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/icon_buttons/back_icon_button_widget.dart';
@@ -51,6 +52,14 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                 children: [
                   const _IntroBanner(),
+                  if (controller.precisaEscolherFilial) ...[
+                    const SizedBox(height: 16),
+                    _FilialSelector(
+                      filiais: controller.filiais,
+                      selecionadaId: controller.filialSelecionadaId,
+                      onChanged: controller.selecionarFilial,
+                    ),
+                  ],
                   const SizedBox(height: 20),
                   Text(
                     'Selecione o tipo de chamado',
@@ -118,6 +127,11 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
 
   Future<void> _abrir(BuildContext context, ChamadoTemplateModel template) async {
     if (controller.isSubmitting) return;
+    final impedimento = controller.impedimentoParaAbrir;
+    if (impedimento != null) {
+      _mostrarAviso(context, impedimento);
+      return;
+    }
     final confirmed = await _confirmarAbertura(template);
     if (confirmed != true) return;
     final result = await controller.abrir(
@@ -126,17 +140,7 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
     );
     if (!result.ok) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            result.error ?? 'Tente novamente.',
-            style: TextStyle(color: PostoAppUiConfigurations.textDarkColor),
-          ),
-          backgroundColor: Colors.white,
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.all(16),
-        ),
-      );
+      _mostrarAviso(context, result.error ?? 'Tente novamente.');
       return;
     }
     if (result.chamadoId != null) {
@@ -144,6 +148,20 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
     } else {
       if (context.mounted) Navigator.of(context).maybePop();
     }
+  }
+
+  void _mostrarAviso(BuildContext context, String mensagem) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          mensagem,
+          style: TextStyle(color: PostoAppUiConfigurations.textDarkColor),
+        ),
+        backgroundColor: Colors.white,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   Future<bool?> _confirmarAbertura(ChamadoTemplateModel template) {
@@ -200,6 +218,29 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
                 ),
               ),
             ],
+            if (controller.filialSelecionadaNome != null) ...[
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Icon(
+                    Icons.local_gas_station_outlined,
+                    size: 15,
+                    color: PostoAppUiConfigurations.blueMediumColor,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      controller.filialSelecionadaNome!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: PostoAppUiConfigurations.textDarkColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
         actionsPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
@@ -227,6 +268,106 @@ class AbrirChamadoPage extends GetView<AbrirChamadoController> {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FilialSelector extends StatelessWidget {
+  final List<FilialAcessoModel> filiais;
+  final int? selecionadaId;
+  final ValueChanged<int?> onChanged;
+
+  const _FilialSelector({
+    required this.filiais,
+    required this.selecionadaId,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      decoration: BoxDecoration(
+        color: PostoAppUiConfigurations.lightGreyBgColor,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            spacing: 8,
+            children: [
+              Icon(
+                Icons.local_gas_station_outlined,
+                size: 18,
+                color: PostoAppUiConfigurations.blueMediumColor,
+              ),
+              Text(
+                'Filial do chamado',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: PostoAppUiConfigurations.textDarkColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          if (filiais.isEmpty)
+            Text(
+              'Nenhuma filial disponível. Volte para a tela de filiais, '
+              'atualize e tente de novo.',
+              style: TextStyle(
+                fontSize: 12,
+                color: PostoAppUiConfigurations.greyColor,
+                height: 1.35,
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<int>(
+                  isExpanded: true,
+                  value: selecionadaId,
+                  borderRadius: BorderRadius.circular(10),
+                  hint: Text(
+                    'Selecione a filial',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: PostoAppUiConfigurations.greyColor,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.expand_more_rounded,
+                    color: PostoAppUiConfigurations.blueMediumColor,
+                  ),
+                  items: filiais
+                      .map(
+                        (filial) => DropdownMenuItem<int>(
+                          value: filial.id,
+                          child: Text(
+                            filial.nome,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: PostoAppUiConfigurations.textDarkColor,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: onChanged,
+                ),
+              ),
+            ),
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:posto360/modules/chamados/domain/models/chamado_template_model.dart';
 import 'package:posto360/modules/chamados/infra/services/chamados_service.dart';
 import 'package:posto360/modules/core/domain/services/auth_service.dart';
+import 'package:posto360/modules/core/domain/services/filiais_acesso_service.dart';
 
 class AbrirChamadoController extends GetxController {
   final ChamadosService _chamadosService;
@@ -13,6 +14,8 @@ class AbrirChamadoController extends GetxController {
   final _submitting = false.obs;
   final _errorMessage = ''.obs;
   final _templates = <ChamadoTemplateModel>[].obs;
+  final _filiais = <FilialAcessoModel>[].obs;
+  final _filialSelecionadaId = RxnInt();
 
   bool get isLoading => _loading.value;
   bool get isSubmitting => _submitting.value;
@@ -20,14 +23,54 @@ class AbrirChamadoController extends GetxController {
   bool get hasError => _errorMessage.value.isNotEmpty;
   List<ChamadoTemplateModel> get templates => _templates.toList();
 
+  /// O motorista atende varias filiais, entao ele escolhe onde o chamado sera
+  /// aberto. Os demais perfis tem uma filial so, vinda do proprio cadastro.
+  bool get precisaEscolherFilial =>
+      Get.find<AuthService>().authenticatedUser?.isMotorista ?? false;
+  List<FilialAcessoModel> get filiais => _filiais.toList();
+  int? get filialSelecionadaId => _filialSelecionadaId.value;
+
+  String? get filialSelecionadaNome {
+    final id = _filialSelecionadaId.value;
+    if (id == null) return null;
+    for (final filial in _filiais) {
+      if (filial.id == id) return filial.nome;
+    }
+    return null;
+  }
+
   @override
   Future<void> onReady() async {
     super.onReady();
+    _carregarFiliais();
     await _loadTemplates();
   }
 
   Future<void> onRefresh() async {
+    _carregarFiliais();
     await _loadTemplates();
+  }
+
+  void selecionarFilial(int? filialId) {
+    _filialSelecionadaId.value = filialId;
+  }
+
+  void _carregarFiliais() {
+    final user = Get.find<AuthService>().authenticatedUser;
+    if (user == null || !user.isMotorista) {
+      _filiais.clear();
+      _filialSelecionadaId.value = null;
+      return;
+    }
+    final disponiveis = Get.find<FiliaisAcessoService>().filiais;
+    _filiais.assignAll(disponiveis);
+    if (disponiveis.length == 1) {
+      _filialSelecionadaId.value = disponiveis.first.id;
+      return;
+    }
+    final selecionada = _filialSelecionadaId.value;
+    final aindaExiste = disponiveis.any((f) => f.id == selecionada);
+    if (!aindaExiste) _filialSelecionadaId.value = null;
   }
 
   Future<void> _loadTemplates() async {
@@ -51,6 +94,23 @@ class AbrirChamadoController extends GetxController {
     _loading.value = false;
   }
 
+  /// Mensagem de bloqueio quando ainda nao da para abrir o chamado, ou null
+  /// quando esta tudo certo para enviar.
+  String? get impedimentoParaAbrir {
+    final user = Get.find<AuthService>().authenticatedUser;
+    if (user == null) return 'Usuário não autenticado.';
+    if (!user.isMotorista) {
+      return user.idFilial == null ? 'Filial não definida para o usuário.' : null;
+    }
+    if (_filiais.isEmpty) {
+      return 'Nenhuma filial disponível para abrir chamado.';
+    }
+    if (_filialSelecionadaId.value == null) {
+      return 'Escolha a filial do chamado antes de continuar.';
+    }
+    return null;
+  }
+
   Future<({bool ok, String? error, int? chamadoId})> abrir({
     required ChamadoTemplateModel template,
     required String titulo,
@@ -63,19 +123,18 @@ class AbrirChamadoController extends GetxController {
     if (user == null) {
       return (ok: false, error: 'Usuário não autenticado.', chamadoId: null);
     }
-    if (user.idFilial == null) {
-      return (
-        ok: false,
-        error: 'Filial não definida para o usuário.',
-        chamadoId: null,
-      );
+    final impedimento = impedimentoParaAbrir;
+    if (impedimento != null) {
+      return (ok: false, error: impedimento, chamadoId: null);
     }
+    final filialId =
+        user.isMotorista ? _filialSelecionadaId.value! : user.idFilial!;
     _submitting.value = true;
     final result = await _chamadosService.abrirChamado(
       templateId: template.id,
       abertoPor: user.id,
       titulo: tituloTrim,
-      filialId: user.idFilial!,
+      filialId: filialId,
       empresaId: user.idEmpresa,
     );
     _submitting.value = false;

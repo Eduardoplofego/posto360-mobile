@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:posto360/modules/core/domain/constants/constants.dart';
 import 'package:posto360/modules/core/domain/models/user_model.dart';
+import 'package:posto360/modules/core/domain/services/filiais_acesso_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService extends GetxService {
@@ -44,6 +45,7 @@ class AuthService extends GetxService {
     await _getStorage.remove(Constants.USER_KEY);
     await _getStorage.remove(Constants.CAMPANHAS_CONTROLLER);
     await _getStorage.remove(Constants.USER_PHOTO_URL);
+    Get.find<FiliaisAcessoService>().limpar();
     _authenticatedUser.value = null;
     _isLogged.value = false;
     Get.offAllNamed('/login');

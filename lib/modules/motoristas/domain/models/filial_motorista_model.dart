@@ -20,6 +20,13 @@ class FilialMotoristaModel {
 
   bool get hasProdutos => produtos.isNotEmpty;
 
+  bool get hasCarregamentos =>
+      carregamentosHoje.isNotEmpty || proximosCarregamentos.isNotEmpty;
+
+  /// A filial só entra na lista do motorista se tiver medição de tanque ou
+  /// algum carregamento — sem nenhum dos dois o card não teria conteúdo.
+  bool get isVisivel => hasProdutos || hasCarregamentos;
+
   factory FilialMotoristaModel.fromMap(Map<String, dynamic> map) {
     final produtosRaw = (map['produtos'] as List?) ?? const [];
     final hojeRaw = (map['carregamentosHoje'] as List?) ?? const [];

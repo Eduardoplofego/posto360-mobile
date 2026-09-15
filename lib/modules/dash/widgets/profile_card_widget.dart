@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
 import 'package:posto360/modules/core/domain/ui/widgets/extra/point_widget.dart';
-import 'package:posto360/modules/dash/dash_controller.dart';
 
-class ProfileCardWidget extends GetView<DashController> {
-  const ProfileCardWidget({super.key});
+/// Recebe os dados prontos em vez de ler de um controller, porque nem todo
+/// perfil que exibe esse card tem um DashController por tras (o motorista nao
+/// tem). Quem chama e responsavel por manter a reatividade.
+class ProfileCardWidget extends StatelessWidget {
+  final String photoUrl;
+  final String nome;
+  final String tipoUsuario;
+
+  const ProfileCardWidget({
+    super.key,
+    required this.photoUrl,
+    required this.nome,
+    required this.tipoUsuario,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +36,7 @@ class ProfileCardWidget extends GetView<DashController> {
                     height: 60,
                     color: Colors.grey.shade200,
                     child: Image.network(
-                      controller.photoUrl,
+                      photoUrl,
                       cacheHeight: 60,
                       cacheWidth: 60,
                       loadingBuilder: (context, child, loadingProgress) {
@@ -52,32 +62,28 @@ class ProfileCardWidget extends GetView<DashController> {
                       children: [
                         PointWidget(),
                         const SizedBox(width: 6),
-                        Obx(() {
-                          return SizedBox(
-                            width: constraints.maxWidth - 94,
-                            child: Text(
-                              controller.nameUser,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: PostoAppUiConfigurations.textDarkColor,
-                                fontWeight: FontWeight.w600,
-                              ),
+                        SizedBox(
+                          width: constraints.maxWidth - 94,
+                          child: Text(
+                            nome,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: PostoAppUiConfigurations.textDarkColor,
+                              fontWeight: FontWeight.w600,
                             ),
-                          );
-                        }),
+                          ),
+                        ),
                       ],
                     ),
-                    Obx(() {
-                      return Text(
-                        controller.autheticatedUser.tipoUsuario,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: PostoAppUiConfigurations.darkGreyColor,
-                        ),
-                      );
-                    }),
+                    Text(
+                      tipoUsuario,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: PostoAppUiConfigurations.darkGreyColor,
+                      ),
+                    ),
                   ],
                 ),
               ],
