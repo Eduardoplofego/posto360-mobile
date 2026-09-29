@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:posto360/modules/chamados/domain/models/chamado_campo_model.dart';
+import 'package:posto360/modules/chamados/widgets/campo_date_widget.dart';
 import 'package:posto360/modules/chamados/widgets/campo_photo_widget.dart';
 import 'package:posto360/modules/chamados/widgets/campo_select_widget.dart';
 import 'package:posto360/modules/chamados/widgets/campo_text_widget.dart';
@@ -79,6 +80,8 @@ class CampoCardWidget extends StatelessWidget {
         return CampoPhotoWidget(campo: campo);
       case ChamadoCampoTipo.tanques:
         return _CampoTanquesReadOnly(campo: campo);
+      case ChamadoCampoTipo.date:
+        return CampoDateWidget(campo: campo);
       case ChamadoCampoTipo.unknown:
         return Container(
           width: double.infinity,
@@ -119,6 +122,8 @@ class _TipoIcon extends StatelessWidget {
         return Icons.image_outlined;
       case ChamadoCampoTipo.tanques:
         return Icons.local_gas_station_outlined;
+      case ChamadoCampoTipo.date:
+        return Icons.calendar_today_rounded;
       case ChamadoCampoTipo.unknown:
         return Icons.help_outline_rounded;
     }

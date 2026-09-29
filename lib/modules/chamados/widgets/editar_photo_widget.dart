@@ -248,6 +248,10 @@ class _ExistingTile extends StatelessWidget {
             child: Image.network(
               foto.url,
               fit: BoxFit.cover,
+              // Miniatura de grade: decodificar em resolucao total (ate 1600px)
+              // so pra um quadrado de ~120px estoura memoria em aparelhos
+              // fracos quando varios campos de foto aparecem na mesma tela.
+              cacheWidth: 300,
               errorBuilder: (_, __, ___) => Container(
                 color: const Color(0xFFF3F4F6),
                 child: Icon(
@@ -318,7 +322,7 @@ class _UploadTile extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Image.memory(foto.bytes, fit: BoxFit.cover),
+          child: Image.memory(foto.bytes, fit: BoxFit.cover, cacheWidth: 300),
         ),
         Positioned(
           left: 4,

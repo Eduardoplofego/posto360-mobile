@@ -137,6 +137,8 @@ class EditarCampoCardWidget extends StatelessWidget {
           litrosPorTanque: litrosPorTanque,
           onChanged: onLitrosTanqueChanged,
         );
+      case ChamadoCampoTipo.date:
+        return _EditarDate(valor: valorAtual, onChanged: onChanged);
       case ChamadoCampoTipo.unknown:
         return _ReadOnlyHint(label: 'Tipo "${campo.tipoRaw}" não suportado');
     }
@@ -493,6 +495,88 @@ class _EditarTextFieldState extends State<_EditarTextField> {
   }
 }
 
+class _EditarDate extends StatefulWidget {
+  final String? valor;
+  final ValueChanged<String?> onChanged;
+
+  const _EditarDate({required this.valor, required this.onChanged});
+
+  @override
+  State<_EditarDate> createState() => _EditarDateState();
+}
+
+class _EditarDateState extends State<_EditarDate> {
+  static final DateFormat _isoFormat = DateFormat('yyyy-MM-dd');
+  static final DateFormat _displayFormat = DateFormat('dd/MM/yyyy');
+
+  late DateTime _data;
+
+  @override
+  void initState() {
+    super.initState();
+    final existente = DateTime.tryParse(widget.valor ?? '');
+    _data = existente ?? DateTime.now();
+    // Sem valor salvo ainda: pré-preenche com hoje e avisa o controller,
+    // para o campo já valer como respondido mesmo sem o usuário tocar nele.
+    if (existente == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) widget.onChanged(_isoFormat.format(_data));
+      });
+    }
+  }
+
+  Future<void> _selecionar(BuildContext context) async {
+    final agora = DateTime.now();
+    final selecionada = await showDatePicker(
+      context: context,
+      initialDate: _data,
+      firstDate: DateTime(agora.year - 10),
+      lastDate: DateTime(agora.year + 10),
+    );
+    if (selecionada != null) {
+      setState(() => _data = selecionada);
+      widget.onChanged(_isoFormat.format(selecionada));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => _selecionar(context),
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today_rounded,
+              size: 16,
+              color: PostoAppUiConfigurations.darkGreyColor,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                _displayFormat.format(_data),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: PostoAppUiConfigurations.textDarkColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _EditarSelect extends StatelessWidget {
   final List<String> opcoes;
   final String? valor;
@@ -715,6 +799,8 @@ class _TipoIcon extends StatelessWidget {
         return Icons.image_outlined;
       case ChamadoCampoTipo.tanques:
         return Icons.local_gas_station_outlined;
+      case ChamadoCampoTipo.date:
+        return Icons.calendar_today_rounded;
       case ChamadoCampoTipo.unknown:
         return Icons.help_outline_rounded;
     }

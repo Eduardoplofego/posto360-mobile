@@ -1,7 +1,16 @@
 import 'package:posto360/modules/chamados/domain/models/chamado_campo_foto_model.dart';
 import 'package:posto360/modules/chamados/domain/models/chamado_tanque_model.dart';
 
-enum ChamadoCampoTipo { text, number, boolean, select, photo, tanques, unknown }
+enum ChamadoCampoTipo {
+  text,
+  number,
+  boolean,
+  select,
+  photo,
+  tanques,
+  date,
+  unknown,
+}
 
 ChamadoCampoTipo _parseTipo(String? raw) {
   switch (raw) {
@@ -18,6 +27,8 @@ ChamadoCampoTipo _parseTipo(String? raw) {
       return ChamadoCampoTipo.photo;
     case 'tanques':
       return ChamadoCampoTipo.tanques;
+    case 'date':
+      return ChamadoCampoTipo.date;
     default:
       return ChamadoCampoTipo.unknown;
   }

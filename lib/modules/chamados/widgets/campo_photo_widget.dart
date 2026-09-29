@@ -91,6 +91,8 @@ class _PhotoTile extends StatelessWidget {
           child: Image.network(
             foto.url,
             fit: BoxFit.cover,
+            // Miniatura de grade: mesma razao do cacheWidth em editar_photo_widget.dart.
+            cacheWidth: 300,
             loadingBuilder: (context, child, progress) {
               if (progress == null) return child;
               return Container(
