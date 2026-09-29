@@ -58,6 +58,13 @@ android {
             isShrinkResources = true
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("release")
+            // Sem isso, `flutter build appbundle` no Windows falha depois do
+            // Gradle já ter terminado, tentando (e falhando) extrair os
+            // símbolos de debug das libs nativas separadamente. Bug conhecido
+            // do Flutter no Windows (github.com/flutter/flutter/issues/186810).
+            ndk {
+                debugSymbolLevel = "NONE"
+            }
         }
     }
 }
