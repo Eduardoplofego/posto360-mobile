@@ -58,12 +58,13 @@ android {
             isShrinkResources = true
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("release")
-            // Sem isso, `flutter build appbundle` no Windows falha depois do
-            // Gradle já ter terminado, tentando (e falhando) extrair os
-            // símbolos de debug das libs nativas separadamente. Bug conhecido
-            // do Flutter no Windows (github.com/flutter/flutter/issues/186810).
+            // O build roda direto pelo `./gradlew bundleRelease` (ver commit
+            // anterior sobre o bug do Flutter no Windows), então quem embute
+            // os símbolos no bundle é o próprio AGP, não o passo quebrado do
+            // Flutter CLI. SYMBOL_TABLE mantém símbolo pra stack trace nativa
+            // legível na Play Console sem precisar de upload manual.
             ndk {
-                debugSymbolLevel = "NONE"
+                debugSymbolLevel = "SYMBOL_TABLE"
             }
         }
     }
