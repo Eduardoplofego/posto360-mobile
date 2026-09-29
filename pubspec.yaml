@@ -47,8 +47,14 @@ dependencies:
   timeline_tile: ^2.0.0
   flutter_localizations:
     sdk: flutter
-  video_player: ^2.9.5
-  chewie: ^1.11.1
+  # video_player/chewie removidos: eram usados so para o player de video das
+  # aulas do EAD, que agora usa o YouTube (nao listado) em vez de arquivo no
+  # Supabase Storage - evita custo de armazenamento/egress com videos grandes.
+  # Player do YouTube embutido no app. Nao consegui confirmar a versao mais
+  # recente no pub.dev a partir deste ambiente (sem acesso a internet aqui) -
+  # rode `flutter pub get`/`flutter pub outdated` e ajuste a versao abaixo
+  # se for preciso.
+  youtube_player_flutter: ^9.1.1
   syncfusion_flutter_pdfviewer: ^29.1.35
 
   dotted_border: ^2.1.0

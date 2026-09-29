@@ -27,7 +27,17 @@ class CursoModel {
   /// Procedimentos da empresa vinculados ao curso.
   final List<CursoProcedimentoModel> procedimentos;
 
-  final bool certificadoEmitido;
+  /// Validade da conclusão: quando o curso já concluído vence e precisa ser
+  /// refeito (ex: NR20 vence a cada 3 anos). Não confundir com [prazoFinal],
+  /// que é o prazo para concluir o curso, não para ele vencer depois de
+  /// concluído.
+  final CursoValidadeConclusaoModel validadeConclusao;
+
+  /// PDF do certificado. Pode não existir mesmo com o curso concluído, se o
+  /// curso não tiver certificado configurado.
+  final CursoDocumentoModel certificado;
+
+  bool get certificadoEmitido => certificado.emitido;
 
   CursoModel({
     required this.id,
@@ -43,7 +53,8 @@ class CursoModel {
     required this.ultimoAcesso,
     required this.prazoFinal,
     required this.procedimentos,
-    required this.certificadoEmitido,
+    required this.validadeConclusao,
+    required this.certificado,
   });
 
   Map<String, dynamic> toMap() {
@@ -92,7 +103,10 @@ class CursoModel {
               )
               .toList() ??
           [],
-      certificadoEmitido: false,
+      validadeConclusao: CursoValidadeConclusaoModel.fromMap(
+        map['validadeConclusao'],
+      ),
+      certificado: CursoDocumentoModel.fromMap(map['certificado']),
     );
   }
 
@@ -103,6 +117,67 @@ class CursoModel {
 
   @override
   String toString() {
-    return 'CursoModel(id: $id, templateId: $templateId, titulo: $titulo, descricao: $descricao, capa: $capa, status: $status, totalAulas: $totalAulas, aulasConcluidas: $aulasConcluidas, inscricao: $inscricao, inicio: $inicio, ultimoAcesso: $ultimoAcesso, prazoFinal: $prazoFinal, procedimentos: $procedimentos, certificadoEmitido: $certificadoEmitido)';
+    return 'CursoModel(id: $id, templateId: $templateId, titulo: $titulo, descricao: $descricao, capa: $capa, status: $status, totalAulas: $totalAulas, aulasConcluidas: $aulasConcluidas, inscricao: $inscricao, inicio: $inicio, ultimoAcesso: $ultimoAcesso, prazoFinal: $prazoFinal, procedimentos: $procedimentos, validadeConclusao: $validadeConclusao, certificado: $certificado)';
   }
+}
+
+/// Situação de vencimento da conclusão de um curso já concluído.
+enum CursoValidadeSituacao { vencido, venceEmBreve }
+
+class CursoValidadeConclusaoModel {
+  final DateTime? dataVencimento;
+  final CursoValidadeSituacao? situacao;
+
+  const CursoValidadeConclusaoModel({this.dataVencimento, this.situacao});
+
+  bool get vencido => situacao == CursoValidadeSituacao.vencido;
+  bool get venceEmBreve => situacao == CursoValidadeSituacao.venceEmBreve;
+
+  static DateTime? _parseData(dynamic valor) {
+    if (valor == null) return null;
+    return DateTime.tryParse(valor.toString());
+  }
+
+  static CursoValidadeSituacao? _parseSituacao(dynamic valor) {
+    switch (valor) {
+      case 'Vencido':
+        return CursoValidadeSituacao.vencido;
+      case 'Vence em breve':
+        return CursoValidadeSituacao.venceEmBreve;
+      default:
+        return null;
+    }
+  }
+
+  factory CursoValidadeConclusaoModel.fromMap(dynamic map) {
+    if (map is! Map) return const CursoValidadeConclusaoModel();
+    return CursoValidadeConclusaoModel(
+      dataVencimento: _parseData(map['dataVencimento']),
+      situacao: _parseSituacao(map['situacao']),
+    );
+  }
+
+  @override
+  String toString() =>
+      'CursoValidadeConclusaoModel(dataVencimento: $dataVencimento, situacao: $situacao)';
+}
+
+/// Certificado (PDF) gerado automaticamente pelo backend quando o
+/// colaborador termina o curso. `url` só existe quando `emitido` é true.
+class CursoDocumentoModel {
+  final bool emitido;
+  final String? url;
+
+  const CursoDocumentoModel({required this.emitido, this.url});
+
+  factory CursoDocumentoModel.fromMap(dynamic map) {
+    if (map is! Map) return const CursoDocumentoModel(emitido: false);
+    return CursoDocumentoModel(
+      emitido: map['emitido'] ?? false,
+      url: map['url'] as String?,
+    );
+  }
+
+  @override
+  String toString() => 'CursoDocumentoModel(emitido: $emitido, url: $url)';
 }

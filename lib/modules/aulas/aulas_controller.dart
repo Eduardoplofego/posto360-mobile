@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/core/domain/mixins/loader_mixin.dart';
 import 'package:posto360/modules/core/domain/mixins/message_mixin.dart';
@@ -11,21 +9,28 @@ import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart
 import 'package:posto360/modules/core/domain/utils/enums/aula_status.dart';
 import 'package:posto360/modules/aulas/domain/models/aula_model.dart';
 import 'package:posto360/modules/aulas/domain/models/curso_model.dart';
+import 'package:posto360/modules/aulas/widgets/timeline_certificado_item_widget.dart';
 import 'package:posto360/modules/aulas/widgets/timeline_classes_widget.dart';
 import 'package:posto360/modules/cursos/domain/dtos/curso_to_aula_dto.dart';
 import 'package:posto360/modules/aulas/infra/services/aulas_service.dart';
+import 'package:posto360/modules/aulas/widgets/timeline_quiz_item_widget.dart';
+import 'package:posto360/modules/cursos/cursos_controller.dart';
+import 'package:posto360/modules/questionario/infra/services/questionario_service.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'package:video_player/video_player.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class AulasController extends GetxController with LoaderMixin, MessageMixin {
   final AulasService _aulasService;
   final AuthService _authService;
+  final QuestionarioService _questionarioService;
 
   AulasController({
     required AulasService aulasService,
     required AuthService authService,
+    required QuestionarioService questionarioService,
   }) : _aulasService = aulasService,
-       _authService = authService;
+       _authService = authService,
+       _questionarioService = questionarioService;
 
   // Observables
   final _message = Rxn<MessagesModel>();
@@ -38,7 +43,13 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   final _isToShowMaterialComplementar = false.obs;
   final _pdfLoaded = false.obs;
   final _isVisulizeAulaLoading = false.obs;
-  final _chewieController = Rxn<ChewieController>();
+  final _youtubeController = Rxn<YoutubePlayerController>();
+  // ids das aulas cujo video ja recebeu play nesta sessao - so pode marcar
+  // como assistida quem deu play (pedido do cliente)
+  final _aulasComVideoReproduzido = <int>{}.obs;
+  // prova entra como ultimo item da timeline (design doc, secao 7.4)
+  final _existeQuestionario = false.obs;
+  final _questionarioAprovado = false.obs;
 
   // Getters
   CursoModel? get curso => _curso.value;
@@ -51,6 +62,14 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
   int get currentAulaIndex => _currentAulaIndex.value;
   bool get isToShowMaterial => _isToShowMaterialComplementar.value;
   bool get hasPrevClass => hasData && _currentAulaIndex.value >= 1;
+  bool get existeQuestionario => _existeQuestionario.value;
+  bool get questionarioAprovado => _questionarioAprovado.value;
+
+  /// O certificado só existe depois que o backend o gera ao final do curso:
+  /// usar isso como gatilho evita mostrar o item da timeline para cursos
+  /// ainda em andamento.
+  bool get temCertificado => _curso.value?.certificado.emitido ?? false;
+
   bool get hasNextClass {
     if (!hasData || _aulas.isEmpty) return false;
 
@@ -65,13 +84,27 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
         nextIndex < _aulas.length &&
         _aulas[nextIndex].status != AulaStatus.bloqueado;
 
-    return hasMaterial || hasNextAulaDesbloqueada;
+    final isUltimaAula = nextIndex >= _aulas.length;
+    final aulaAtualFinalizada =
+        _aulas[currentIndex].status == AulaStatus.finalizado;
+    final podeAbrirProva =
+        isUltimaAula &&
+        aulaAtualFinalizada &&
+        existeQuestionario &&
+        !questionarioAprovado;
+
+    return hasMaterial || hasNextAulaDesbloqueada || podeAbrirProva;
   }
 
   bool get pdfLoaded => _pdfLoaded.value;
   bool get isVisulizeAulaLoading => _isVisulizeAulaLoading.value;
-  bool get videoInitialized => _chewieController.value != null;
-  ChewieController? get chewieController => _chewieController.value;
+  bool get videoInitialized => _youtubeController.value != null;
+  YoutubePlayerController? get youtubeController => _youtubeController.value;
+  bool get videoAtualFoiReproduzido {
+    final aula = currentAula;
+    if (aula == null) return false;
+    return _aulasComVideoReproduzido.contains(aula.id);
+  }
 
   // Actions
   @override
@@ -131,6 +164,7 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
       if (aulas.length > 1) aulas.sort((a, b) => a.ordem.compareTo(b.ordem));
       _aulas.assignAll(aulas);
       _hasData(aulas.isNotEmpty);
+      await _loadQuestionarioStatus();
       await _loadFirstCurrentAula();
     } catch (e, s) {
       log('Erro ao carregar aulas do curso', error: e, stackTrace: s);
@@ -144,6 +178,22 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
       );
     } finally {
       _loading(false);
+    }
+  }
+
+  Future<void> _loadQuestionarioStatus() async {
+    final curso = _curso.value;
+    final usuario = _authService.authenticatedUser;
+    if (curso == null || usuario == null) return;
+
+    final result = await _questionarioService.getQuestionario(
+      usuarioId: usuario.id,
+      cursoId: curso.templateId,
+    );
+
+    if (result.success && result.data != null) {
+      _existeQuestionario.value = result.data!.existeProva;
+      _questionarioAprovado.value = result.data!.aprovado;
     }
   }
 
@@ -188,14 +238,47 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
 
     if (aula.hasMaterial && !isToShowMaterial) {
       _isToShowMaterialComplementar(true);
-    } else {
-      // verificar se a aula foi concluida
-      if (aula.status == AulaStatus.emAndamento) {
-        _showDialogConfirmConcludeClass();
-      } else {
-        _isToShowMaterialComplementar(false);
-        setCurrentAula(currentAulaIndex + 1);
-      }
+      return;
+    }
+
+    // verificar se a aula foi concluida
+    if (aula.status == AulaStatus.emAndamento) {
+      _showDialogConfirmConcludeClass();
+      return;
+    }
+
+    _isToShowMaterialComplementar(false);
+
+    final isUltimaAula = currentAulaIndex + 1 >= _aulas.length;
+    if (isUltimaAula && existeQuestionario && !questionarioAprovado) {
+      abrirQuestionario();
+      return;
+    }
+
+    setCurrentAula(currentAulaIndex + 1);
+  }
+
+  // a prova entra como ultimo item do caminho, depois da ultima aula
+  // finalizada (design doc, secao 7.4)
+  Future<void> abrirQuestionario() async {
+    final cursoAtual = curso;
+    if (cursoAtual == null) return;
+
+    await Get.toNamed(
+      '/cursos/questionario',
+      parameters: {
+        'cursoId': cursoAtual.templateId.toString(),
+        'cursoTitulo': cursoAtual.titulo,
+      },
+    );
+
+    // a prova pode ter sido aprovada (ou a rodada pode ter mudado) na tela
+    // que acabou de fechar: recarrega aulas + status da prova aqui, e a
+    // lista de cursos (o status do curso muda no servidor no mesmo instante
+    // em que a prova e aprovada - design doc, secao 7.5)
+    await _loadAulas();
+    if (Get.isRegistered<CursosController>()) {
+      await Get.find<CursosController>().onRefresh();
     }
   }
 
@@ -224,48 +307,74 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
     );
   }
 
+  // as aulas agora hospedam o video no YouTube (nao listado) em vez de um
+  // arquivo no Supabase Storage, entao urlVideo e um link do YouTube (ou
+  // apenas o id do video) em vez de uma url de video direta
   Future<void> initializeVideoPlayer() async {
     await _disposeVideoPlayer();
 
     final urlVideo = _currentAula.value?.urlVideo ?? '';
     if (urlVideo.isEmpty) return;
 
-    final uri = Uri.tryParse(urlVideo);
-    if (uri == null || !uri.hasScheme) {
-      log('URL de vídeo inválida para a aula ${_currentAula.value?.id}: $urlVideo');
+    final videoId = YoutubePlayer.convertUrlToId(urlVideo) ?? urlVideo;
+    if (videoId.isEmpty) {
+      log('Link de vídeo inválido para a aula ${_currentAula.value?.id}: $urlVideo');
       return;
     }
 
     try {
-      final videoPlayerController = VideoPlayerController.networkUrl(uri);
-      await videoPlayerController.initialize();
-      _chewieController.value = ChewieController(
-        videoPlayerController: videoPlayerController,
-        showControlsOnInitialize: false,
-        placeholder: Container(width: 50, height: 50, color: Colors.black),
-        autoPlay: false,
-        looping: false,
-        deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
+      _youtubeController.value = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+          disableDragSeek: false,
+        ),
       );
+      _youtubeController.value!.addListener(_onYoutubePlayerStateChange);
     } catch (e, s) {
       // Um vídeo indisponível não pode impedir o acesso ao restante do curso.
       log('Erro ao inicializar o vídeo da aula', error: e, stackTrace: s);
-      _chewieController.value = null;
+      _youtubeController.value = null;
+    }
+  }
+
+  // so pode marcar a aula como assistida quem deu play no video - assim que
+  // o player entra em reprodução pela 1a vez, libera o botao para esta aula
+  void _onYoutubePlayerStateChange() {
+    final aula = _currentAula.value;
+    final estado = _youtubeController.value?.value.playerState;
+    if (aula != null && estado == PlayerState.playing) {
+      _aulasComVideoReproduzido.add(aula.id);
     }
   }
 
   Future<void> _disposeVideoPlayer() async {
-    final chewie = _chewieController.value;
-    if (chewie == null) return;
-    _chewieController.value = null;
-    final videoPlayerController = chewie.videoPlayerController;
-    chewie.dispose();
-    await videoPlayerController.dispose();
+    final youtube = _youtubeController.value;
+    if (youtube == null) return;
+    youtube.removeListener(_onYoutubePlayerStateChange);
+    // pausa antes de descartar para garantir que o video pare de tocar na
+    // hora - o widget tambem troca de key ao mudar de aula, mas isso aqui
+    // evita qualquer instante em que o video antigo continue rodando
+    youtube.pause();
+    _youtubeController.value = null;
+    youtube.dispose();
   }
 
   Future<void> visualizeAula() async {
     final aula = currentAula;
     if (aula == null) return;
+
+    if (!videoAtualFoiReproduzido) {
+      _message(
+        MessagesModel(
+          title: 'Atenção',
+          message: 'Assista ao vídeo antes de marcar a aula como assistida',
+          type: MessageType.info,
+        ),
+      );
+      return;
+    }
 
     _isVisulizeAulaLoading(true);
     final result = await _aulasService.concludeAula(aulaId: aula.id);
@@ -300,23 +409,82 @@ class AulasController extends GetxController with LoaderMixin, MessageMixin {
         ),
       ];
     }
-    return _aulas.map((aula) {
-      return SizedBox(
-        height: 300,
-        child: TimelineTile(
-          isFirst: aula.ordem == 1,
-          isLast: aula.ordem == _aulas.last.ordem,
-          alignment: TimelineAlign.center,
-          indicatorStyle: IndicatorStyle(
-            height: 230,
-            width: Get.width,
-            indicator: TimelineClassItemWidget(
-              aula: aula,
-              isCurrent: currentAula?.ordem == aula.ordem,
+    final items =
+        _aulas.map((aula) {
+          return SizedBox(
+            height: 300,
+            child: TimelineTile(
+              isFirst: aula.ordem == 1,
+              isLast:
+                  aula.ordem == _aulas.last.ordem &&
+                  !existeQuestionario &&
+                  !temCertificado,
+              alignment: TimelineAlign.center,
+              indicatorStyle: IndicatorStyle(
+                height: 230,
+                width: Get.width,
+                indicator: TimelineClassItemWidget(
+                  aula: aula,
+                  isCurrent: currentAula?.ordem == aula.ordem,
+                ),
+              ),
+            ),
+          );
+        }).toList();
+
+    if (existeQuestionario) {
+      final todasAulasFinalizadas = _aulas.every(
+        (aula) => aula.status == AulaStatus.finalizado,
+      );
+      items.add(
+        SizedBox(
+          height: 300,
+          child: TimelineTile(
+            isFirst: false,
+            isLast: !temCertificado,
+            alignment: TimelineAlign.center,
+            indicatorStyle: IndicatorStyle(
+              height: 230,
+              width: Get.width,
+              // tocavel assim que as aulas terminam: responde a prova se
+              // ainda nao foi aprovada, ou so mostra a prova ja respondida
+              // (mesma tela, o Obx de QuestionarioPage escolhe a build certa
+              // pelo status vindo do servidor)
+              indicator: GestureDetector(
+                onTap: todasAulasFinalizadas ? abrirQuestionario : null,
+                child: TimelineQuizItemWidget(
+                  bloqueada: !todasAulasFinalizadas,
+                  aprovado: questionarioAprovado,
+                ),
+              ),
             ),
           ),
         ),
       );
-    }).toList();
+    }
+
+    if (temCertificado) {
+      final curso = _curso.value!;
+      items.add(
+        SizedBox(
+          height: 340,
+          child: TimelineTile(
+            isFirst: false,
+            isLast: true,
+            alignment: TimelineAlign.center,
+            indicatorStyle: IndicatorStyle(
+              height: 280,
+              width: Get.width,
+              indicator: TimelineCertificadoItemWidget(
+                certificado: curso.certificado,
+                validade: curso.validadeConclusao,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return items;
   }
 }

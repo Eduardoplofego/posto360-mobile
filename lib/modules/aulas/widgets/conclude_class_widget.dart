@@ -34,7 +34,7 @@ class ConcludeClassWidget extends GetView<AulasController> {
                         : const SizedBox.shrink(),
                     TextButton(
                       onPressed:
-                          !isCurrentConcluded
+                          !isCurrentConcluded && controller.videoAtualFoiReproduzido
                               ? () async {
                                 await controller.visualizeAula();
                               }
@@ -46,12 +46,25 @@ class ConcludeClassWidget extends GetView<AulasController> {
                             : 'Marcar como assistida',
                         style: TextStyle(
                           color:
-                              isCurrentConcluded ? Colors.green : Colors.white,
+                              isCurrentConcluded
+                                  ? Colors.green
+                                  : controller.videoAtualFoiReproduzido
+                                  ? Colors.white
+                                  : Colors.white38,
                         ),
                       ),
                     ),
                   ],
                 ),
+                // so libera marcar como assistida depois de dar play no video
+                if (!isCurrentConcluded && !controller.videoAtualFoiReproduzido)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      'Assista ao vídeo para liberar',
+                      style: TextStyle(color: Colors.white70, fontSize: 11),
+                    ),
+                  ),
               ],
             ),
           )

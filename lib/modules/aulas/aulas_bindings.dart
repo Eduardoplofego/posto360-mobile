@@ -3,6 +3,10 @@ import 'package:posto360/modules/aulas/domain/repositories/aula_repository.dart'
 import 'package:posto360/modules/aulas/infra/repositories/aula_repository_impl.dart';
 import 'package:posto360/modules/aulas/infra/services/aulas_service.dart';
 import 'package:posto360/modules/aulas/services/aulas_service_impl.dart';
+import 'package:posto360/modules/questionario/domain/repositories/questionario_repository.dart';
+import 'package:posto360/modules/questionario/infra/repositories/questionario_repository_impl.dart';
+import 'package:posto360/modules/questionario/infra/services/questionario_service.dart';
+import 'package:posto360/modules/questionario/services/questionario_service_impl.dart';
 import './aulas_controller.dart';
 
 class AulasBindings implements Bindings {
@@ -14,6 +18,21 @@ class AulasBindings implements Bindings {
     Get.lazyPut<AulasService>(
       () => AulasServiceImpl(aulaRepository: Get.find()),
     );
-    Get.put(AulasController(aulasService: Get.find(), authService: Get.find()));
+    // a prova entra como último item da timeline de aulas (design doc,
+    // secao 7.4), entao o controller de aulas precisa saber se ela existe
+    // e se ja foi aprovada
+    Get.lazyPut<QuestionarioRepository>(
+      () => QuestionarioRepositoryImpl(postoRestClient: Get.find()),
+    );
+    Get.lazyPut<QuestionarioService>(
+      () => QuestionarioServiceImpl(questionarioRepository: Get.find()),
+    );
+    Get.put(
+      AulasController(
+        aulasService: Get.find(),
+        authService: Get.find(),
+        questionarioService: Get.find(),
+      ),
+    );
   }
 }

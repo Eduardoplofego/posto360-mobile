@@ -3,6 +3,7 @@ import 'package:posto360/modules/aulas/aulas_bindings.dart';
 import 'package:posto360/modules/aulas/aulas_page.dart';
 import 'package:posto360/modules/cursos/cursos_bindings.dart';
 import 'package:posto360/modules/cursos/cursos_page.dart';
+import 'package:posto360/modules/questionario/questionario_routers.dart';
 
 class CursosRouters {
   CursosRouters._();
@@ -18,5 +19,6 @@ class CursosRouters {
       page: () => const AulasPage(),
       binding: AulasBindings(),
     ),
+    ...QuestionarioRouters.routes,
   ];
 }

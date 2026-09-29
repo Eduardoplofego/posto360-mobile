@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart';
+import 'package:posto360/modules/core/domain/ui/widgets/texto_com_links.dart';
 import 'package:posto360/modules/core/domain/utils/enums/aula_status.dart';
 import 'package:posto360/modules/aulas/domain/models/aula_model.dart';
 
@@ -79,19 +80,21 @@ class TimelineClassItemWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Aula ${aula.ordem}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: PostoAppUiConfigurations.greyColor,
-                              ),
-                            ),
-                            Text(
                               aula.titulo,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: PostoAppUiConfigurations.textDarkColor,
                               ),
                             ),
+                            if (aula.descricao.isNotEmpty)
+                              TextoComLinks(
+                                texto: aula.descricao,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: PostoAppUiConfigurations.greyColor,
+                                ),
+                              ),
                             // Text(
                             //   'Duração: ${DataFormatters.getDurationHM(aula.duracao)}',
                             // ),

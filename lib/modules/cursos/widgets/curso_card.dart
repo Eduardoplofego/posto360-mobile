@@ -4,6 +4,7 @@ import 'package:posto360/modules/core/domain/ui/posto_app_ui_configurations.dart
 import 'package:posto360/modules/core/domain/utils/data_formatters.dart';
 import 'package:posto360/modules/core/domain/utils/enums/curso_status.dart';
 import 'package:posto360/modules/aulas/domain/models/curso_model.dart';
+import 'package:posto360/modules/cursos/widgets/curso_documentos_widget.dart';
 import 'package:posto360/modules/cursos/widgets/curso_folder_widget.dart';
 import 'package:posto360/modules/cursos/widgets/curso_procedimentos_widget.dart';
 import 'package:posto360/modules/cursos/widgets/curso_progress_widget.dart';
@@ -38,6 +39,7 @@ class CursoCard extends StatelessWidget {
             showMessageError: showMessageError,
           ),
           const SizedBox(height: 12),
+          CursoValidadeConclusaoBadge(validade: curso.validadeConclusao),
           SizedBox(
             width: Get.width,
             child: Text(
@@ -106,6 +108,10 @@ class CursoCard extends StatelessWidget {
           // o mesmo atalho aparece dentro da aula: aqui ele serve para o
           // vendedor consultar o passo a passo sem precisar abrir o curso
           CursoProcedimentosResumo(procedimentos: curso.procedimentos),
+          if (curso.certificado.emitido) ...[
+            const SizedBox(height: 12),
+            CursoCertificadoResumo(certificado: curso.certificado),
+          ],
         ],
       ),
     );

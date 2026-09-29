@@ -1,8 +1,8 @@
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:posto360/modules/aulas/aulas_controller.dart';
 import 'package:posto360/modules/aulas/widgets/pdf_viewer_widget.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoPlayerWidget extends GetView<AulasController> {
   const VideoPlayerWidget({super.key});
@@ -17,7 +17,14 @@ class VideoPlayerWidget extends GetView<AulasController> {
           color: Colors.black,
           width: Get.width,
           height: Get.height * .315,
-          child: Chewie(controller: controller.chewieController!),
+          // key novo a cada troca de aula: forca o widget (e o player do
+          // YouTube por baixo) a ser desmontado e remontado do zero, senao o
+          // video da aula anterior continua tocando ao trocar de aula
+          child: YoutubePlayer(
+            key: ValueKey('youtube-player-${controller.currentAula?.id}'),
+            controller: controller.youtubeController!,
+            showVideoProgressIndicator: true,
+          ),
         );
       } else {
         return Container(
