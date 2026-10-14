@@ -205,17 +205,22 @@ class QuestionarioPage extends GetView<QuestionarioController> {
             separatorBuilder: (_, __) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final questao = controller.questoes[index];
-              return QuestaoCard(
-                questao: questao,
-                alternativaSelecionada: controller.alternativaSelecionada(
-                  questao.id,
+              // Obx proprio por card: o itemBuilder roda no layout, fora do
+              // Obx do body, entao a leitura de _respostasSelecionadas aqui
+              // nao era rastreada e a selecao nao aparecia na tela
+              return Obx(
+                () => QuestaoCard(
+                  questao: questao,
+                  alternativaSelecionada: controller.alternativaSelecionada(
+                    questao.id,
+                  ),
+                  onSelecionar:
+                      (alternativaId) =>
+                          controller.selecionarAlternativa(
+                            questao,
+                            alternativaId,
+                          ),
                 ),
-                onSelecionar:
-                    (alternativaId) =>
-                        controller.selecionarAlternativa(
-                          questao,
-                          alternativaId,
-                        ),
               );
             },
           ),
